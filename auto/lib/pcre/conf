@@ -1,15 +1,10 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 if [ $PCRE != NONE ]; then
     CORE_INCS="$CORE_INCS $PCRE"
 
-    case "$NGX_CC_NAME" in
+    case "$ATM_CC_NAME" in
 
         msvc | owc | bcc)
-            have=NGX_PCRE . auto/have
+            have=ATM_PCRE . auto/have
             have=PCRE_STATIC . auto/have
             CORE_DEPS="$CORE_DEPS $PCRE/pcre.h"
             LINK_DEPS="$LINK_DEPS $PCRE/pcre.lib"
@@ -17,32 +12,32 @@ if [ $PCRE != NONE ]; then
         ;;
 
         icc)
-            have=NGX_PCRE . auto/have
+            have=ATM_PCRE . auto/have
             CORE_DEPS="$CORE_DEPS $PCRE/pcre.h"
 
             LINK_DEPS="$LINK_DEPS $PCRE/.libs/libpcre.a"
 
-            echo $ngx_n "checking for PCRE library ...$ngx_c"
+            echo $atm_n "checking for PCRE library ...$atm_c"
 
             if [ -f $PCRE/pcre.h ]; then
-                ngx_pcre_ver=`grep PCRE_MAJOR $PCRE/pcre.h \
+                atm_pcre_ver=`grep PCRE_MAJOR $PCRE/pcre.h \
                               | sed -e 's/^.*PCRE_MAJOR.* \(.*\)$/\1/'`
 
             else if [ -f $PCRE/configure.in ]; then
-                ngx_pcre_ver=`grep PCRE_MAJOR= $PCRE/configure.in \
+                atm_pcre_ver=`grep PCRE_MAJOR= $PCRE/configure.in \
                               | sed -e 's/^.*=\(.*\)$/\1/'`
 
             else
-                ngx_pcre_ver=`grep pcre_major, $PCRE/configure.ac \
+                atm_pcre_ver=`grep pcre_major, $PCRE/configure.ac \
                               | sed -e 's/^.*pcre_major,.*\[\(.*\)\].*$/\1/'`
             fi
             fi
 
-            echo " $ngx_pcre_ver major version found"
+            echo " $atm_pcre_ver major version found"
 
             # to allow -ipo optimization we link with the *.o but not library
 
-            case "$ngx_pcre_ver" in
+            case "$atm_pcre_ver" in
                 4|5)
                     CORE_LIBS="$CORE_LIBS $PCRE/pcre.o"
                 ;;
@@ -72,9 +67,9 @@ if [ $PCRE != NONE ]; then
         ;;
 
         *)
-            have=NGX_PCRE . auto/have
+            have=ATM_PCRE . auto/have
 
-            if [ "$NGX_PLATFORM" = win32 ]; then
+            if [ "$ATM_PLATFORM" = win32 ]; then
                 have=PCRE_STATIC . auto/have
             fi
 
@@ -87,102 +82,102 @@ if [ $PCRE != NONE ]; then
 
 
     if [ $PCRE_JIT = YES ]; then
-        have=NGX_HAVE_PCRE_JIT . auto/have
+        have=ATM_HAVE_PCRE_JIT . auto/have
         PCRE_CONF_OPT="$PCRE_CONF_OPT --enable-jit"
     fi
 
 else
 
-    if [ "$NGX_PLATFORM" != win32 ]; then
+    if [ "$ATM_PLATFORM" != win32 ]; then
 
         PCRE=NO
 
-        ngx_feature="PCRE library"
-        ngx_feature_name="NGX_PCRE"
-        ngx_feature_run=no
-        ngx_feature_incs="#include <pcre.h>"
-        ngx_feature_path=
-        ngx_feature_libs="-lpcre"
-        ngx_feature_test="pcre *re;
+        atm_feature="PCRE library"
+        atm_feature_name="ATM_PCRE"
+        atm_feature_run=no
+        atm_feature_incs="#include <pcre.h>"
+        atm_feature_path=
+        atm_feature_libs="-lpcre"
+        atm_feature_test="pcre *re;
                           re = pcre_compile(NULL, 0, NULL, 0, NULL);
                           if (re == NULL) return 1"
         . auto/feature
 
-        if [ $ngx_found = no ]; then
+        if [ $atm_found = no ]; then
 
             # FreeBSD port
 
-            ngx_feature="PCRE library in /usr/local/"
-            ngx_feature_path="/usr/local/include"
+            atm_feature="PCRE library in /usr/local/"
+            atm_feature_path="/usr/local/include"
 
-            if [ $NGX_RPATH = YES ]; then
-                ngx_feature_libs="-R/usr/local/lib -L/usr/local/lib -lpcre"
+            if [ $ATM_RPATH = YES ]; then
+                atm_feature_libs="-R/usr/local/lib -L/usr/local/lib -lpcre"
             else
-                ngx_feature_libs="-L/usr/local/lib -lpcre"
+                atm_feature_libs="-L/usr/local/lib -lpcre"
             fi
 
             . auto/feature
         fi
 
-        if [ $ngx_found = no ]; then
+        if [ $atm_found = no ]; then
 
             # RedHat RPM, Solaris package
 
-            ngx_feature="PCRE library in /usr/include/pcre/"
-            ngx_feature_path="/usr/include/pcre"
-            ngx_feature_libs="-lpcre"
+            atm_feature="PCRE library in /usr/include/pcre/"
+            atm_feature_path="/usr/include/pcre"
+            atm_feature_libs="-lpcre"
 
             . auto/feature
         fi
 
-        if [ $ngx_found = no ]; then
+        if [ $atm_found = no ]; then
 
             # NetBSD port
 
-            ngx_feature="PCRE library in /usr/pkg/"
-            ngx_feature_path="/usr/pkg/include"
+            atm_feature="PCRE library in /usr/pkg/"
+            atm_feature_path="/usr/pkg/include"
 
-            if [ $NGX_RPATH = YES ]; then
-                ngx_feature_libs="-R/usr/pkg/lib -L/usr/pkg/lib -lpcre"
+            if [ $ATM_RPATH = YES ]; then
+                atm_feature_libs="-R/usr/pkg/lib -L/usr/pkg/lib -lpcre"
             else
-                ngx_feature_libs="-L/usr/pkg/lib -lpcre"
+                atm_feature_libs="-L/usr/pkg/lib -lpcre"
             fi
 
             . auto/feature
         fi
 
-        if [ $ngx_found = no ]; then
+        if [ $atm_found = no ]; then
 
             # MacPorts
 
-            ngx_feature="PCRE library in /opt/local/"
-            ngx_feature_path="/opt/local/include"
+            atm_feature="PCRE library in /opt/local/"
+            atm_feature_path="/opt/local/include"
 
-            if [ $NGX_RPATH = YES ]; then
-                ngx_feature_libs="-R/opt/local/lib -L/opt/local/lib -lpcre"
+            if [ $ATM_RPATH = YES ]; then
+                atm_feature_libs="-R/opt/local/lib -L/opt/local/lib -lpcre"
             else
-                ngx_feature_libs="-L/opt/local/lib -lpcre"
+                atm_feature_libs="-L/opt/local/lib -lpcre"
             fi
 
             . auto/feature
         fi
 
-        if [ $ngx_found = yes ]; then
-            CORE_INCS="$CORE_INCS $ngx_feature_path"
-            CORE_LIBS="$CORE_LIBS $ngx_feature_libs"
+        if [ $atm_found = yes ]; then
+            CORE_INCS="$CORE_INCS $atm_feature_path"
+            CORE_LIBS="$CORE_LIBS $atm_feature_libs"
             PCRE=YES
         fi
 
         if [ $PCRE = YES ]; then
-            ngx_feature="PCRE JIT support"
-            ngx_feature_name="NGX_HAVE_PCRE_JIT"
-            ngx_feature_test="int jit = 0;
+            atm_feature="PCRE JIT support"
+            atm_feature_name="ATM_HAVE_PCRE_JIT"
+            atm_feature_test="int jit = 0;
                               pcre_free_study(NULL);
                               pcre_config(PCRE_CONFIG_JIT, &jit);
                               if (jit != 1) return 1;"
             . auto/feature
 
-            if [ $ngx_found = yes ]; then
+            if [ $atm_found = yes ]; then
                 PCRE_JIT=YES
             fi
         fi
@@ -194,7 +189,7 @@ cat << END
 $0: error: the HTTP rewrite module requires the PCRE library.
 You can either disable the module by using --without-http_rewrite_module
 option, or install the PCRE library into the system, or build the PCRE library
-statically from the source with nginx by using --with-pcre=<path> option.
+statically from the source with atmcache by using --with-pcre=<path> option.
 
 END
         exit 1

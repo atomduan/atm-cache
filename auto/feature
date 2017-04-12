@@ -1,64 +1,59 @@
+echo $atm_n "checking for $atm_feature ...$atm_c"
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-echo $ngx_n "checking for $ngx_feature ...$ngx_c"
-
-cat << END >> $NGX_AUTOCONF_ERR
+cat << END >> $ATM_AUTOCONF_ERR
 
 ----------------------------------------
-checking for $ngx_feature
+checking for $atm_feature
 
 END
 
-ngx_found=no
+atm_found=no
 
-if test -n "$ngx_feature_name"; then
-    ngx_have_feature=`echo $ngx_feature_name \
+if test -n "$atm_feature_name"; then
+    atm_have_feature=`echo $atm_feature_name \
                    | tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ`
 fi
 
-if test -n "$ngx_feature_path"; then
-    for ngx_temp in $ngx_feature_path; do
-        ngx_feature_inc_path="$ngx_feature_inc_path -I $ngx_temp"
+if test -n "$atm_feature_path"; then
+    for atm_temp in $atm_feature_path; do
+        atm_feature_inc_path="$atm_feature_inc_path -I $atm_temp"
     done
 fi
 
-cat << END > $NGX_AUTOTEST.c
+cat << END > $ATM_AUTOTEST.c
 
 #include <sys/types.h>
-$NGX_INCLUDE_UNISTD_H
-$ngx_feature_incs
+$ATM_INCLUDE_UNISTD_H
+$atm_feature_incs
 
 int main(void) {
-    $ngx_feature_test;
+    $atm_feature_test;
     return 0;
 }
 
 END
 
 
-ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS $ngx_feature_inc_path \
-          -o $NGX_AUTOTEST $NGX_AUTOTEST.c $NGX_TEST_LD_OPT $ngx_feature_libs"
+atm_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS $atm_feature_inc_path \
+          -o $ATM_AUTOTEST $ATM_AUTOTEST.c $ATM_TEST_LD_OPT $atm_feature_libs"
 
-ngx_feature_inc_path=
+atm_feature_inc_path=
 
-eval "/bin/sh -c \"$ngx_test\" >> $NGX_AUTOCONF_ERR 2>&1"
+eval "/bin/sh -c \"$atm_test\" >> $ATM_AUTOCONF_ERR 2>&1"
 
 
-if [ -x $NGX_AUTOTEST ]; then
+if [ -x $ATM_AUTOTEST ]; then
 
-    case "$ngx_feature_run" in
+    case "$atm_feature_run" in
 
         yes)
             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
+            if /bin/sh -c $ATM_AUTOTEST >> $ATM_AUTOCONF_ERR 2>&1; then
                 echo " found"
-                ngx_found=yes
+                atm_found=yes
 
-                if test -n "$ngx_feature_name"; then
-                    have=$ngx_have_feature . auto/have
+                if test -n "$atm_feature_name"; then
+                    have=$atm_have_feature . auto/have
                 fi
 
             else
@@ -68,14 +63,14 @@ if [ -x $NGX_AUTOTEST ]; then
 
         value)
             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
+            if /bin/sh -c $ATM_AUTOTEST >> $ATM_AUTOCONF_ERR 2>&1; then
                 echo " found"
-                ngx_found=yes
+                atm_found=yes
 
-                cat << END >> $NGX_AUTO_CONFIG_H
+                cat << END >> $ATM_AUTO_CONFIG_H
 
-#ifndef $ngx_feature_name
-#define $ngx_feature_name  `$NGX_AUTOTEST`
+#ifndef $atm_feature_name
+#define $atm_feature_name  `$ATM_AUTOTEST`
 #endif
 
 END
@@ -86,25 +81,25 @@ END
 
         bug)
             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
-            if /bin/sh -c $NGX_AUTOTEST >> $NGX_AUTOCONF_ERR 2>&1; then
+            if /bin/sh -c $ATM_AUTOTEST >> $ATM_AUTOCONF_ERR 2>&1; then
                 echo " not found"
 
             else
                 echo " found"
-                ngx_found=yes
+                atm_found=yes
 
-                if test -n "$ngx_feature_name"; then
-                    have=$ngx_have_feature . auto/have
+                if test -n "$atm_feature_name"; then
+                    have=$atm_have_feature . auto/have
                 fi
             fi
         ;;
 
         *)
             echo " found"
-            ngx_found=yes
+            atm_found=yes
 
-            if test -n "$ngx_feature_name"; then
-                have=$ngx_have_feature . auto/have
+            if test -n "$atm_feature_name"; then
+                have=$atm_have_feature . auto/have
             fi
         ;;
 
@@ -113,11 +108,11 @@ END
 else
     echo " not found"
 
-    echo "----------"    >> $NGX_AUTOCONF_ERR
-    cat $NGX_AUTOTEST.c  >> $NGX_AUTOCONF_ERR
-    echo "----------"    >> $NGX_AUTOCONF_ERR
-    echo $ngx_test       >> $NGX_AUTOCONF_ERR
-    echo "----------"    >> $NGX_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
+    cat $ATM_AUTOTEST.c  >> $ATM_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
+    echo $atm_test       >> $ATM_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
 fi
 
-rm -rf $NGX_AUTOTEST*
+rm -rf $ATM_AUTOTEST*

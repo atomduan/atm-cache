@@ -1,8 +1,3 @@
+have=ATM_SUPPRESS_WARN . auto/have
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-have=NGX_SUPPRESS_WARN . auto/have
-
-have=NGX_SMP . auto/have
+have=ATM_SMP . auto/have

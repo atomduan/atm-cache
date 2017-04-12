@@ -1,10 +1,6 @@
-
-# Copyright (C) Nginx, Inc.
-
-
 if [ $USE_THREADS = YES ]; then
 
-    if [ "$NGX_PLATFORM" = win32 ]; then
+    if [ "$ATM_PLATFORM" = win32 ]; then
         cat << END
 
 $0: --with-threads is not supported on Windows
@@ -13,7 +9,7 @@ END
         exit 1
     fi
 
-    have=NGX_THREADS . auto/have
+    have=ATM_THREADS . auto/have
     CORE_DEPS="$CORE_DEPS $THREAD_POOL_DEPS"
     CORE_SRCS="$CORE_SRCS $THREAD_POOL_SRCS"
     CORE_LIBS="$CORE_LIBS -lpthread"

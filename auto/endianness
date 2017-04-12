@@ -1,11 +1,6 @@
+echo $atm_n "checking for system byte ordering ...$atm_c"
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-echo $ngx_n "checking for system byte ordering ...$ngx_c"
-
-cat << END >> $NGX_AUTOCONF_ERR
+cat << END >> $ATM_AUTOCONF_ERR
 
 ----------------------------------------
 checking for system byte ordering
@@ -13,7 +8,7 @@ checking for system byte ordering
 END
 
 
-cat << END > $NGX_AUTOTEST.c
+cat << END > $ATM_AUTOTEST.c
 
 int main(void) {
     int i = 0x11223344;
@@ -26,23 +21,23 @@ int main(void) {
 
 END
 
-ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
-          -o $NGX_AUTOTEST $NGX_AUTOTEST.c $NGX_LD_OPT $ngx_feature_libs"
+atm_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
+          -o $ATM_AUTOTEST $ATM_AUTOTEST.c $ATM_LD_OPT $atm_feature_libs"
 
-eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+eval "$atm_test >> $ATM_AUTOCONF_ERR 2>&1"
 
-if [ -x $NGX_AUTOTEST ]; then
-    if $NGX_AUTOTEST >/dev/null 2>&1; then
+if [ -x $ATM_AUTOTEST ]; then
+    if $ATM_AUTOTEST >/dev/null 2>&1; then
         echo " little endian"
-        have=NGX_HAVE_LITTLE_ENDIAN . auto/have
+        have=ATM_HAVE_LITTLE_ENDIAN . auto/have
     else
         echo " big endian"
     fi
 
-    rm -rf $NGX_AUTOTEST*
+    rm -rf $ATM_AUTOTEST*
 
 else
-    rm -rf $NGX_AUTOTEST*
+    rm -rf $ATM_AUTOTEST*
 
     echo
     echo "$0: error: cannot detect system byte ordering"

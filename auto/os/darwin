@@ -1,9 +1,4 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-have=NGX_DARWIN . auto/have_headers
+have=ATM_DARWIN . auto/have_headers
 
 CORE_INCS="$UNIX_INCS"
 CORE_DEPS="$UNIX_DEPS $DARWIN_DEPS"
@@ -11,7 +6,7 @@ CORE_SRCS="$UNIX_SRCS $DARWIN_SRCS"
 
 
 
-ngx_spacer='
+atm_spacer='
 '
 
 MAIN_LINK=
@@ -20,21 +15,21 @@ MODULE_LINK="-shared -Wl,-undefined,dynamic_lookup"
 # kqueue
 
 echo " + kqueue found"
-have=NGX_HAVE_KQUEUE . auto/have
-have=NGX_HAVE_CLEAR_EVENT . auto/have
+have=ATM_HAVE_KQUEUE . auto/have
+have=ATM_HAVE_CLEAR_EVENT . auto/have
 EVENT_MODULES="$EVENT_MODULES $KQUEUE_MODULE"
 CORE_SRCS="$CORE_SRCS $KQUEUE_SRCS"
 EVENT_FOUND=YES
-NGX_KQUEUE_CHECKED=YES
+ATM_KQUEUE_CHECKED=YES
 
-ngx_feature="kqueue's EVFILT_TIMER"
-ngx_feature_name="NGX_HAVE_TIMER_EVENT"
-ngx_feature_run=yes
-ngx_feature_incs="#include <sys/event.h>
+atm_feature="kqueue's EVFILT_TIMER"
+atm_feature_name="ATM_HAVE_TIMER_EVENT"
+atm_feature_run=yes
+atm_feature_incs="#include <sys/event.h>
                   #include <sys/time.h>"
-ngx_feature_path=
-ngx_feature_libs=
-ngx_feature_test="int      kq;
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="int      kq;
                   struct kevent    kev;
                   struct timespec  ts;
 
@@ -57,14 +52,14 @@ ngx_feature_test="int      kq;
 . auto/feature
 
 
-ngx_feature="Darwin 64-bit kqueue millisecond timeout bug"
-ngx_feature_name=NGX_DARWIN_KEVENT_BUG
-ngx_feature_run=bug
-ngx_feature_incs="#include <sys/event.h>
+atm_feature="Darwin 64-bit kqueue millisecond timeout bug"
+atm_feature_name=ATM_DARWIN_KEVENT_BUG
+atm_feature_run=bug
+atm_feature_incs="#include <sys/event.h>
                   #include <sys/time.h>"
-ngx_feature_path=
-ngx_feature_libs=
-ngx_feature_test="int  kq;
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="int  kq;
                   struct kevent    kev;
                   struct timespec  ts;
                   struct timeval   tv, tv0;
@@ -87,32 +82,32 @@ ngx_feature_test="int  kq;
 # sendfile()
 
 CC_AUX_FLAGS="$CC_AUX_FLAGS"
-ngx_feature="sendfile()"
-ngx_feature_name="NGX_HAVE_SENDFILE"
-ngx_feature_run=yes
-ngx_feature_incs="#include <sys/types.h>
+atm_feature="sendfile()"
+atm_feature_name="ATM_HAVE_SENDFILE"
+atm_feature_run=yes
+atm_feature_incs="#include <sys/types.h>
                   #include <sys/socket.h>
                   #include <sys/uio.h>
                   #include <sys/errno.h>"
-ngx_feature_path=
-ngx_feature_libs=
-ngx_feature_test="int s = 0, fd = 1;
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="int s = 0, fd = 1;
                   off_t n; off_t off = 0;
                   n = sendfile(s, fd, off, &n, NULL, 0);
                   if (n == -1 && errno == ENOSYS) return 1"
 . auto/feature
 
-if [ $ngx_found = yes ]; then
+if [ $atm_found = yes ]; then
     CORE_SRCS="$CORE_SRCS $DARWIN_SENDFILE_SRCS"
 fi
 
 
-ngx_feature="atomic(3)"
-ngx_feature_name=NGX_DARWIN_ATOMIC
-ngx_feature_run=no
-ngx_feature_incs="#include <libkern/OSAtomic.h>"
-ngx_feature_path=
-ngx_feature_libs=
-ngx_feature_test="int32_t  lock = 0;
+atm_feature="atomic(3)"
+atm_feature_name=ATM_DARWIN_ATOMIC
+atm_feature_run=no
+atm_feature_incs="#include <libkern/OSAtomic.h>"
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="int32_t  lock = 0;
                   if (!OSAtomicCompareAndSwap32Barrier(0, 1, &lock)) return 1"
 . auto/feature

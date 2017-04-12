@@ -1,8 +1,3 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 # MSVC 6.0 SP2                            cl 12.00
 # MSVC Toolkit 2003 (7.1)                 cl 13.10
 # MSVC 2005 Express Edition SP1 (8.0)     cl 14.00
@@ -11,15 +6,15 @@
 # MSVC 2015 (14.0)                        cl 19.00
 
 
-NGX_MSVC_VER=`$NGX_WINE $CC 2>&1 | grep 'Compiler Version' 2>&1 \
+ATM_MSVC_VER=`$ATM_WINE $CC 2>&1 | grep 'Compiler Version' 2>&1 \
                                  | sed -e 's/^.* Version \(.*\)/\1/'`
 
-echo " + cl version: $NGX_MSVC_VER"
+echo " + cl version: $ATM_MSVC_VER"
 
-have=NGX_COMPILER value="\"cl $NGX_MSVC_VER\"" . auto/define
+have=ATM_COMPILER value="\"cl $ATM_MSVC_VER\"" . auto/define
 
 
-ngx_msvc_ver=`echo $NGX_MSVC_VER | sed -e 's/^\([0-9]*\).*/\1/'`
+atm_msvc_ver=`echo $ATM_MSVC_VER | sed -e 's/^\([0-9]*\).*/\1/'`
 
 
 # optimizations
@@ -107,51 +102,51 @@ CORE_LIBS="$CORE_LIBS kernel32.lib user32.lib"
 # debug
 # msvc under Wine issues
 # C1902: Program database manager mismatch; please check your installation
-if [ -z "$NGX_WINE" ]; then
+if [ -z "$ATM_WINE" ]; then
    CFLAGS="$CFLAGS -Zi"
    CORE_LINK="$CORE_LINK -debug"
 fi
 
 
 # MSVC 2005 supports C99 variadic macros
-if [ "$ngx_msvc_ver" -ge 14 ]; then
-    have=NGX_HAVE_C99_VARIADIC_MACROS . auto/have
+if [ "$atm_msvc_ver" -ge 14 ]; then
+    have=ATM_HAVE_C99_VARIADIC_MACROS . auto/have
 fi
 
 
 # precompiled headers
-CORE_DEPS="$CORE_DEPS $NGX_OBJS/ngx_config.pch"
-CORE_LINK="$CORE_LINK $NGX_OBJS/ngx_pch.obj"
-NGX_PCH="$NGX_OBJS/ngx_config.pch"
-NGX_BUILD_PCH="-Ycngx_config.h -Fp$NGX_OBJS/ngx_config.pch"
-NGX_USE_PCH="-Yungx_config.h -Fp$NGX_OBJS/ngx_config.pch"
+CORE_DEPS="$CORE_DEPS $ATM_BUILD/atm_config.pch"
+CORE_LINK="$CORE_LINK $ATM_BUILD/atm_pch.obj"
+ATM_PCH="$ATM_BUILD/atm_config.pch"
+ATM_BUILD_PCH="-Ycatm_config.h -Fp$ATM_BUILD/atm_config.pch"
+ATM_USE_PCH="-Yuatm_config.h -Fp$ATM_BUILD/atm_config.pch"
 
 
 # the resource file
-NGX_RES="$NGX_OBJS/nginx.res"
-NGX_RCC="rc -fo$NGX_RES \$(CORE_INCS) $NGX_WIN32_RC"
-CORE_LINK="$NGX_RES $CORE_LINK"
+ATM_RES="$ATM_BUILD/atmcache.res"
+ATM_RCC="rc -fo$ATM_RES \$(CORE_INCS) $ATM_WIN32_RC"
+CORE_LINK="$ATM_RES $CORE_LINK"
 
 
 # dynamic modules
-#MAIN_LINK="-link -def:$NGX_OBJS/nginx.def"
-#MODULE_LINK="-LD $NGX_OBJS/nginx.lib"
+#MAIN_LINK="-link -def:$ATM_BUILD/atmcache.def"
+#MODULE_LINK="-LD $ATM_BUILD/atmcache.lib"
 
 
-ngx_pic_opt=
-ngx_objout="-Fo"
-ngx_binout="-Fe"
-ngx_objext="obj"
-ngx_binext=".exe"
+atm_pic_opt=
+atm_objout="-Fo"
+atm_binout="-Fe"
+atm_objext="obj"
+atm_binext=".exe"
 
-ngx_long_start='@<<
+atm_long_start='@<<
 	'
-ngx_long_end='<<'
-ngx_long_regex_cont=' \
+atm_long_end='<<'
+atm_long_regex_cont=' \
 	'
-ngx_long_cont='
+atm_long_cont='
 	'
 
 # MSVC understand / in path
-#ngx_regex_dirsep='\\'
-#ngx_dirsep="\\"
+#atm_regex_dirsep='\\'
+#atm_dirsep="\\"

@@ -8,7 +8,7 @@ if [ $EVENT_SELECT = NO -a $EVENT_FOUND = NO ]; then
 fi
 
 if [ $EVENT_SELECT = YES ]; then
-    have=NGX_HAVE_SELECT . auto/have
+    have=ATM_HAVE_SELECT . auto/have
     CORE_SRCS="$CORE_SRCS $SELECT_SRCS"
     EVENT_MODULES="$EVENT_MODULES $SELECT_MODULE"
 fi
@@ -19,39 +19,39 @@ if [ $EVENT_POLL = NO -a $EVENT_FOUND = NO ]; then
 fi
 
 if [ $EVENT_POLL = YES ]; then
-    have=NGX_HAVE_POLL . auto/have
+    have=ATM_HAVE_POLL . auto/have
     CORE_SRCS="$CORE_SRCS $POLL_SRCS"
     EVENT_MODULES="$EVENT_MODULES $POLL_MODULE"
 fi
 
 
-if [ $NGX_TEST_BUILD_DEVPOLL = YES ]; then
-    have=NGX_HAVE_DEVPOLL . auto/have
-    have=NGX_TEST_BUILD_DEVPOLL . auto/have
+if [ $ATM_TEST_BUILD_DEVPOLL = YES ]; then
+    have=ATM_HAVE_DEVPOLL . auto/have
+    have=ATM_TEST_BUILD_DEVPOLL . auto/have
     EVENT_MODULES="$EVENT_MODULES $DEVPOLL_MODULE"
     CORE_SRCS="$CORE_SRCS $DEVPOLL_SRCS"
 fi
 
 
-if [ $NGX_TEST_BUILD_EVENTPORT = YES ]; then
-    have=NGX_HAVE_EVENTPORT . auto/have
-    have=NGX_TEST_BUILD_EVENTPORT . auto/have
+if [ $ATM_TEST_BUILD_EVENTPORT = YES ]; then
+    have=ATM_HAVE_EVENTPORT . auto/have
+    have=ATM_TEST_BUILD_EVENTPORT . auto/have
     EVENT_MODULES="$EVENT_MODULES $EVENTPORT_MODULE"
     CORE_SRCS="$CORE_SRCS $EVENTPORT_SRCS"
 fi
 
-if [ $NGX_TEST_BUILD_EPOLL = YES ]; then
-    have=NGX_HAVE_EPOLL . auto/have
-    have=NGX_HAVE_EPOLLRDHUP . auto/have
-    have=NGX_HAVE_EPOLLEXCLUSIVE . auto/have
-    have=NGX_HAVE_EVENTFD . auto/have
-    have=NGX_TEST_BUILD_EPOLL . auto/have
+if [ $ATM_TEST_BUILD_EPOLL = YES ]; then
+    have=ATM_HAVE_EPOLL . auto/have
+    have=ATM_HAVE_EPOLLRDHUP . auto/have
+    have=ATM_HAVE_EPOLLEXCLUSIVE . auto/have
+    have=ATM_HAVE_EVENTFD . auto/have
+    have=ATM_TEST_BUILD_EPOLL . auto/have
     EVENT_MODULES="$EVENT_MODULES $EPOLL_MODULE"
     CORE_SRCS="$CORE_SRCS $EPOLL_SRCS"
 fi
 
-if [ $NGX_TEST_BUILD_SOLARIS_SENDFILEV = YES ]; then
-    have=NGX_TEST_BUILD_SOLARIS_SENDFILEV . auto/have
+if [ $ATM_TEST_BUILD_SOLARIS_SENDFILEV = YES ]; then
+    have=ATM_TEST_BUILD_SOLARIS_SENDFILEV . auto/have
     CORE_SRCS="$CORE_SRCS $SOLARIS_SENDFILEV_SRCS"
 fi
 
@@ -60,49 +60,49 @@ HTTP_MODULES=
 HTTP_DEPS=
 HTTP_INCS=
 
-ngx_module_type=HTTP
+atm_module_type=HTTP
 
 if :; then
-    ngx_module_name="ngx_http_module \
-                     ngx_http_core_module \
-                     ngx_http_log_module \
-                     ngx_http_upstream_module"
-    ngx_module_incs="src/http src/http/modules"
-    ngx_module_deps="src/http/ngx_http.h \
-                     src/http/ngx_http_request.h \
-                     src/http/ngx_http_config.h \
-                     src/http/ngx_http_core_module.h \
-                     src/http/ngx_http_cache.h \
-                     src/http/ngx_http_variables.h \
-                     src/http/ngx_http_script.h \
-                     src/http/ngx_http_upstream.h \
-                     src/http/ngx_http_upstream_round_robin.h"
-    ngx_module_srcs="src/http/ngx_http.c \
-                     src/http/ngx_http_core_module.c \
-                     src/http/ngx_http_special_response.c \
-                     src/http/ngx_http_request.c \
-                     src/http/ngx_http_parse.c \
-                     src/http/modules/ngx_http_log_module.c \
-                     src/http/ngx_http_request_body.c \
-                     src/http/ngx_http_variables.c \
-                     src/http/ngx_http_script.c \
-                     src/http/ngx_http_upstream.c \
-                     src/http/ngx_http_upstream_round_robin.c"
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name="atm_http_module \
+                     atm_http_core_module \
+                     atm_http_log_module \
+                     atm_http_upstream_module"
+    atm_module_incs="src/http src/http/modules"
+    atm_module_deps="src/http/atm_http.h \
+                     src/http/atm_http_request.h \
+                     src/http/atm_http_config.h \
+                     src/http/atm_http_core_module.h \
+                     src/http/atm_http_cache.h \
+                     src/http/atm_http_variables.h \
+                     src/http/atm_http_script.h \
+                     src/http/atm_http_upstream.h \
+                     src/http/atm_http_upstream_round_robin.h"
+    atm_module_srcs="src/http/atm_http.c \
+                     src/http/atm_http_core_module.c \
+                     src/http/atm_http_special_response.c \
+                     src/http/atm_http_request.c \
+                     src/http/atm_http_parse.c \
+                     src/http/modules/atm_http_log_module.c \
+                     src/http/atm_http_request_body.c \
+                     src/http/atm_http_variables.c \
+                     src/http/atm_http_script.c \
+                     src/http/atm_http_upstream.c \
+                     src/http/atm_http_upstream_round_robin.c"
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 
 if [ $HTTP != YES ]; then
-    have=NGX_CRYPT . auto/nohave
+    have=ATM_CRYPT . auto/nohave
     CRYPT_LIB=
 fi
 
 
 if [ $HTTP_CACHE = YES ]; then
-    have=NGX_HTTP_CACHE . auto/have
+    have=ATM_HTTP_CACHE . auto/have
     HTTP_SRCS="$HTTP_SRCS $HTTP_FILE_CACHE_SRCS"
 fi
 
@@ -123,530 +123,530 @@ fi
 
 
 # the module order is important
-#     ngx_http_static_module
-#     ngx_http_gzip_static_module
-#     ngx_http_dav_module
-#     ngx_http_autoindex_module
-#     ngx_http_index_module
-#     ngx_http_random_index_module
+#     atm_http_static_module
+#     atm_http_gzip_static_module
+#     atm_http_dav_module
+#     atm_http_autoindex_module
+#     atm_http_index_module
+#     atm_http_random_index_module
 #
-#     ngx_http_access_module
-#     ngx_http_realip_module
+#     atm_http_access_module
+#     atm_http_realip_module
 #
 #
 # the filter order is important
-#     ngx_http_write_filter
-#     ngx_http_header_filter
-#     ngx_http_chunked_filter
-#     ngx_http_v2_filter
-#     ngx_http_range_header_filter
-#     ngx_http_gzip_filter
-#     ngx_http_postpone_filter
-#     ngx_http_ssi_filter
-#     ngx_http_charset_filter
-#         ngx_http_xslt_filter
-#         ngx_http_image_filter
-#         ngx_http_sub_filter
-#         ngx_http_addition_filter
-#         ngx_http_gunzip_filter
-#         ngx_http_userid_filter
-#         ngx_http_headers_filter
-#     ngx_http_copy_filter
-#     ngx_http_range_body_filter
-#     ngx_http_not_modified_filter
-#     ngx_http_slice_filter
+#     atm_http_write_filter
+#     atm_http_header_filter
+#     atm_http_chunked_filter
+#     atm_http_v2_filter
+#     atm_http_range_header_filter
+#     atm_http_gzip_filter
+#     atm_http_postpone_filter
+#     atm_http_ssi_filter
+#     atm_http_charset_filter
+#         atm_http_xslt_filter
+#         atm_http_image_filter
+#         atm_http_sub_filter
+#         atm_http_addition_filter
+#         atm_http_gunzip_filter
+#         atm_http_userid_filter
+#         atm_http_headers_filter
+#     atm_http_copy_filter
+#     atm_http_range_body_filter
+#     atm_http_not_modified_filter
+#     atm_http_slice_filter
 
-ngx_module_type=HTTP_FILTER
+atm_module_type=HTTP_FILTER
 HTTP_FILTER_MODULES=
 
-ngx_module_order="ngx_http_static_module \
-                  ngx_http_gzip_static_module \
-                  ngx_http_dav_module \
-                  ngx_http_autoindex_module \
-                  ngx_http_index_module \
-                  ngx_http_random_index_module \
-                  ngx_http_access_module \
-                  ngx_http_realip_module \
-                  ngx_http_write_filter_module \
-                  ngx_http_header_filter_module \
-                  ngx_http_chunked_filter_module \
-                  ngx_http_v2_filter_module \
-                  ngx_http_range_header_filter_module \
-                  ngx_http_gzip_filter_module \
-                  ngx_http_postpone_filter_module \
-                  ngx_http_ssi_filter_module \
-                  ngx_http_charset_filter_module \
-                  ngx_http_xslt_filter_module \
-                  ngx_http_image_filter_module \
-                  ngx_http_sub_filter_module \
-                  ngx_http_addition_filter_module \
-                  ngx_http_gunzip_filter_module \
-                  ngx_http_userid_filter_module \
-                  ngx_http_headers_filter_module \
-                  ngx_http_copy_filter_module \
-                  ngx_http_range_body_filter_module \
-                  ngx_http_not_modified_filter_module \
-                  ngx_http_slice_filter_module"
+atm_module_order="atm_http_static_module \
+                  atm_http_gzip_static_module \
+                  atm_http_dav_module \
+                  atm_http_autoindex_module \
+                  atm_http_index_module \
+                  atm_http_random_index_module \
+                  atm_http_access_module \
+                  atm_http_realip_module \
+                  atm_http_write_filter_module \
+                  atm_http_header_filter_module \
+                  atm_http_chunked_filter_module \
+                  atm_http_v2_filter_module \
+                  atm_http_range_header_filter_module \
+                  atm_http_gzip_filter_module \
+                  atm_http_postpone_filter_module \
+                  atm_http_ssi_filter_module \
+                  atm_http_charset_filter_module \
+                  atm_http_xslt_filter_module \
+                  atm_http_image_filter_module \
+                  atm_http_sub_filter_module \
+                  atm_http_addition_filter_module \
+                  atm_http_gunzip_filter_module \
+                  atm_http_userid_filter_module \
+                  atm_http_headers_filter_module \
+                  atm_http_copy_filter_module \
+                  atm_http_range_body_filter_module \
+                  atm_http_not_modified_filter_module \
+                  atm_http_slice_filter_module"
 
 if :; then
-    ngx_module_name=ngx_http_write_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/ngx_http_write_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_write_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/atm_http_write_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_header_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/ngx_http_header_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_header_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/atm_http_header_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_chunked_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_chunked_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_chunked_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_chunked_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if [ $HTTP_V2 = YES ]; then
-    ngx_module_name=ngx_http_v2_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/v2/ngx_http_v2_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_V2
+    atm_module_name=atm_http_v2_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/v2/atm_http_v2_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_V2
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_range_header_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_range_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_range_header_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_range_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if [ $HTTP_GZIP = YES ]; then
-    have=NGX_HTTP_GZIP . auto/have
+    have=ATM_HTTP_GZIP . auto/have
     USE_ZLIB=YES
 
-    ngx_module_name=ngx_http_gzip_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_gzip_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_GZIP
+    atm_module_name=atm_http_gzip_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_gzip_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_GZIP
 
     . auto/module
 fi
 
 if [ $HTTP_POSTPONE = YES ]; then
-    ngx_module_name=ngx_http_postpone_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/ngx_http_postpone_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_POSTPONE
+    atm_module_name=atm_http_postpone_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/atm_http_postpone_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_POSTPONE
 
     . auto/module
 fi
 
 if [ $HTTP_SSI = YES ]; then
-    have=NGX_HTTP_SSI . auto/have
+    have=ATM_HTTP_SSI . auto/have
 
-    ngx_module_name=ngx_http_ssi_filter_module
-    ngx_module_incs=
-    ngx_module_deps=src/http/modules/ngx_http_ssi_filter_module.h
-    ngx_module_srcs=src/http/modules/ngx_http_ssi_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SSI
+    atm_module_name=atm_http_ssi_filter_module
+    atm_module_incs=
+    atm_module_deps=src/http/modules/atm_http_ssi_filter_module.h
+    atm_module_srcs=src/http/modules/atm_http_ssi_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SSI
 
     . auto/module
 fi
 
 if [ $HTTP_CHARSET = YES ]; then
-    ngx_module_name=ngx_http_charset_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_charset_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_CHARSET
+    atm_module_name=atm_http_charset_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_charset_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_CHARSET
 
     . auto/module
 fi
 
 if [ $HTTP_XSLT != NO ]; then
-    ngx_module_name=ngx_http_xslt_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_xslt_filter_module.c
-    ngx_module_libs=LIBXSLT
-    ngx_module_link=$HTTP_XSLT
+    atm_module_name=atm_http_xslt_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_xslt_filter_module.c
+    atm_module_libs=LIBXSLT
+    atm_module_link=$HTTP_XSLT
 
     . auto/module
 fi
 
 if [ $HTTP_IMAGE_FILTER != NO ]; then
-    ngx_module_name=ngx_http_image_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_image_filter_module.c
-    ngx_module_libs=LIBGD
-    ngx_module_link=$HTTP_IMAGE_FILTER
+    atm_module_name=atm_http_image_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_image_filter_module.c
+    atm_module_libs=LIBGD
+    atm_module_link=$HTTP_IMAGE_FILTER
 
     . auto/module
 fi
 
 if [ $HTTP_SUB = YES ]; then
-    ngx_module_name=ngx_http_sub_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_sub_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SUB
+    atm_module_name=atm_http_sub_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_sub_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SUB
 
     . auto/module
 fi
 
 if [ $HTTP_ADDITION = YES ]; then
-    ngx_module_name=ngx_http_addition_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_addition_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_ADDITION
+    atm_module_name=atm_http_addition_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_addition_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_ADDITION
 
     . auto/module
 fi
 
 if [ $HTTP_GUNZIP = YES ]; then
-    have=NGX_HTTP_GZIP . auto/have
+    have=ATM_HTTP_GZIP . auto/have
     USE_ZLIB=YES
 
-    ngx_module_name=ngx_http_gunzip_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_gunzip_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_GUNZIP
+    atm_module_name=atm_http_gunzip_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_gunzip_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_GUNZIP
 
     . auto/module
 fi
 
 if [ $HTTP_USERID = YES ]; then
-    ngx_module_name=ngx_http_userid_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_userid_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_USERID
+    atm_module_name=atm_http_userid_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_userid_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_USERID
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_headers_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_headers_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_headers_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_headers_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 
-ngx_module_type=HTTP_INIT_FILTER
+atm_module_type=HTTP_INIT_FILTER
 HTTP_INIT_FILTER_MODULES=
 
 if :; then
-    ngx_module_name=ngx_http_copy_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/ngx_http_copy_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_copy_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/atm_http_copy_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_range_body_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_range_body_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_not_modified_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_not_modified_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_not_modified_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_not_modified_filter_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if [ $HTTP_SLICE = YES ]; then
-    ngx_module_name=ngx_http_slice_filter_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_slice_filter_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SLICE
+    atm_module_name=atm_http_slice_filter_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_slice_filter_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SLICE
 
     . auto/module
 fi
 
 
-ngx_module_type=HTTP
+atm_module_type=HTTP
 
 if [ $HTTP_V2 = YES ]; then
-    have=NGX_HTTP_V2 . auto/have
+    have=ATM_HTTP_V2 . auto/have
 
-    ngx_module_name=ngx_http_v2_module
-    ngx_module_incs=src/http/v2
-    ngx_module_deps="src/http/v2/ngx_http_v2.h src/http/v2/ngx_http_v2_module.h"
-    ngx_module_srcs="src/http/v2/ngx_http_v2.c \
-                     src/http/v2/ngx_http_v2_table.c \
-                     src/http/v2/ngx_http_v2_huff_decode.c \
-                     src/http/v2/ngx_http_v2_huff_encode.c \
-                     src/http/v2/ngx_http_v2_module.c"
-    ngx_module_libs=
-    ngx_module_link=$HTTP_V2
+    atm_module_name=atm_http_v2_module
+    atm_module_incs=src/http/v2
+    atm_module_deps="src/http/v2/atm_http_v2.h src/http/v2/atm_http_v2_module.h"
+    atm_module_srcs="src/http/v2/atm_http_v2.c \
+                     src/http/v2/atm_http_v2_table.c \
+                     src/http/v2/atm_http_v2_huff_decode.c \
+                     src/http/v2/atm_http_v2_huff_encode.c \
+                     src/http/v2/atm_http_v2_module.c"
+    atm_module_libs=
+    atm_module_link=$HTTP_V2
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_static_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_static_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_static_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_static_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if [ $HTTP_GZIP_STATIC = YES ]; then
-    have=NGX_HTTP_GZIP . auto/have
+    have=ATM_HTTP_GZIP . auto/have
 
-    ngx_module_name=ngx_http_gzip_static_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_gzip_static_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_GZIP_STATIC
+    atm_module_name=atm_http_gzip_static_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_gzip_static_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_GZIP_STATIC
 
     . auto/module
 fi
 
 if [ $HTTP_DAV = YES ]; then
-    have=NGX_HTTP_DAV . auto/have
+    have=ATM_HTTP_DAV . auto/have
 
-    ngx_module_name=ngx_http_dav_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_dav_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_DAV
+    atm_module_name=atm_http_dav_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_dav_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_DAV
 
     . auto/module
 fi
 
 if [ $HTTP_AUTOINDEX = YES ]; then
-    ngx_module_name=ngx_http_autoindex_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_autoindex_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_AUTOINDEX
+    atm_module_name=atm_http_autoindex_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_autoindex_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_AUTOINDEX
 
     . auto/module
 fi
 
 if :; then
-    ngx_module_name=ngx_http_index_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_index_module.c
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_name=atm_http_index_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_index_module.c
+    atm_module_libs=
+    atm_module_link=YES
 
     . auto/module
 fi
 
 if [ $HTTP_RANDOM_INDEX = YES ]; then
-    ngx_module_name=ngx_http_random_index_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_random_index_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_RANDOM_INDEX
+    atm_module_name=atm_http_random_index_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_random_index_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_RANDOM_INDEX
 
     . auto/module
 fi
 
 if [ $HTTP_AUTH_REQUEST = YES ]; then
-    ngx_module_name=ngx_http_auth_request_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_auth_request_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_AUTH_REQUEST
+    atm_module_name=atm_http_auth_request_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_auth_request_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_AUTH_REQUEST
 
     . auto/module
 fi
 
 if [ $HTTP_AUTH_BASIC = YES ]; then
-    have=NGX_CRYPT . auto/have
+    have=ATM_CRYPT . auto/have
 
-    ngx_module_name=ngx_http_auth_basic_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_auth_basic_module.c
-    ngx_module_libs=$CRYPT_LIB
-    ngx_module_link=$HTTP_AUTH_BASIC
+    atm_module_name=atm_http_auth_basic_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_auth_basic_module.c
+    atm_module_libs=$CRYPT_LIB
+    atm_module_link=$HTTP_AUTH_BASIC
 
     . auto/module
 fi
 
 if [ $HTTP_ACCESS = YES ]; then
-    ngx_module_name=ngx_http_access_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_access_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_ACCESS
+    atm_module_name=atm_http_access_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_access_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_ACCESS
 
     . auto/module
 fi
 
 if [ $HTTP_LIMIT_CONN = YES ]; then
-    ngx_module_name=ngx_http_limit_conn_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_limit_conn_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_LIMIT_CONN
+    atm_module_name=atm_http_limit_conn_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_limit_conn_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_LIMIT_CONN
 
     . auto/module
 fi
 
 if [ $HTTP_LIMIT_REQ = YES ]; then
-    ngx_module_name=ngx_http_limit_req_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_limit_req_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_LIMIT_REQ
+    atm_module_name=atm_http_limit_req_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_limit_req_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_LIMIT_REQ
 
     . auto/module
 fi
 
 if [ $HTTP_REALIP = YES ]; then
-    have=NGX_HTTP_REALIP . auto/have
-    have=NGX_HTTP_X_FORWARDED_FOR . auto/have
+    have=ATM_HTTP_REALIP . auto/have
+    have=ATM_HTTP_X_FORWARDED_FOR . auto/have
 
-    ngx_module_name=ngx_http_realip_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_realip_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_REALIP
+    atm_module_name=atm_http_realip_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_realip_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_REALIP
 
     . auto/module
 fi
 
 if [ $HTTP_STATUS = YES ]; then
-    ngx_module_name=ngx_http_status_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_status_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_STATUS
+    atm_module_name=atm_http_status_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_status_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_STATUS
 
     . auto/module
 fi
 
 if [ $HTTP_GEO = YES ]; then
-    have=NGX_HTTP_X_FORWARDED_FOR . auto/have
+    have=ATM_HTTP_X_FORWARDED_FOR . auto/have
 
-    ngx_module_name=ngx_http_geo_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_geo_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_GEO
+    atm_module_name=atm_http_geo_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_geo_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_GEO
 
     . auto/module
 fi
 
 if [ $HTTP_GEOIP != NO ]; then
-    have=NGX_HTTP_X_FORWARDED_FOR . auto/have
+    have=ATM_HTTP_X_FORWARDED_FOR . auto/have
 
-    ngx_module_name=ngx_http_geoip_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_geoip_module.c
-    ngx_module_libs=GEOIP
-    ngx_module_link=$HTTP_GEOIP
+    atm_module_name=atm_http_geoip_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_geoip_module.c
+    atm_module_libs=GEOIP
+    atm_module_link=$HTTP_GEOIP
 
     . auto/module
 fi
 
 if [ $HTTP_MAP = YES ]; then
-    ngx_module_name=ngx_http_map_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_map_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_MAP
+    atm_module_name=atm_http_map_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_map_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_MAP
 
     . auto/module
 fi
 
 if [ $HTTP_SPLIT_CLIENTS = YES ]; then
-    ngx_module_name=ngx_http_split_clients_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_split_clients_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SPLIT_CLIENTS
+    atm_module_name=atm_http_split_clients_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_split_clients_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SPLIT_CLIENTS
 
     . auto/module
 fi
 
 if [ $HTTP_REFERER = YES ]; then
-    ngx_module_name=ngx_http_referer_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_referer_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_REFERER
+    atm_module_name=atm_http_referer_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_referer_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_REFERER
 
     . auto/module
 fi
@@ -654,232 +654,232 @@ fi
 if [ $HTTP_REWRITE = YES -a $USE_PCRE != DISABLED ]; then
     USE_PCRE=YES
 
-    ngx_module_name=ngx_http_rewrite_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_rewrite_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_REWRITE
+    atm_module_name=atm_http_rewrite_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_rewrite_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_REWRITE
 
     . auto/module
 fi
 
 if [ $HTTP_SSL = YES ]; then
     USE_OPENSSL=YES
-    have=NGX_HTTP_SSL . auto/have
+    have=ATM_HTTP_SSL . auto/have
 
-    ngx_module_name=ngx_http_ssl_module
-    ngx_module_incs=
-    ngx_module_deps=src/http/modules/ngx_http_ssl_module.h
-    ngx_module_srcs=src/http/modules/ngx_http_ssl_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SSL
+    atm_module_name=atm_http_ssl_module
+    atm_module_incs=
+    atm_module_deps=src/http/modules/atm_http_ssl_module.h
+    atm_module_srcs=src/http/modules/atm_http_ssl_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SSL
 
     . auto/module
 fi
 
 if [ $HTTP_PROXY = YES ]; then
-    have=NGX_HTTP_X_FORWARDED_FOR . auto/have
+    have=ATM_HTTP_X_FORWARDED_FOR . auto/have
 
-    ngx_module_name=ngx_http_proxy_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_proxy_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_PROXY
+    atm_module_name=atm_http_proxy_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_proxy_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_PROXY
 
     . auto/module
 fi
 
 if [ $HTTP_FASTCGI = YES ]; then
-    ngx_module_name=ngx_http_fastcgi_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_fastcgi_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_FASTCGI
+    atm_module_name=atm_http_fastcgi_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_fastcgi_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_FASTCGI
 
     . auto/module
 fi
 
 if [ $HTTP_UWSGI = YES ]; then
-    ngx_module_name=ngx_http_uwsgi_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_uwsgi_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UWSGI
+    atm_module_name=atm_http_uwsgi_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_uwsgi_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UWSGI
 
     . auto/module
 fi
 
 if [ $HTTP_SCGI = YES ]; then
-    ngx_module_name=ngx_http_scgi_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_scgi_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SCGI
+    atm_module_name=atm_http_scgi_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_scgi_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SCGI
 
     . auto/module
 fi
 
 if [ $HTTP_PERL != NO ]; then
-    ngx_module_name=ngx_http_perl_module
-    ngx_module_incs=src/http/modules/perl
-    ngx_module_deps=src/http/modules/perl/ngx_http_perl_module.h
-    ngx_module_srcs=src/http/modules/perl/ngx_http_perl_module.c
-    ngx_module_libs=PERL
-    ngx_module_link=$HTTP_PERL
+    atm_module_name=atm_http_perl_module
+    atm_module_incs=src/http/modules/perl
+    atm_module_deps=src/http/modules/perl/atm_http_perl_module.h
+    atm_module_srcs=src/http/modules/perl/atm_http_perl_module.c
+    atm_module_libs=PERL
+    atm_module_link=$HTTP_PERL
 
     . auto/module
 fi
 
 if [ $HTTP_MEMCACHED = YES ]; then
-    ngx_module_name=ngx_http_memcached_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_memcached_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_MEMCACHED
+    atm_module_name=atm_http_memcached_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_memcached_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_MEMCACHED
 
     . auto/module
 fi
 
 if [ $HTTP_EMPTY_GIF = YES ]; then
-    ngx_module_name=ngx_http_empty_gif_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_empty_gif_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_EMPTY_GIF
+    atm_module_name=atm_http_empty_gif_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_empty_gif_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_EMPTY_GIF
 
     . auto/module
 fi
 
 if [ $HTTP_BROWSER = YES ]; then
-    ngx_module_name=ngx_http_browser_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_browser_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_BROWSER
+    atm_module_name=atm_http_browser_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_browser_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_BROWSER
 
     . auto/module
 fi
 
 if [ $HTTP_SECURE_LINK = YES ]; then
-    ngx_module_name=ngx_http_secure_link_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_secure_link_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_SECURE_LINK
+    atm_module_name=atm_http_secure_link_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_secure_link_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_SECURE_LINK
 
     . auto/module
 fi
 
 if [ $HTTP_DEGRADATION = YES ]; then
-    have=NGX_HTTP_DEGRADATION . auto/have
+    have=ATM_HTTP_DEGRADATION . auto/have
 
-    ngx_module_name=ngx_http_degradation_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_degradation_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_DEGRADATION
+    atm_module_name=atm_http_degradation_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_degradation_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_DEGRADATION
 
     . auto/module
 fi
 
 if [ $HTTP_FLV = YES ]; then
-    ngx_module_name=ngx_http_flv_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_flv_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_FLV
+    atm_module_name=atm_http_flv_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_flv_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_FLV
 
     . auto/module
 fi
 
 if [ $HTTP_MP4 = YES ]; then
-    ngx_module_name=ngx_http_mp4_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_mp4_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_MP4
+    atm_module_name=atm_http_mp4_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_mp4_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_MP4
 
     . auto/module
 fi
 
 if [ $HTTP_UPSTREAM_HASH = YES ]; then
-    ngx_module_name=ngx_http_upstream_hash_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_upstream_hash_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UPSTREAM_HASH
+    atm_module_name=atm_http_upstream_hash_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_upstream_hash_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UPSTREAM_HASH
 
     . auto/module
 fi
 
 if [ $HTTP_UPSTREAM_IP_HASH = YES ]; then
-    ngx_module_name=ngx_http_upstream_ip_hash_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_upstream_ip_hash_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UPSTREAM_IP_HASH
+    atm_module_name=atm_http_upstream_ip_hash_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_upstream_ip_hash_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UPSTREAM_IP_HASH
 
     . auto/module
 fi
 
 if [ $HTTP_UPSTREAM_LEAST_CONN = YES ]; then
-    ngx_module_name=ngx_http_upstream_least_conn_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_upstream_least_conn_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UPSTREAM_LEAST_CONN
+    atm_module_name=atm_http_upstream_least_conn_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_upstream_least_conn_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UPSTREAM_LEAST_CONN
 
     . auto/module
 fi
 
 if [ $HTTP_UPSTREAM_KEEPALIVE = YES ]; then
-    ngx_module_name=ngx_http_upstream_keepalive_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_upstream_keepalive_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UPSTREAM_KEEPALIVE
+    atm_module_name=atm_http_upstream_keepalive_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_upstream_keepalive_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UPSTREAM_KEEPALIVE
 
     . auto/module
 fi
 
 if [ $HTTP_UPSTREAM_ZONE = YES ]; then
-    have=NGX_HTTP_UPSTREAM_ZONE . auto/have
+    have=ATM_HTTP_UPSTREAM_ZONE . auto/have
 
-    ngx_module_name=ngx_http_upstream_zone_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_upstream_zone_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_UPSTREAM_ZONE
+    atm_module_name=atm_http_upstream_zone_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_upstream_zone_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_UPSTREAM_ZONE
 
     . auto/module
 fi
 
 if [ $HTTP_STUB_STATUS = YES ]; then
-    have=NGX_STAT_STUB . auto/have
+    have=ATM_STAT_STUB . auto/have
 
-    ngx_module_name=ngx_http_stub_status_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/http/modules/ngx_http_stub_status_module.c
-    ngx_module_libs=
-    ngx_module_link=$HTTP_STUB_STATUS
+    atm_module_name=atm_http_stub_status_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/http/modules/atm_http_stub_status_module.c
+    atm_module_libs=
+    atm_module_link=$HTTP_STUB_STATUS
 
     . auto/module
 fi
@@ -890,71 +890,71 @@ if [ $MAIL != NO ]; then
     MAIL_DEPS=
     MAIL_INCS=
 
-    ngx_module_type=MAIL
-    ngx_module_libs=
-    ngx_module_link=YES
+    atm_module_type=MAIL
+    atm_module_libs=
+    atm_module_link=YES
 
-    ngx_module_order=
+    atm_module_order=
 
-    ngx_module_name="ngx_mail_module ngx_mail_core_module"
-    ngx_module_incs="src/mail"
-    ngx_module_deps="src/mail/ngx_mail.h"
-    ngx_module_srcs="src/mail/ngx_mail.c \
-                     src/mail/ngx_mail_core_module.c \
-                     src/mail/ngx_mail_handler.c \
-                     src/mail/ngx_mail_parse.c"
+    atm_module_name="atm_mail_module atm_mail_core_module"
+    atm_module_incs="src/mail"
+    atm_module_deps="src/mail/atm_mail.h"
+    atm_module_srcs="src/mail/atm_mail.c \
+                     src/mail/atm_mail_core_module.c \
+                     src/mail/atm_mail_handler.c \
+                     src/mail/atm_mail_parse.c"
 
     . auto/module
 
-    ngx_module_incs=
+    atm_module_incs=
 
     if [ $MAIL_SSL = YES ]; then
         USE_OPENSSL=YES
-        have=NGX_MAIL_SSL . auto/have
+        have=ATM_MAIL_SSL . auto/have
 
-        ngx_module_name=ngx_mail_ssl_module
-        ngx_module_deps=src/mail/ngx_mail_ssl_module.h
-        ngx_module_srcs=src/mail/ngx_mail_ssl_module.c
+        atm_module_name=atm_mail_ssl_module
+        atm_module_deps=src/mail/atm_mail_ssl_module.h
+        atm_module_srcs=src/mail/atm_mail_ssl_module.c
 
         . auto/module
     fi
 
     if [ $MAIL_POP3 = YES ]; then
-        ngx_module_name=ngx_mail_pop3_module
-        ngx_module_deps=src/mail/ngx_mail_pop3_module.h
-        ngx_module_srcs="src/mail/ngx_mail_pop3_module.c \
-                         src/mail/ngx_mail_pop3_handler.c"
+        atm_module_name=atm_mail_pop3_module
+        atm_module_deps=src/mail/atm_mail_pop3_module.h
+        atm_module_srcs="src/mail/atm_mail_pop3_module.c \
+                         src/mail/atm_mail_pop3_handler.c"
 
         . auto/module
     fi
 
     if [ $MAIL_IMAP = YES ]; then
-        ngx_module_name=ngx_mail_imap_module
-        ngx_module_deps=src/mail/ngx_mail_imap_module.h
-        ngx_module_srcs="src/mail/ngx_mail_imap_module.c \
-                         src/mail/ngx_mail_imap_handler.c"
+        atm_module_name=atm_mail_imap_module
+        atm_module_deps=src/mail/atm_mail_imap_module.h
+        atm_module_srcs="src/mail/atm_mail_imap_module.c \
+                         src/mail/atm_mail_imap_handler.c"
 
         . auto/module
     fi
 
     if [ $MAIL_SMTP = YES ]; then
-        ngx_module_name=ngx_mail_smtp_module
-        ngx_module_deps=src/mail/ngx_mail_smtp_module.h
-        ngx_module_srcs="src/mail/ngx_mail_smtp_module.c \
-                         src/mail/ngx_mail_smtp_handler.c"
+        atm_module_name=atm_mail_smtp_module
+        atm_module_deps=src/mail/atm_mail_smtp_module.h
+        atm_module_srcs="src/mail/atm_mail_smtp_module.c \
+                         src/mail/atm_mail_smtp_handler.c"
 
         . auto/module
     fi
 
-    ngx_module_name=ngx_mail_auth_http_module
-    ngx_module_deps=
-    ngx_module_srcs=src/mail/ngx_mail_auth_http_module.c
+    atm_module_name=atm_mail_auth_http_module
+    atm_module_deps=
+    atm_module_srcs=src/mail/atm_mail_auth_http_module.c
 
     . auto/module
 
-    ngx_module_name=ngx_mail_proxy_module
-    ngx_module_deps=
-    ngx_module_srcs=src/mail/ngx_mail_proxy_module.c
+    atm_module_name=atm_mail_proxy_module
+    atm_module_deps=
+    atm_module_srcs=src/mail/atm_mail_proxy_module.c
 
     . auto/module
 fi
@@ -965,203 +965,203 @@ if [ $STREAM != NO ]; then
     STREAM_DEPS=
     STREAM_INCS=
 
-    ngx_module_type=STREAM
+    atm_module_type=STREAM
 
-    ngx_module_order=
+    atm_module_order=
 
-    ngx_module_name="ngx_stream_module \
-                     ngx_stream_core_module \
-                     ngx_stream_log_module \
-                     ngx_stream_proxy_module \
-                     ngx_stream_upstream_module \
-                     ngx_stream_write_filter_module"
-    ngx_module_incs="src/stream"
-    ngx_module_deps="src/stream/ngx_stream.h \
-                     src/stream/ngx_stream_variables.h \
-                     src/stream/ngx_stream_script.h \
-                     src/stream/ngx_stream_upstream.h \
-                     src/stream/ngx_stream_upstream_round_robin.h"
-    ngx_module_srcs="src/stream/ngx_stream.c \
-                     src/stream/ngx_stream_variables.c \
-                     src/stream/ngx_stream_script.c \
-                     src/stream/ngx_stream_handler.c \
-                     src/stream/ngx_stream_core_module.c \
-                     src/stream/ngx_stream_log_module.c \
-                     src/stream/ngx_stream_proxy_module.c \
-                     src/stream/ngx_stream_upstream.c \
-                     src/stream/ngx_stream_upstream_round_robin.c \
-                     src/stream/ngx_stream_write_filter_module.c"
+    atm_module_name="atm_stream_module \
+                     atm_stream_core_module \
+                     atm_stream_log_module \
+                     atm_stream_proxy_module \
+                     atm_stream_upstream_module \
+                     atm_stream_write_filter_module"
+    atm_module_incs="src/stream"
+    atm_module_deps="src/stream/atm_stream.h \
+                     src/stream/atm_stream_variables.h \
+                     src/stream/atm_stream_script.h \
+                     src/stream/atm_stream_upstream.h \
+                     src/stream/atm_stream_upstream_round_robin.h"
+    atm_module_srcs="src/stream/atm_stream.c \
+                     src/stream/atm_stream_variables.c \
+                     src/stream/atm_stream_script.c \
+                     src/stream/atm_stream_handler.c \
+                     src/stream/atm_stream_core_module.c \
+                     src/stream/atm_stream_log_module.c \
+                     src/stream/atm_stream_proxy_module.c \
+                     src/stream/atm_stream_upstream.c \
+                     src/stream/atm_stream_upstream_round_robin.c \
+                     src/stream/atm_stream_write_filter_module.c"
 
     . auto/module
 
-    ngx_module_incs=
+    atm_module_incs=
 
     if [ $STREAM_SSL = YES ]; then
         USE_OPENSSL=YES
-        have=NGX_STREAM_SSL . auto/have
+        have=ATM_STREAM_SSL . auto/have
 
-        ngx_module_name=ngx_stream_ssl_module
-        ngx_module_deps=src/stream/ngx_stream_ssl_module.h
-        ngx_module_srcs=src/stream/ngx_stream_ssl_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_SSL
+        atm_module_name=atm_stream_ssl_module
+        atm_module_deps=src/stream/atm_stream_ssl_module.h
+        atm_module_srcs=src/stream/atm_stream_ssl_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_SSL
 
         . auto/module
     fi
 
     if [ $STREAM_REALIP = YES ]; then
-        ngx_module_name=ngx_stream_realip_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_realip_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_REALIP
+        atm_module_name=atm_stream_realip_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_realip_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_REALIP
 
         . auto/module
     fi
 
     if [ $STREAM_LIMIT_CONN = YES ]; then
-        ngx_module_name=ngx_stream_limit_conn_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_limit_conn_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_LIMIT_CONN
+        atm_module_name=atm_stream_limit_conn_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_limit_conn_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_LIMIT_CONN
 
         . auto/module
     fi
 
     if [ $STREAM_ACCESS = YES ]; then
-        ngx_module_name=ngx_stream_access_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_access_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_ACCESS
+        atm_module_name=atm_stream_access_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_access_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_ACCESS
 
         . auto/module
     fi
 
     if [ $STREAM_GEO = YES ]; then
-        ngx_module_name=ngx_stream_geo_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_geo_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_GEO
+        atm_module_name=atm_stream_geo_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_geo_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_GEO
 
         . auto/module
     fi
 
     if [ $STREAM_GEOIP != NO ]; then
-        ngx_module_name=ngx_stream_geoip_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_geoip_module.c
-        ngx_module_libs=GEOIP
-        ngx_module_link=$STREAM_GEOIP
+        atm_module_name=atm_stream_geoip_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_geoip_module.c
+        atm_module_libs=GEOIP
+        atm_module_link=$STREAM_GEOIP
 
         . auto/module
     fi
 
     if [ $STREAM_MAP = YES ]; then
-        ngx_module_name=ngx_stream_map_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_map_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_MAP
+        atm_module_name=atm_stream_map_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_map_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_MAP
 
         . auto/module
     fi
 
     if [ $STREAM_SPLIT_CLIENTS = YES ]; then
-        ngx_module_name=ngx_stream_split_clients_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_split_clients_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_SPLIT_CLIENTS
+        atm_module_name=atm_stream_split_clients_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_split_clients_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_SPLIT_CLIENTS
 
         . auto/module
     fi
 
     if [ $STREAM_RETURN = YES ]; then
-        ngx_module_name=ngx_stream_return_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_return_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_RETURN
+        atm_module_name=atm_stream_return_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_return_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_RETURN
 
         . auto/module
     fi
 
     if [ $STREAM_UPSTREAM_HASH = YES ]; then
-        ngx_module_name=ngx_stream_upstream_hash_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_upstream_hash_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_UPSTREAM_HASH
+        atm_module_name=atm_stream_upstream_hash_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_upstream_hash_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_UPSTREAM_HASH
 
         . auto/module
     fi
 
     if [ $STREAM_UPSTREAM_LEAST_CONN = YES ]; then
-        ngx_module_name=ngx_stream_upstream_least_conn_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_upstream_least_conn_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_UPSTREAM_LEAST_CONN
+        atm_module_name=atm_stream_upstream_least_conn_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_upstream_least_conn_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_UPSTREAM_LEAST_CONN
 
         . auto/module
     fi
 
     if [ $STREAM_UPSTREAM_ZONE = YES ]; then
-        have=NGX_STREAM_UPSTREAM_ZONE . auto/have
+        have=ATM_STREAM_UPSTREAM_ZONE . auto/have
 
-        ngx_module_name=ngx_stream_upstream_zone_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_upstream_zone_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_UPSTREAM_ZONE
+        atm_module_name=atm_stream_upstream_zone_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_upstream_zone_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_UPSTREAM_ZONE
 
         . auto/module
     fi
 
     if [ $STREAM_SSL_PREREAD = YES ]; then
-        ngx_module_name=ngx_stream_ssl_preread_module
-        ngx_module_deps=
-        ngx_module_srcs=src/stream/ngx_stream_ssl_preread_module.c
-        ngx_module_libs=
-        ngx_module_link=$STREAM_SSL_PREREAD
+        atm_module_name=atm_stream_ssl_preread_module
+        atm_module_deps=
+        atm_module_srcs=src/stream/atm_stream_ssl_preread_module.c
+        atm_module_libs=
+        atm_module_link=$STREAM_SSL_PREREAD
 
         . auto/module
     fi
 fi
 
 
-#if [ -r $NGX_OBJS/auto ]; then
-#    . $NGX_OBJS/auto
+#if [ -r $ATM_BUILD/auto ]; then
+#    . $ATM_BUILD/auto
 #fi
 
 
-if test -n "$NGX_ADDONS"; then
+if test -n "$ATM_ADDONS"; then
 
     echo configuring additional modules
 
-    for ngx_addon_dir in $NGX_ADDONS
+    for atm_addon_dir in $ATM_ADDONS
     do
-        echo "adding module in $ngx_addon_dir"
+        echo "adding module in $atm_addon_dir"
 
-        ngx_module_type=
-        ngx_module_name=
-        ngx_module_incs=
-        ngx_module_deps=
-        ngx_module_srcs=
-        ngx_module_libs=
-        ngx_module_order=
-        ngx_module_link=ADDON
+        atm_module_type=
+        atm_module_name=
+        atm_module_incs=
+        atm_module_deps=
+        atm_module_srcs=
+        atm_module_libs=
+        atm_module_order=
+        atm_module_link=ADDON
 
-        if test -f $ngx_addon_dir/config; then
-            . $ngx_addon_dir/config
+        if test -f $atm_addon_dir/config; then
+            . $atm_addon_dir/config
 
-            echo " + $ngx_addon_name was configured"
+            echo " + $atm_addon_name was configured"
 
         else
-            echo "$0: error: no $ngx_addon_dir/config was found"
+            echo "$0: error: no $atm_addon_dir/config was found"
             exit 1
         fi
     done
@@ -1172,26 +1172,26 @@ if test -n "$DYNAMIC_ADDONS"; then
 
     echo configuring additional dynamic modules
 
-    for ngx_addon_dir in $DYNAMIC_ADDONS
+    for atm_addon_dir in $DYNAMIC_ADDONS
     do
-        echo "adding module in $ngx_addon_dir"
+        echo "adding module in $atm_addon_dir"
 
-        ngx_module_type=
-        ngx_module_name=
-        ngx_module_incs=
-        ngx_module_deps=
-        ngx_module_srcs=
-        ngx_module_libs=
-        ngx_module_order=
-        ngx_module_link=DYNAMIC
+        atm_module_type=
+        atm_module_name=
+        atm_module_incs=
+        atm_module_deps=
+        atm_module_srcs=
+        atm_module_libs=
+        atm_module_order=
+        atm_module_link=DYNAMIC
 
-        if test -f $ngx_addon_dir/config; then
-            . $ngx_addon_dir/config
+        if test -f $atm_addon_dir/config; then
+            . $atm_addon_dir/config
 
-            echo " + $ngx_addon_name was configured"
+            echo " + $atm_addon_name was configured"
 
         else
-            echo "$0: error: no $ngx_addon_dir/config was found"
+            echo "$0: error: no $atm_addon_dir/config was found"
             exit 1
         fi
     done
@@ -1199,29 +1199,29 @@ fi
 
 
 if [ $USE_OPENSSL = YES ]; then
-    ngx_module_type=CORE
-    ngx_module_name=ngx_openssl_module
-    ngx_module_incs=
-    ngx_module_deps=src/event/ngx_event_openssl.h
-    ngx_module_srcs="src/event/ngx_event_openssl.c
-                     src/event/ngx_event_openssl_stapling.c"
-    ngx_module_libs=
-    ngx_module_link=YES
-    ngx_module_order=
+    atm_module_type=CORE
+    atm_module_name=atm_openssl_module
+    atm_module_incs=
+    atm_module_deps=src/event/atm_event_openssl.h
+    atm_module_srcs="src/event/atm_event_openssl.c
+                     src/event/atm_event_openssl_stapling.c"
+    atm_module_libs=
+    atm_module_link=YES
+    atm_module_order=
 
     . auto/module
 fi
 
 
 if [ $USE_PCRE = YES ]; then
-    ngx_module_type=CORE
-    ngx_module_name=ngx_regex_module
-    ngx_module_incs=
-    ngx_module_deps=src/core/ngx_regex.h
-    ngx_module_srcs=src/core/ngx_regex.c
-    ngx_module_libs=
-    ngx_module_link=YES
-    ngx_module_order=
+    atm_module_type=CORE
+    atm_module_name=atm_regex_module
+    atm_module_incs=
+    atm_module_deps=src/core/atm_regex.h
+    atm_module_srcs=src/core/atm_regex.c
+    atm_module_libs=
+    atm_module_link=YES
+    atm_module_order=
 
     . auto/module
 fi
@@ -1240,7 +1240,7 @@ if [ $HTTP = YES ]; then
     modules="$modules $HTTP_MODULES $HTTP_FILTER_MODULES \
              $HTTP_AUX_FILTER_MODULES $HTTP_INIT_FILTER_MODULES"
 
-    NGX_ADDON_DEPS="$NGX_ADDON_DEPS \$(HTTP_DEPS)"
+    ATM_ADDON_DEPS="$ATM_ADDON_DEPS \$(HTTP_DEPS)"
 fi
 
 
@@ -1250,17 +1250,17 @@ if [ $MAIL != NO ]; then
         modules="$modules $MAIL_MODULES"
 
     elif [ $MAIL = DYNAMIC ]; then
-        ngx_module_name=$MAIL_MODULES
-        ngx_module_incs=
-        ngx_module_deps=
-        ngx_module_srcs=$MAIL_SRCS
-        ngx_module_libs=
-        ngx_module_link=DYNAMIC
+        atm_module_name=$MAIL_MODULES
+        atm_module_incs=
+        atm_module_deps=
+        atm_module_srcs=$MAIL_SRCS
+        atm_module_libs=
+        atm_module_link=DYNAMIC
 
         . auto/module
     fi
 
-    NGX_ADDON_DEPS="$NGX_ADDON_DEPS \$(MAIL_DEPS)"
+    ATM_ADDON_DEPS="$ATM_ADDON_DEPS \$(MAIL_DEPS)"
 fi
 
 
@@ -1270,41 +1270,41 @@ if [ $STREAM != NO ]; then
         modules="$modules $STREAM_MODULES"
 
     elif [ $STREAM = DYNAMIC ]; then
-        ngx_module_name=$STREAM_MODULES
-        ngx_module_incs=
-        ngx_module_deps=
-        ngx_module_srcs=$STREAM_SRCS
-        ngx_module_libs=
-        ngx_module_link=DYNAMIC
+        atm_module_name=$STREAM_MODULES
+        atm_module_incs=
+        atm_module_deps=
+        atm_module_srcs=$STREAM_SRCS
+        atm_module_libs=
+        atm_module_link=DYNAMIC
 
         . auto/module
     fi
 
-    NGX_ADDON_DEPS="$NGX_ADDON_DEPS \$(STREAM_DEPS)"
+    ATM_ADDON_DEPS="$ATM_ADDON_DEPS \$(STREAM_DEPS)"
 fi
 
 
-ngx_module_type=MISC
+atm_module_type=MISC
 MISC_MODULES=
 
-if [ $NGX_GOOGLE_PERFTOOLS = YES ]; then
-    ngx_module_name=ngx_google_perftools_module
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/misc/ngx_google_perftools_module.c
-    ngx_module_libs=
-    ngx_module_link=$NGX_GOOGLE_PERFTOOLS
+if [ $ATM_GOOGLE_PERFTOOLS = YES ]; then
+    atm_module_name=atm_google_perftools_module
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/misc/atm_google_perftools_module.c
+    atm_module_libs=
+    atm_module_link=$ATM_GOOGLE_PERFTOOLS
 
     . auto/module
 fi
 
-if [ $NGX_CPP_TEST = YES ]; then
-    ngx_module_name=
-    ngx_module_incs=
-    ngx_module_deps=
-    ngx_module_srcs=src/misc/ngx_cpp_test_module.cpp
-    ngx_module_libs=-lstdc++
-    ngx_module_link=$NGX_CPP_TEST
+if [ $ATM_CPP_TEST = YES ]; then
+    atm_module_name=
+    atm_module_incs=
+    atm_module_deps=
+    atm_module_srcs=src/misc/atm_cpp_test_module.cpp
+    atm_module_libs=-lstdc++
+    atm_module_link=$ATM_CPP_TEST
 
     . auto/module
 fi
@@ -1312,54 +1312,54 @@ fi
 modules="$modules $MISC_MODULES"
 
 
-if [ $NGX_COMPAT = YES ]; then
-    have=NGX_COMPAT . auto/have
-    have=NGX_HTTP_GZIP . auto/have
-    have=NGX_HTTP_DAV . auto/have
-    have=NGX_HTTP_REALIP . auto/have
-    have=NGX_HTTP_X_FORWARDED_FOR . auto/have
-    have=NGX_HTTP_HEADERS . auto/have
-    have=NGX_HTTP_UPSTREAM_ZONE . auto/have
-    have=NGX_STREAM_UPSTREAM_ZONE . auto/have
+if [ $ATM_COMPAT = YES ]; then
+    have=ATM_COMPAT . auto/have
+    have=ATM_HTTP_GZIP . auto/have
+    have=ATM_HTTP_DAV . auto/have
+    have=ATM_HTTP_REALIP . auto/have
+    have=ATM_HTTP_X_FORWARDED_FOR . auto/have
+    have=ATM_HTTP_HEADERS . auto/have
+    have=ATM_HTTP_UPSTREAM_ZONE . auto/have
+    have=ATM_STREAM_UPSTREAM_ZONE . auto/have
 fi
 
 
-cat << END                                    > $NGX_MODULES_C
+cat << END                                    > $ATM_MODULES_C
 
-#include <ngx_config.h>
-#include <ngx_core.h>
+#include <atm_config.h>
+#include <atm_core.h>
 
-$NGX_PRAGMA
+$ATM_PRAGMA
 
 END
 
 for mod in $modules
 do
-    echo "extern ngx_module_t  $mod;"         >> $NGX_MODULES_C
+    echo "extern atm_module_t  $mod;"         >> $ATM_MODULES_C
 done
 
-echo                                          >> $NGX_MODULES_C
-echo 'ngx_module_t *ngx_modules[] = {'        >> $NGX_MODULES_C
+echo                                          >> $ATM_MODULES_C
+echo 'atm_module_t *atm_modules[] = {'        >> $ATM_MODULES_C
 
 for mod in $modules
 do
-    echo "    &$mod,"                         >> $NGX_MODULES_C
+    echo "    &$mod,"                         >> $ATM_MODULES_C
 done
 
-cat << END                                    >> $NGX_MODULES_C
+cat << END                                    >> $ATM_MODULES_C
     NULL
 };
 
 END
 
-echo 'char *ngx_module_names[] = {'           >> $NGX_MODULES_C
+echo 'char *atm_module_names[] = {'           >> $ATM_MODULES_C
 
 for mod in $modules
 do
-    echo "    \"$mod\","                      >> $NGX_MODULES_C
+    echo "    \"$mod\","                      >> $ATM_MODULES_C
 done
 
-cat << END                                    >> $NGX_MODULES_C
+cat << END                                    >> $ATM_MODULES_C
     NULL
 };
 

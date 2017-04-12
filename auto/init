@@ -1,24 +1,19 @@
+ATM_MAKEFILE=$ATM_BUILD/Makefile
+ATM_MODULES_C=$ATM_BUILD/atm_modules.c
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
+ATM_AUTO_HEADERS_H=$ATM_BUILD/atm_auto_headers.h
+ATM_AUTO_CONFIG_H=$ATM_BUILD/atm_auto_config.h
 
-
-NGX_MAKEFILE=$NGX_OBJS/Makefile
-NGX_MODULES_C=$NGX_OBJS/ngx_modules.c
-
-NGX_AUTO_HEADERS_H=$NGX_OBJS/ngx_auto_headers.h
-NGX_AUTO_CONFIG_H=$NGX_OBJS/ngx_auto_config.h
-
-NGX_AUTOTEST=$NGX_OBJS/autotest
-NGX_AUTOCONF_ERR=$NGX_OBJS/autoconf.err
+ATM_AUTOTEST=$ATM_BUILD/autotest
+ATM_AUTOCONF_ERR=$ATM_BUILD/autoconf.err
 
 # STUBs
-NGX_ERR=$NGX_OBJS/autoconf.err
-MAKEFILE=$NGX_OBJS/Makefile
+ATM_ERR=$ATM_BUILD/autoconf.err
+MAKEFILE=$ATM_BUILD/Makefile
 
 
-NGX_PCH=
-NGX_USE_PCH=
+ATM_PCH=
+ATM_USE_PCH=
 
 
 # check the echo's "-n" option and "\c" capability
@@ -26,17 +21,17 @@ NGX_USE_PCH=
 if echo "test\c" | grep c >/dev/null; then
 
     if echo -n test | grep n >/dev/null; then
-        ngx_n=
-        ngx_c=
+        atm_n=
+        atm_c=
 
     else
-        ngx_n=-n
-        ngx_c=
+        atm_n=-n
+        atm_c=
     fi
 
 else
-    ngx_n=
-    ngx_c='\c'
+    atm_n=
+    atm_c='\c'
 fi
 
 
@@ -47,5 +42,5 @@ cat << END > Makefile
 default:	build
 
 clean:
-	rm -rf Makefile $NGX_OBJS
+	rm -rf Makefile $ATM_BUILD
 END

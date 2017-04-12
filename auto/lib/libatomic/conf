@@ -1,25 +1,20 @@
+if [ $ATM_LIBATOMIC != YES ]; then
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-if [ $NGX_LIBATOMIC != YES ]; then
-
-    have=NGX_HAVE_LIBATOMIC . auto/have
-    CORE_INCS="$CORE_INCS $NGX_LIBATOMIC/src"
-    LINK_DEPS="$LINK_DEPS $NGX_LIBATOMIC/src/libatomic_ops.a"
-    CORE_LIBS="$CORE_LIBS $NGX_LIBATOMIC/src/libatomic_ops.a"
+    have=ATM_HAVE_LIBATOMIC . auto/have
+    CORE_INCS="$CORE_INCS $ATM_LIBATOMIC/src"
+    LINK_DEPS="$LINK_DEPS $ATM_LIBATOMIC/src/libatomic_ops.a"
+    CORE_LIBS="$CORE_LIBS $ATM_LIBATOMIC/src/libatomic_ops.a"
 
 else
 
-    ngx_feature="atomic_ops library"
-    ngx_feature_name=NGX_HAVE_LIBATOMIC
-    ngx_feature_run=yes
-    ngx_feature_incs="#define AO_REQUIRE_CAS
+    atm_feature="atomic_ops library"
+    atm_feature_name=ATM_HAVE_LIBATOMIC
+    atm_feature_run=yes
+    atm_feature_incs="#define AO_REQUIRE_CAS
                       #include <atomic_ops.h>"
-    ngx_feature_path=
-    ngx_feature_libs="-latomic_ops"
-    ngx_feature_test="long  n = 0;
+    atm_feature_path=
+    atm_feature_libs="-latomic_ops"
+    atm_feature_test="long  n = 0;
                       if (!AO_compare_and_swap(&n, 0, 1))
                           return 1;
                       if (AO_fetch_and_add(&n, 1) != 1)
@@ -29,8 +24,8 @@ else
                       AO_nop();"
     . auto/feature
 
-    if [ $ngx_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS $ngx_feature_libs"
+    if [ $atm_found = yes ]; then
+        CORE_LIBS="$CORE_LIBS $atm_feature_libs"
     else
 
 cat << END

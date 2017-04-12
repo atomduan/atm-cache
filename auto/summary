@@ -1,8 +1,3 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 echo
 echo "Configuration summary"
 
@@ -34,49 +29,49 @@ case $ZLIB in
     *)     echo "  + using zlib library: $ZLIB" ;;
 esac
 
-case $NGX_LIBATOMIC in
+case $ATM_LIBATOMIC in
     YES)   echo "  + using system libatomic_ops library" ;;
     NO)    ;; # not used
-    *)     echo "  + using libatomic_ops library: $NGX_LIBATOMIC" ;;
+    *)     echo "  + using libatomic_ops library: $ATM_LIBATOMIC" ;;
 esac
 
 echo
 
 
 cat << END
-  nginx path prefix: "$NGX_PREFIX"
-  nginx binary file: "$NGX_SBIN_PATH"
-  nginx modules path: "$NGX_MODULES_PATH"
-  nginx configuration prefix: "$NGX_CONF_PREFIX"
-  nginx configuration file: "$NGX_CONF_PATH"
-  nginx pid file: "$NGX_PID_PATH"
+  atmcache path prefix: "$ATM_PREFIX"
+  atmcache binary file: "$ATM_SBIN_PATH"
+  atmcache modules path: "$ATM_MODULES_PATH"
+  atmcache configuration prefix: "$ATM_CONF_PREFIX"
+  atmcache configuration file: "$ATM_CONF_PATH"
+  atmcache pid file: "$ATM_PID_PATH"
 END
 
-if test -n "$NGX_ERROR_LOG_PATH"; then
-    echo "  nginx error log file: \"$NGX_ERROR_LOG_PATH\""
+if test -n "$ATM_ERROR_LOG_PATH"; then
+    echo "  atmcache error log file: \"$ATM_ERROR_LOG_PATH\""
 else
-    echo "  nginx logs errors to stderr"
+    echo "  atmcache logs errors to stderr"
 fi
 
 cat << END
-  nginx http access log file: "$NGX_HTTP_LOG_PATH"
-  nginx http client request body temporary files: "$NGX_HTTP_CLIENT_TEMP_PATH"
+  atmcache http access log file: "$ATM_HTTP_LOG_PATH"
+  atmcache http client request body temporary files: "$ATM_HTTP_CLIENT_TEMP_PATH"
 END
 
 if [ $HTTP_PROXY = YES ]; then
-    echo "  nginx http proxy temporary files: \"$NGX_HTTP_PROXY_TEMP_PATH\""
+    echo "  atmcache http proxy temporary files: \"$ATM_HTTP_PROXY_TEMP_PATH\""
 fi
 
 if [ $HTTP_FASTCGI = YES ]; then
-    echo "  nginx http fastcgi temporary files: \"$NGX_HTTP_FASTCGI_TEMP_PATH\""
+    echo "  atmcache http fastcgi temporary files: \"$ATM_HTTP_FASTCGI_TEMP_PATH\""
 fi
 
 if [ $HTTP_UWSGI = YES ]; then
-    echo "  nginx http uwsgi temporary files: \"$NGX_HTTP_UWSGI_TEMP_PATH\""
+    echo "  atmcache http uwsgi temporary files: \"$ATM_HTTP_UWSGI_TEMP_PATH\""
 fi
 
 if [ $HTTP_SCGI = YES ]; then
-    echo "  nginx http scgi temporary files: \"$NGX_HTTP_SCGI_TEMP_PATH\""
+    echo "  atmcache http scgi temporary files: \"$ATM_HTTP_SCGI_TEMP_PATH\""
 fi
 
-echo "$NGX_POST_CONF_MSG"
+echo "$ATM_POST_CONF_MSG"

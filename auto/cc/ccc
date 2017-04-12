@@ -1,11 +1,6 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 # Compaq C V6.5-207
 
-ngx_include_opt="-I"
+atm_include_opt="-I"
 
 # warnings
 

@@ -1,0 +1,1 @@
+#define ATM_CONFIGURE ""

@@ -1,46 +1,41 @@
+cat << END                                                    >> $ATM_MAKEFILE
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
+$ATM_BUILD/src/http/modules/perl/atm_http_perl_module.o: \\
+		$ATM_BUILD/$atm_perl_module
 
-
-cat << END                                                    >> $NGX_MAKEFILE
-
-$NGX_OBJS/src/http/modules/perl/ngx_http_perl_module.o: \\
-		$NGX_OBJS/$ngx_perl_module
-
-$NGX_OBJS/$ngx_perl_module: \\
+$ATM_BUILD/$atm_perl_module: \\
 		\$(CORE_DEPS) \$(HTTP_DEPS) \\
-		src/http/modules/perl/ngx_http_perl_module.h \\
-		$NGX_OBJS/src/http/modules/perl/Makefile
-	cd $NGX_OBJS/src/http/modules/perl && \$(MAKE)
+		src/http/modules/perl/atm_http_perl_module.h \\
+		$ATM_BUILD/src/http/modules/perl/Makefile
+	cd $ATM_BUILD/src/http/modules/perl && \$(MAKE)
 
-	rm -rf $NGX_OBJS/install_perl
+	rm -rf $ATM_BUILD/install_perl
 
 
-$NGX_OBJS/src/http/modules/perl/Makefile: \\
-		$NGX_AUTO_CONFIG_H \\
-		src/core/nginx.h \\
+$ATM_BUILD/src/http/modules/perl/Makefile: \\
+		$ATM_AUTO_CONFIG_H \\
+		src/core/atmcache.h \\
 		src/http/modules/perl/Makefile.PL \\
-		src/http/modules/perl/nginx.pm \\
-		src/http/modules/perl/nginx.xs \\
+		src/http/modules/perl/atmcache.pm \\
+		src/http/modules/perl/atmcache.xs \\
 		src/http/modules/perl/typemap
-	grep 'define NGINX_VERSION' src/core/nginx.h \\
+	grep 'define NGINX_VERSION' src/core/atmcache.h \\
 		| sed -e 's/^.*"\(.*\)".*/\1/' > \\
-		$NGX_OBJS/src/http/modules/perl/version
-	sed "s/%%VERSION%%/\`cat $NGX_OBJS/src/http/modules/perl/version\`/" \\
-		src/http/modules/perl/nginx.pm > \\
-		$NGX_OBJS/src/http/modules/perl/nginx.pm
-	cp -p src/http/modules/perl/nginx.xs $NGX_OBJS/src/http/modules/perl/
-	cp -p src/http/modules/perl/typemap $NGX_OBJS/src/http/modules/perl/
-	cp -p src/http/modules/perl/Makefile.PL $NGX_OBJS/src/http/modules/perl/
+		$ATM_BUILD/src/http/modules/perl/version
+	sed "s/%%VERSION%%/\`cat $ATM_BUILD/src/http/modules/perl/version\`/" \\
+		src/http/modules/perl/atmcache.pm > \\
+		$ATM_BUILD/src/http/modules/perl/atmcache.pm
+	cp -p src/http/modules/perl/atmcache.xs $ATM_BUILD/src/http/modules/perl/
+	cp -p src/http/modules/perl/typemap $ATM_BUILD/src/http/modules/perl/
+	cp -p src/http/modules/perl/Makefile.PL $ATM_BUILD/src/http/modules/perl/
 
-	cd $NGX_OBJS/src/http/modules/perl \\
-		&& NGX_PM_CFLAGS="\$(NGX_PM_CFLAGS) -g $NGX_CC_OPT" \\
-			NGX_PM_LDFLAGS="$NGX_LD_OPT \$(NGX_PM_LDFLAGS)" \\
-			NGX_INCS="$CORE_INCS $NGX_OBJS $HTTP_INCS" \\
-			NGX_DEPS="\$(CORE_DEPS) \$(HTTP_DEPS)" \\
-		$NGX_PERL Makefile.PL \\
-			LIB=$NGX_PERL_MODULES \\
-			INSTALLSITEMAN3DIR=$NGX_PERL_MODULES_MAN
+	cd $ATM_BUILD/src/http/modules/perl \\
+		&& ATM_PM_CFLAGS="\$(ATM_PM_CFLAGS) -g $ATM_CC_OPT" \\
+			ATM_PM_LDFLAGS="$ATM_LD_OPT \$(ATM_PM_LDFLAGS)" \\
+			ATM_INCS="$CORE_INCS $ATM_BUILD $HTTP_INCS" \\
+			ATM_DEPS="\$(CORE_DEPS) \$(HTTP_DEPS)" \\
+		$ATM_PERL Makefile.PL \\
+			LIB=$ATM_PERL_MODULES \\
+			INSTALLSITEMAN3DIR=$ATM_PERL_MODULES_MAN
 
 END

@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 LC_ALL=C
 export LC_ALL
 
@@ -11,50 +7,50 @@ export LC_ALL
 . auto/init
 . auto/sources
 
-test -d $NGX_OBJS || mkdir -p $NGX_OBJS
+test -d $ATM_BUILD || mkdir -p $ATM_BUILD
 
-echo > $NGX_AUTO_HEADERS_H
-echo > $NGX_AUTOCONF_ERR
+echo > $ATM_AUTO_HEADERS_H
+echo > $ATM_AUTOCONF_ERR
 
-echo "#define NGX_CONFIGURE \"$NGX_CONFIGURE\"" > $NGX_AUTO_CONFIG_H
+echo "#define ATM_CONFIGURE \"$ATM_CONFIGURE\"" > $ATM_AUTO_CONFIG_H
 
 
-if [ $NGX_DEBUG = YES ]; then
-    have=NGX_DEBUG . auto/have
+if [ $ATM_DEBUG = YES ]; then
+    have=ATM_DEBUG . auto/have
 fi
 
 
-if test -z "$NGX_PLATFORM"; then
+if test -z "$ATM_PLATFORM"; then
     echo "checking for OS"
 
-    NGX_SYSTEM=`uname -s 2>/dev/null`
-    NGX_RELEASE=`uname -r 2>/dev/null`
-    NGX_MACHINE=`uname -m 2>/dev/null`
+    ATM_SYSTEM=`uname -s 2>/dev/null`
+    ATM_RELEASE=`uname -r 2>/dev/null`
+    ATM_MACHINE=`uname -m 2>/dev/null`
 
-    echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
+    echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
 
-    NGX_PLATFORM="$NGX_SYSTEM:$NGX_RELEASE:$NGX_MACHINE";
+    ATM_PLATFORM="$ATM_SYSTEM:$ATM_RELEASE:$ATM_MACHINE";
 
-    case "$NGX_SYSTEM" in
+    case "$ATM_SYSTEM" in
         MINGW32_*)
-            NGX_PLATFORM=win32
+            ATM_PLATFORM=win32
         ;;
     esac
 
 else
-    echo "building for $NGX_PLATFORM"
-    NGX_SYSTEM=$NGX_PLATFORM
+    echo "building for $ATM_PLATFORM"
+    ATM_SYSTEM=$ATM_PLATFORM
 fi
 
 . auto/cc/conf
 
-if [ "$NGX_PLATFORM" != win32 ]; then
+if [ "$ATM_PLATFORM" != win32 ]; then
     . auto/headers
 fi
 
 . auto/os/conf
 
-if [ "$NGX_PLATFORM" != win32 ]; then
+if [ "$ATM_PLATFORM" != win32 ]; then
     . auto/unix
 fi
 
@@ -62,42 +58,37 @@ fi
 . auto/modules
 . auto/lib/conf
 
-case ".$NGX_PREFIX" in
+case ".$ATM_PREFIX" in
     .)
-        NGX_PREFIX=${NGX_PREFIX:-/usr/local/nginx}
-        have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
+        ATM_PREFIX=${ATM_PREFIX:-/usr/local/atmcache}
+        have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
     ;;
 
     .!)
-        NGX_PREFIX=
+        ATM_PREFIX=
     ;;
 
     *)
-        have=NGX_PREFIX value="\"$NGX_PREFIX/\"" . auto/define
+        have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
     ;;
 esac
 
-if [ ".$NGX_CONF_PREFIX" != "." ]; then
-    have=NGX_CONF_PREFIX value="\"$NGX_CONF_PREFIX/\"" . auto/define
+if [ ".$ATM_CONF_PREFIX" != "." ]; then
+    have=ATM_CONF_PREFIX value="\"$ATM_CONF_PREFIX/\"" . auto/define
 fi
 
-have=NGX_SBIN_PATH value="\"$NGX_SBIN_PATH\"" . auto/define
-have=NGX_CONF_PATH value="\"$NGX_CONF_PATH\"" . auto/define
-have=NGX_PID_PATH value="\"$NGX_PID_PATH\"" . auto/define
-have=NGX_LOCK_PATH value="\"$NGX_LOCK_PATH\"" . auto/define
-have=NGX_ERROR_LOG_PATH value="\"$NGX_ERROR_LOG_PATH\"" . auto/define
+have=ATM_SBIN_PATH value="\"$ATM_SBIN_PATH\"" . auto/define
+have=ATM_CONF_PATH value="\"$ATM_CONF_PATH\"" . auto/define
+have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
+have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define
+have=ATM_ERROR_LOG_PATH value="\"$ATM_ERROR_LOG_PATH\"" . auto/define
 
-have=NGX_HTTP_LOG_PATH value="\"$NGX_HTTP_LOG_PATH\"" . auto/define
-have=NGX_HTTP_CLIENT_TEMP_PATH value="\"$NGX_HTTP_CLIENT_TEMP_PATH\""
-. auto/define
-have=NGX_HTTP_PROXY_TEMP_PATH value="\"$NGX_HTTP_PROXY_TEMP_PATH\""
-. auto/define
-have=NGX_HTTP_FASTCGI_TEMP_PATH value="\"$NGX_HTTP_FASTCGI_TEMP_PATH\""
-. auto/define
-have=NGX_HTTP_UWSGI_TEMP_PATH value="\"$NGX_HTTP_UWSGI_TEMP_PATH\""
-. auto/define
-have=NGX_HTTP_SCGI_TEMP_PATH value="\"$NGX_HTTP_SCGI_TEMP_PATH\""
-. auto/define
+have=ATM_HTTP_LOG_PATH value="\"$ATM_HTTP_LOG_PATH\"" . auto/define
+have=ATM_HTTP_CLIENT_TEMP_PATH value="\"$ATM_HTTP_CLIENT_TEMP_PATH\"" . auto/define
+have=ATM_HTTP_PROXY_TEMP_PATH value="\"$ATM_HTTP_PROXY_TEMP_PATH\"" . auto/define
+have=ATM_HTTP_FASTCGI_TEMP_PATH value="\"$ATM_HTTP_FASTCGI_TEMP_PATH\"" . auto/define
+have=ATM_HTTP_UWSGI_TEMP_PATH value="\"$ATM_HTTP_UWSGI_TEMP_PATH\"" . auto/define
+have=ATM_HTTP_SCGI_TEMP_PATH value="\"$ATM_HTTP_SCGI_TEMP_PATH\"" . auto/define
 
 . auto/make
 . auto/lib/make
@@ -106,11 +97,11 @@ have=NGX_HTTP_SCGI_TEMP_PATH value="\"$NGX_HTTP_SCGI_TEMP_PATH\""
 # STUB
 . auto/stubs
 
-have=NGX_USER value="\"$NGX_USER\"" . auto/define
-have=NGX_GROUP value="\"$NGX_GROUP\"" . auto/define
+have=ATM_USER value="\"$ATM_USER\"" . auto/define
+have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define
 
-if [ ".$NGX_BUILD" != "." ]; then
-    have=NGX_BUILD value="\"$NGX_BUILD\"" . auto/define
+if [ ".$ATM_BUILD" != "." ]; then
+    have=ATM_BUILD value="\"$ATM_BUILD\"" . auto/define
 fi
 
 . auto/summary

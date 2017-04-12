@@ -1,8 +1,3 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 # Open Watcom C 1.0, 1.2, 1.3
 
 # optimizations
@@ -61,14 +56,14 @@ CFLAGS="$CFLAGS -d2"
 CFLAGS="$CFLAGS -zq"
 
 # Open Watcom C 1.2
-have=NGX_HAVE_C99_VARIADIC_MACROS . auto/have
+have=ATM_HAVE_C99_VARIADIC_MACROS . auto/have
 
 
 # the precompiled headers
-#CORE_DEPS="$CORE_DEPS $NGX_OBJS/ngx_config.pch"
-#NGX_PCH="$NGX_OBJS/ngx_config.pch"
-#NGX_BUILD_PCH="-fhq=$NGX_OBJS/ngx_config.pch"
-#NGX_USE_PCH="-fh=$NGX_OBJS/ngx_config.pch"
+#CORE_DEPS="$CORE_DEPS $ATM_BUILD/atm_config.pch"
+#ATM_PCH="$ATM_BUILD/atm_config.pch"
+#ATM_BUILD_PCH="-fhq=$ATM_BUILD/atm_config.pch"
+#ATM_USE_PCH="-fh=$ATM_BUILD/atm_config.pch"
 
 
 # the link flags, built target is NT GUI mode application
@@ -76,29 +71,29 @@ have=NGX_HAVE_C99_VARIADIC_MACROS . auto/have
 
 
 # the resource file
-NGX_RCC="wrc \$(CORE_INCS) -fo=$NGX_OBJS/nginx.res "
-NGX_RCC="$NGX_RCC $NGX_WIN32_RC $NGX_OBJS/nginx.exe"
+ATM_RCC="wrc \$(CORE_INCS) -fo=$ATM_BUILD/atmcache.res "
+ATM_RCC="$ATM_RCC $ATM_WIN32_RC $ATM_BUILD/atmcache.exe"
 
 
-ngx_include_opt="-i="
-ngx_objout="-fo"
-ngx_binout="-fe="
-ngx_objext="obj"
-ngx_binext=".exe"
+atm_include_opt="-i="
+atm_objout="-fo"
+atm_binout="-fe="
+atm_objext="obj"
+atm_binext=".exe"
 
-ngx_regex_dirsep='\\'
-ngx_dirsep="\\"
+atm_regex_dirsep='\\'
+atm_dirsep="\\"
 
-ngx_long_start=' '
-ngx_long_end=' '
-ngx_long_regex_cont=' \&\
+atm_long_start=' '
+atm_long_end=' '
+atm_long_regex_cont=' \&\
 	'
-ngx_long_cont=' &
+atm_long_cont=' &
 	'
 
-ngx_regex_cont=' \&\
+atm_regex_cont=' \&\
 	'
-ngx_cont=' &
+atm_cont=' &
 	'
-ngx_tab=' &
+atm_tab=' &
 		'

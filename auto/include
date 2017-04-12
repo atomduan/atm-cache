@@ -1,24 +1,19 @@
+echo $atm_n "checking for $atm_include ...$atm_c"
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-echo $ngx_n "checking for $ngx_include ...$ngx_c"
-
-cat << END >> $NGX_AUTOCONF_ERR
+cat << END >> $ATM_AUTOCONF_ERR
 
 ----------------------------------------
-checking for $ngx_include
+checking for $atm_include
 
 END
 
 
-ngx_found=no
+atm_found=no
 
-cat << END > $NGX_AUTOTEST.c
+cat << END > $ATM_AUTOTEST.c
 
-$NGX_INCLUDE_SYS_PARAM_H
-#include <$ngx_include>
+$ATM_INCLUDE_SYS_PARAM_H
+#include <$atm_include>
 
 int main(void) {
     return 0;
@@ -27,32 +22,32 @@ int main(void) {
 END
 
 
-ngx_test="$CC -o $NGX_AUTOTEST $NGX_AUTOTEST.c"
+atm_test="$CC -o $ATM_AUTOTEST $ATM_AUTOTEST.c"
 
-eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+eval "$atm_test >> $ATM_AUTOCONF_ERR 2>&1"
 
-if [ -x $NGX_AUTOTEST ]; then
+if [ -x $ATM_AUTOTEST ]; then
 
-    ngx_found=yes
+    atm_found=yes
 
     echo " found"
 
-    ngx_name=`echo $ngx_include \
+    atm_name=`echo $atm_include \
               | tr abcdefghijklmnopqrstuvwxyz/. ABCDEFGHIJKLMNOPQRSTUVWXYZ__`
 
 
-    have=NGX_HAVE_$ngx_name . auto/have_headers
+    have=ATM_HAVE_$atm_name . auto/have_headers
 
-    eval "NGX_INCLUDE_$ngx_name='#include <$ngx_include>'"
+    eval "ATM_INCLUDE_$atm_name='#include <$atm_include>'"
 
 else
     echo " not found"
 
-    echo "----------"    >> $NGX_AUTOCONF_ERR
-    cat $NGX_AUTOTEST.c  >> $NGX_AUTOCONF_ERR
-    echo "----------"    >> $NGX_AUTOCONF_ERR
-    echo $ngx_test       >> $NGX_AUTOCONF_ERR
-    echo "----------"    >> $NGX_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
+    cat $ATM_AUTOTEST.c  >> $ATM_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
+    echo $atm_test       >> $ATM_AUTOCONF_ERR
+    echo "----------"    >> $ATM_AUTOCONF_ERR
 fi
 
-rm -rf $NGX_AUTOTEST*
+rm -rf $ATM_AUTOTEST*

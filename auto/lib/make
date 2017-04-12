@@ -1,8 +1,3 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 if [ $PCRE != NONE -a $PCRE != NO -a $PCRE != YES ]; then
     . auto/lib/pcre/make
 fi
@@ -15,7 +10,7 @@ if [ $ZLIB != NONE -a $ZLIB != NO -a $ZLIB != YES ]; then
     . auto/lib/zlib/make
 fi
 
-if [ $NGX_LIBATOMIC != NO -a $NGX_LIBATOMIC != YES ]; then
+if [ $ATM_LIBATOMIC != NO -a $ATM_LIBATOMIC != YES ]; then
     . auto/lib/libatomic/make
 fi
 

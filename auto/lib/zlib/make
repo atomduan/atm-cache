@@ -1,31 +1,26 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-case "$NGX_CC_NAME" in
+case "$ATM_CC_NAME" in
 
     msvc)
-        ngx_makefile=makefile.msvc
-        ngx_opt="CPU_OPT=\"$CPU_OPT\" LIBC=$LIBC"
-        ngx_zlib="ZLIB=\"$ZLIB\""
+        atm_makefile=makefile.msvc
+        atm_opt="CPU_OPT=\"$CPU_OPT\" LIBC=$LIBC"
+        atm_zlib="ZLIB=\"$ZLIB\""
 
     ;;
 
     owc)
-        ngx_makefile=makefile.owc
-        ngx_opt="CPU_OPT=\"$CPU_OPT\""
-        ngx_zlib=`echo ZLIB=\"$ZLIB\" | sed -e "s/\//$ngx_regex_dirsep/g"`
+        atm_makefile=makefile.owc
+        atm_opt="CPU_OPT=\"$CPU_OPT\""
+        atm_zlib=`echo ZLIB=\"$ZLIB\" | sed -e "s/\//$atm_regex_dirsep/g"`
     ;;
 
     bcc)
-        ngx_makefile=makefile.bcc
-        ngx_opt="-DCPU_OPT=\"$CPU_OPT\""
-        ngx_zlib=`echo \-DZLIB=\"$ZLIB\" | sed -e "s/\//$ngx_regex_dirsep/g"`
+        atm_makefile=makefile.bcc
+        atm_opt="-DCPU_OPT=\"$CPU_OPT\""
+        atm_zlib=`echo \-DZLIB=\"$ZLIB\" | sed -e "s/\//$atm_regex_dirsep/g"`
     ;;
 
     *)
-        ngx_makefile=
+        atm_makefile=
     ;;
 
 esac
@@ -34,23 +29,23 @@ esac
 done=NO
 
 
-case "$NGX_PLATFORM" in
+case "$ATM_PLATFORM" in
 
     win32)
 
-        if [ -n "$ngx_makefile" ]; then
-            cat << END                                        >> $NGX_MAKEFILE
+        if [ -n "$atm_makefile" ]; then
+            cat << END                                        >> $ATM_MAKEFILE
 
-`echo "$ZLIB/zlib.lib:	$NGX_MAKEFILE" | sed -e "s/\//$ngx_regex_dirsep/g"`
-	\$(MAKE) -f auto/lib/zlib/$ngx_makefile $ngx_opt $ngx_zlib
+`echo "$ZLIB/zlib.lib:	$ATM_MAKEFILE" | sed -e "s/\//$atm_regex_dirsep/g"`
+	\$(MAKE) -f auto/lib/zlib/$atm_makefile $atm_opt $atm_zlib
 
 END
 
         else
 
-            cat << END                                        >> $NGX_MAKEFILE
+            cat << END                                        >> $ATM_MAKEFILE
 
-$ZLIB/libz.a:	$NGX_MAKEFILE
+$ZLIB/libz.a:	$ATM_MAKEFILE
 	cd $ZLIB \\
 	&& \$(MAKE) distclean \\
 	&& \$(MAKE) -f win32/Makefile.gcc \\
@@ -71,9 +66,9 @@ END
         case $ZLIB_ASM in
             pentium)
 
-                cat << END                                    >> $NGX_MAKEFILE
+                cat << END                                    >> $ATM_MAKEFILE
 
-$ZLIB/libz.a:	$NGX_MAKEFILE
+$ZLIB/libz.a:	$ATM_MAKEFILE
 	cd $ZLIB \\
 	&& \$(MAKE) distclean \\
 	&& cp contrib/asm586/match.S . \\
@@ -88,9 +83,9 @@ END
 
             pentiumpro)
 
-                cat << END                                    >> $NGX_MAKEFILE
+                cat << END                                    >> $ATM_MAKEFILE
 
-$ZLIB/libz.a:	$NGX_MAKEFILE
+$ZLIB/libz.a:	$ATM_MAKEFILE
 	cd $ZLIB \\
 	&& \$(MAKE) distclean \\
 	&& cp contrib/asm686/match.S . \\
@@ -121,9 +116,9 @@ esac
 
 if [ $done = NO ]; then
 
-    cat << END                                                >> $NGX_MAKEFILE
+    cat << END                                                >> $ATM_MAKEFILE
 
-$ZLIB/libz.a:	$NGX_MAKEFILE
+$ZLIB/libz.a:	$ATM_MAKEFILE
 	cd $ZLIB \\
 	&& \$(MAKE) distclean \\
 	&& CFLAGS="$ZLIB_OPT" CC="\$(CC)" \\

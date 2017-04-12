@@ -1,11 +1,6 @@
+echo $atm_n "checking for uintptr_t ...$atm_c"
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-echo $ngx_n "checking for uintptr_t ...$ngx_c"
-
-cat << END >> $NGX_AUTOCONF_ERR
+cat << END >> $ATM_AUTOCONF_ERR
 
 ----------------------------------------
 checking for uintptr_t
@@ -14,10 +9,10 @@ END
 
 found=no
 
-cat << END > $NGX_AUTOTEST.c
+cat << END > $ATM_AUTOTEST.c
 
 #include <sys/types.h>
-$NGX_INCLUDE_INTTYPES_H
+$ATM_INCLUDE_INTTYPES_H
 
 int main(void) {
     uintptr_t i = 0;
@@ -26,25 +21,25 @@ int main(void) {
 
 END
 
-ngx_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
-          -o $NGX_AUTOTEST $NGX_AUTOTEST.c $NGX_LD_OPT"
+atm_test="$CC $CC_TEST_FLAGS $CC_AUX_FLAGS \
+          -o $ATM_AUTOTEST $ATM_AUTOTEST.c $ATM_LD_OPT"
 
-eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+eval "$atm_test >> $ATM_AUTOCONF_ERR 2>&1"
 
-if [ -x $NGX_AUTOTEST ]; then
+if [ -x $ATM_AUTOTEST ]; then
     echo " uintptr_t found"
     found=yes
 else
-    echo $ngx_n " uintptr_t not found" $ngx_c
+    echo $atm_n " uintptr_t not found" $atm_c
 fi
 
-rm -rf $NGX_AUTOTEST*
+rm -rf $ATM_AUTOTEST*
 
 
 if [ $found = no ]; then
-    found="uint`expr 8 \* $ngx_ptr_size`_t"
+    found="uint`expr 8 \* $atm_ptr_size`_t"
     echo ", $found used"
 
-    echo "typedef $found  uintptr_t;"                   >> $NGX_AUTO_CONFIG_H
-    echo "typedef $found  intptr_t;" | sed -e 's/u//g'  >> $NGX_AUTO_CONFIG_H
+    echo "typedef $found  uintptr_t;"                   >> $ATM_AUTO_CONFIG_H
+    echo "typedef $found  intptr_t;" | sed -e 's/u//g'  >> $ATM_AUTO_CONFIG_H
 fi

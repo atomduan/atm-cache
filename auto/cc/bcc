@@ -1,8 +1,3 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
 # Borland C++ 5.5
 
 # optimizations
@@ -40,10 +35,10 @@ CFLAGS="$CFLAGS -q"
 
 
 # precompiled headers
-CORE_DEPS="$CORE_DEPS $NGX_OBJS/ngx_config.csm"
-NGX_PCH="$NGX_OBJS/ngx_config.csm"
-NGX_BUILD_PCH="-H=$NGX_OBJS/ngx_config.csm"
-NGX_USE_PCH="-Hu -H=$NGX_OBJS/ngx_config.csm"
+CORE_DEPS="$CORE_DEPS $ATM_BUILD/atm_config.csm"
+ATM_PCH="$ATM_BUILD/atm_config.csm"
+ATM_BUILD_PCH="-H=$ATM_BUILD/atm_config.csm"
+ATM_USE_PCH="-Hu -H=$ATM_BUILD/atm_config.csm"
 
 
 # Win32 GUI mode application
@@ -51,22 +46,22 @@ NGX_USE_PCH="-Hu -H=$NGX_OBJS/ngx_config.csm"
 
 
 # the resource file
-NGX_RES="$NGX_OBJS/nginx.res"
-NGX_RCC="brcc32 -fo$NGX_OBJS/nginx.res \$(CORE_INCS) $NGX_WIN32_RC"
+ATM_RES="$ATM_BUILD/atmcache.res"
+ATM_RCC="brcc32 -fo$ATM_BUILD/atmcache.res \$(CORE_INCS) $ATM_WIN32_RC"
 # the pragma allows to link the resource file using bcc32 and
 # to avoid the direct ilink32 calling and the c0w32.obj's WinMain/main problem
-NGX_PRAGMA="#pragma resource \"$NGX_OBJS/nginx.res\""
+ATM_PRAGMA="#pragma resource \"$ATM_BUILD/atmcache.res\""
 
 
-ngx_include_opt="-I"
-ngx_objout="-o"
-ngx_binout="-e"
-ngx_objext="obj"
-ngx_binext=".exe"
+atm_include_opt="-I"
+atm_objout="-o"
+atm_binout="-e"
+atm_objext="obj"
+atm_binext=".exe"
 
-ngx_long_start='@&&|
+atm_long_start='@&&|
 	'
-ngx_long_end='|'
+atm_long_end='|'
 
-ngx_regex_dirsep='\\'
-ngx_dirsep="\\"
+atm_regex_dirsep='\\'
+atm_dirsep="\\"

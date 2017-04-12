@@ -1,52 +1,47 @@
-
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-    ngx_feature="Google perftools"
-    ngx_feature_name=
-    ngx_feature_run=no
-    ngx_feature_incs=
-    ngx_feature_path=
-    ngx_feature_libs="-lprofiler"
-    ngx_feature_test="ProfilerStop()"
-    . auto/feature
+atm_feature="Google perftools"
+atm_feature_name=
+atm_feature_run=no
+atm_feature_incs=
+atm_feature_path=
+atm_feature_libs="-lprofiler"
+atm_feature_test="ProfilerStop()"
+. auto/feature
 
 
-if [ $ngx_found = no ]; then
+if [ $atm_found = no ]; then
 
     # FreeBSD port
 
-    ngx_feature="Google perftools in /usr/local/"
+    atm_feature="Google perftools in /usr/local/"
 
-    if [ $NGX_RPATH = YES ]; then
-        ngx_feature_libs="-R/usr/local/lib -L/usr/local/lib -lprofiler"
+    if [ $ATM_RPATH = YES ]; then
+        atm_feature_libs="-R/usr/local/lib -L/usr/local/lib -lprofiler"
     else
-        ngx_feature_libs="-L/usr/local/lib -lprofiler"
+        atm_feature_libs="-L/usr/local/lib -lprofiler"
     fi
 
     . auto/feature
 fi
 
 
-if [ $ngx_found = no ]; then
+if [ $atm_found = no ]; then
 
     # MacPorts
 
-    ngx_feature="Google perftools in /opt/local/"
+    atm_feature="Google perftools in /opt/local/"
 
-    if [ $NGX_RPATH = YES ]; then
-        ngx_feature_libs="-R/opt/local/lib -L/opt/local/lib -lprofiler"
+    if [ $ATM_RPATH = YES ]; then
+        atm_feature_libs="-R/opt/local/lib -L/opt/local/lib -lprofiler"
     else
-        ngx_feature_libs="-L/opt/local/lib -lprofiler"
+        atm_feature_libs="-L/opt/local/lib -lprofiler"
     fi
 
     . auto/feature
 fi
 
 
-if [ $ngx_found = yes ]; then
-    CORE_LIBS="$CORE_LIBS $ngx_feature_libs"
+if [ $atm_found = yes ]; then
+    CORE_LIBS="$CORE_LIBS $atm_feature_libs"
 
 else
 

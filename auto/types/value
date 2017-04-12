@@ -1,12 +1,7 @@
+cat << END >> $ATM_AUTO_CONFIG_H
 
-# Copyright (C) Igor Sysoev
-# Copyright (C) Nginx, Inc.
-
-
-cat << END >> $NGX_AUTO_CONFIG_H
-
-#ifndef $ngx_param
-#define $ngx_param  $ngx_value
+#ifndef $atm_param
+#define $atm_param  $atm_value
 #endif
 
 END

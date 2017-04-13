@@ -14,8 +14,8 @@
  *
  * =====================================================================================
  */
-#include "atm_config.h"
-#include "atm_core.h"
+#include <atm_config.h>
+#include <atm_core.h>
 
 static void atm_initialize() {
     atm_hash_init_siphash_seed();

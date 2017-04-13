@@ -39,8 +39,8 @@
       the function in the new form (returing an uint64_t) using just the
       relevant test vector.
  */
-#include "atm_config.h"
-#include "atm_core.h"
+#include <atm_config.h>
+#include <atm_core.h>
 
 /* Fast tolower() alike function that does not care about locale
  * but just returns a-z insetad of A-Z. */

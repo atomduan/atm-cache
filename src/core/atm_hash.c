@@ -1,6 +1,5 @@
-#include "atm_config.h"
-#include "atm_core.h"
-#include "atm_hash.h"
+#include <atm_config.h>
+#include <atm_core.h>
 
 static uint8_t siphash_seed[16];
 

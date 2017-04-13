@@ -14,3 +14,5 @@ CORE_SRCS="src/core/atmcache.c \
            src/core/atm_list.c \
            src/core/atm_siphash.c \
            src/core/atm_string.c"
+
+CORE_LIBS=""

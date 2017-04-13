@@ -1,7 +1,7 @@
 ATM_MAKEFILE=$ATM_BUILD/Makefile
 ATM_MODULES_C=$ATM_BUILD/atm_modules.c
 
-ATM_AUTO_HEADERS_H=$ATM_BUILD/atm_auto_headers.h
+ATM_AUTO_SYS_HEADERS_H=$ATM_BUILD/atm_auto_sys_headers.h
 ATM_AUTO_CONFIG_H=$ATM_BUILD/atm_auto_config.h
 
 ATM_AUTOTEST=$ATM_BUILD/autotest
@@ -39,7 +39,7 @@ fi
 
 cat << END > Makefile
 
-default:	build_atmcache
+default:	build
 
 clean:
 	rm -rf Makefile $ATM_BUILD

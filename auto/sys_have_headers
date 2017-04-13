@@ -1,4 +1,4 @@
-cat << END >> $ATM_AUTO_HEADERS_H
+cat << END >> $ATM_AUTO_SYS_HEADERS_H
 
 #ifndef $have
 #define $have  1

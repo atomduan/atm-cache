@@ -1,11 +1,12 @@
 #include "atm_config.h"
 #include "atm_core.h"
+#include "atm_hash.h"
 
 static uint8_t siphash_seed[16];
 
 void atm_hash_init_siphash_seed() {
-    char *p = siphash_seed;
-    unsigned int len = sizeof(hashseed);
+    char *p = (char *)siphash_seed;
+    unsigned int len = sizeof(siphash_seed);
     char *charset = "0123456789abcdef";
     unsigned int j;
 
@@ -42,25 +43,25 @@ atm_hash_t *atm_hash_init() {
 }
 
 atm_int_t atm_hash_contains(atm_str_t *key) {
-
+    return 0;
 }
 
 atm_uint_t atm_hash_key_func(atm_str_t *key) {
     uint64_t hash;
     uint8_t *hash_seed;
-    hash_seed = atm_hash_get_siphash_seed();
+    hash_seed = siphash_seed;
     hash = atm_siphash(key->data, key->len, hash_seed);
     return (atm_uint_t) hash;
 }
 
 void *atm_hash_get(atm_hash_t *hash, atm_str_t *key) {
-
+    return (void *)NULL;
 }
 
 void *atm_hash_set(atm_hash_t *hash, atm_str_t *key, atm_str_t *value) {
-
+    return (void *)NULL;
 }
 
 atm_int_t atm_hash_remove(atm_hash_t *hash, atm_str_t *key) {
-
+    return 0;
 }

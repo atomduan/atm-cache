@@ -36,7 +36,7 @@ if [ -x $ATM_AUTOTEST ]; then
               | tr abcdefghijklmnopqrstuvwxyz/. ABCDEFGHIJKLMNOPQRSTUVWXYZ__`
 
 
-    have=ATM_HAVE_$atm_name . auto/have_headers
+    have=ATM_HAVE_$atm_name . auto/sys_have_headers
 
     eval "ATM_INCLUDE_$atm_name='#include <$atm_include>'"
 

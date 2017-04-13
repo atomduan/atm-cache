@@ -10,9 +10,12 @@ case "$ATM_PLATFORM" in
     ;;
 
     *)
-        CORE_INCS="$UNIX_INCS"
-        CORE_DEPS="$UNIX_DEPS $POSIX_DEPS"
-        CORE_SRCS="$UNIX_SRCS"
+        cat << END
+
+$0: current PLATFORM [$ATM_PLATFORM] has not support yet
+
+END
+        exit 1
     ;;
 esac
 

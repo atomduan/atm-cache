@@ -1,4 +1,4 @@
-have=ATM_LINUX . auto/have_headers
+have=ATM_LINUX . auto/sys_have_headers
 
 atm_spacer='
 '
@@ -134,7 +134,7 @@ atm_feature_test="int s = 0, fd = 1;
 . auto/feature
 
 
-atm_include="sys/prctl.h"; . auto/include
+atm_include="sys/prctl.h"; . auto/sys_include
 
 # prctl(PR_SET_DUMPABLE)
 
@@ -175,7 +175,7 @@ atm_feature_test="struct crypt_data  cd;
 . auto/feature
 
 
-atm_include="sys/vfs.h";     . auto/include
+atm_include="sys/vfs.h";     . auto/sys_include
 
 
 CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64"

@@ -16,10 +16,9 @@
  */
 #include "atm_config.h"
 #include "atm_core.h"
-#include "atmcache.h"
 
 static void atm_initialize() {
-
+    atm_hash_init_siphash_seed();
 }
 
 static void atm_service() {

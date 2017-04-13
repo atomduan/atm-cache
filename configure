@@ -9,7 +9,7 @@ export LC_ALL
 
 test -d $ATM_BUILD || mkdir -p $ATM_BUILD
 
-echo > $ATM_AUTO_HEADERS_H
+echo > $ATM_AUTO_SYS_HEADERS_H
 echo > $ATM_AUTOCONF_ERR
 
 if [ $ATM_DEBUG = YES ]; then
@@ -30,7 +30,7 @@ else
 fi
 
 . auto/cc/conf
-. auto/headers
+. auto/sys_headers
 . auto/os/conf
 . auto/unix
 . auto/threads

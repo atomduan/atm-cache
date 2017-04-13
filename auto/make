@@ -89,7 +89,7 @@ atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
 
 cat << END                                                    >> $ATM_MAKEFILE
 
-build:	binary modules
+build:	binary 
 
 binary:	$ATM_BUILD${atm_dirsep}atmcache$atm_binext
 
@@ -97,8 +97,6 @@ $ATM_BUILD${atm_dirsep}atmcache$atm_binext:	$atm_deps$atm_spacer
 	\$(LINK) $atm_long_start$atm_binout$ATM_BUILD${atm_dirsep}atmcache$atm_long_cont$atm_build$atm_libs$atm_link$atm_main_link
 	$atm_rcc
 $atm_long_end
-
-modules:
 END
 
 

@@ -39,7 +39,7 @@ fi
 
 cat << END > Makefile
 
-default:	build
+default:	build_atmcache
 
 clean:
 	rm -rf Makefile $ATM_BUILD

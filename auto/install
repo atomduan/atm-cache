@@ -66,8 +66,7 @@ fi
 
 cat << END >> Makefile
 
-.PHONY:build
-build:
+build_atmcache:
 	\$(MAKE) -f $ATM_MAKEFILE
 
 install:

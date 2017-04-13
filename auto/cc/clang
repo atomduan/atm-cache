@@ -1,76 +1,48 @@
 # clang
-
-
 ATM_CLANG_VER=`$CC -v 2>&1 | grep '\(clang\|LLVM\) version' 2>&1 \
                            | sed -e 's/^.* version \(.*\)/\1/'`
-
 echo " + clang version: $ATM_CLANG_VER"
-
 have=ATM_COMPILER value="\"clang $ATM_CLANG_VER\"" . auto/define
 
-
 CC_TEST_FLAGS="-pipe"
-
 
 # optimizations
 
 #ATM_CLANG_OPT="-O2"
 #ATM_CLANG_OPT="-Oz"
 ATM_CLANG_OPT="-O"
-
 case $CPU in
     pentium)
         # optimize for Pentium
         CPU_OPT="-march=pentium"
         ATM_CPU_CACHE_LINE=32
     ;;
-
     pentiumpro | pentium3)
         # optimize for Pentium Pro, Pentium II and Pentium III
         CPU_OPT="-march=pentiumpro"
         ATM_CPU_CACHE_LINE=32
     ;;
-
     pentium4)
         # optimize for Pentium 4
         CPU_OPT="-march=pentium4"
         ATM_CPU_CACHE_LINE=128
     ;;
-
     athlon)
         # optimize for Athlon
         CPU_OPT="-march=athlon"
         ATM_CPU_CACHE_LINE=64
     ;;
-
     opteron)
         # optimize for Opteron
         CPU_OPT="-march=opteron"
         ATM_CPU_CACHE_LINE=64
     ;;
-
 esac
-
 CC_AUX_FLAGS="$CC_AUX_FLAGS $CPU_OPT"
-
 
 CFLAGS="$CFLAGS -pipe $CPU_OPT"
 
-if [ ".$PCRE_OPT" = "." ]; then
-    PCRE_OPT="-O2 -pipe $CPU_OPT"
-else
-    PCRE_OPT="$PCRE_OPT -pipe"
-fi
-
-if [ ".$ZLIB_OPT" = "." ]; then
-    ZLIB_OPT="-O2 -pipe $CPU_OPT"
-else
-    ZLIB_OPT="$ZLIB_OPT -pipe"
-fi
-
-
 # warnings
-
 CFLAGS="$CFLAGS $ATM_CLANG_OPT -Wall -Wextra -Wpointer-arith"
 CFLAGS="$CFLAGS -Wconditional-uninitialized"
 #CFLAGS="$CFLAGS -Wmissing-prototypes"
@@ -88,7 +60,3 @@ CFLAGS="$CFLAGS -Werror"
 
 # debug
 CFLAGS="$CFLAGS -g"
-
-if [ ".$CPP" = "." ]; then
-    CPP="$CC -E"
-fi

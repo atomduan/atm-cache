@@ -1,111 +1,51 @@
 echo "checking for $ATM_SYSTEM specific features"
 
 case "$ATM_PLATFORM" in
-
-    FreeBSD:*)
-        . auto/os/freebsd
-    ;;
-
     Linux:*)
         . auto/os/linux
-    ;;
-
-    SunOS:*)
-        . auto/os/solaris
     ;;
 
     Darwin:*)
         . auto/os/darwin
     ;;
 
-    win32)
-        . auto/os/win32
-    ;;
-
-    DragonFly:*)
-        have=ATM_FREEBSD . auto/have_headers
-        CORE_INCS="$UNIX_INCS"
-        CORE_DEPS="$UNIX_DEPS $FREEBSD_DEPS"
-        CORE_SRCS="$UNIX_SRCS $FREEBSD_SRCS"
-
-        echo " + sendfile() found"
-        have=ATM_HAVE_SENDFILE . auto/have
-        CORE_SRCS="$CORE_SRCS $FREEBSD_SENDFILE_SRCS"
-
-        atm_spacer='
-'
-    ;;
-
-    HP-UX:*)
-        # HP/UX
-        have=ATM_HPUX . auto/have_headers
-        CORE_INCS="$UNIX_INCS"
-        CORE_DEPS="$UNIX_DEPS $POSIX_DEPS"
-        CORE_SRCS="$UNIX_SRCS"
-        CC_AUX_FLAGS="$CC_AUX_FLAGS -D_XOPEN_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
-        CC_AUX_FLAGS="$CC_AUX_FLAGS -D_HPUX_ALT_XOPEN_SOCKET_API"
-    ;;
-
-    OSF1:*)
-        # Tru64 UNIX
-        have=ATM_TRU64 . auto/have_headers
-        have=ATM_HAVE_STRERROR_R . auto/nohave
-        CORE_INCS="$UNIX_INCS"
-        CORE_DEPS="$UNIX_DEPS $POSIX_DEPS"
-        CORE_SRCS="$UNIX_SRCS"
-    ;;
-
-    GNU:*)
-        # GNU Hurd
-        have=ATM_GNU_HURD . auto/have_headers
-        CORE_INCS="$UNIX_INCS"
-        CORE_DEPS="$UNIX_DEPS $POSIX_DEPS"
-        CORE_SRCS="$UNIX_SRCS"
-        CC_AUX_FLAGS="$CC_AUX_FLAGS -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64"
-    ;;
-
     *)
         CORE_INCS="$UNIX_INCS"
         CORE_DEPS="$UNIX_DEPS $POSIX_DEPS"
         CORE_SRCS="$UNIX_SRCS"
     ;;
-
 esac
 
 
 case "$ATM_MACHINE" in
-
     i386 | i686 | i86pc)
-        have=ATM_HAVE_NONALIGNED . auto/have
-        ATM_MACH_CACHE_LINE=32
+        have=NGX_HAVE_NONALIGNED . auto/have
+        NGX_MACH_CACHE_LINE=32
     ;;
-
     amd64 | x86_64)
-        have=ATM_HAVE_NONALIGNED . auto/have
-        ATM_MACH_CACHE_LINE=64
+        have=NGX_HAVE_NONALIGNED . auto/have
+        NGX_MACH_CACHE_LINE=64
     ;;
-
     sun4u | sun4v | sparc | sparc64)
-        have=ATM_ALIGNMENT value=16 . auto/define
+        have=NGX_ALIGNMENT value=16 . auto/define
         # TODO
-        ATM_MACH_CACHE_LINE=64
+        NGX_MACH_CACHE_LINE=64
     ;;
-
     ia64 )
-        have=ATM_ALIGNMENT value=16 . auto/define
+        have=NGX_ALIGNMENT value=16 . auto/define
         # TODO
-        ATM_MACH_CACHE_LINE=64
+        NGX_MACH_CACHE_LINE=64
     ;;
-
     *)
-        have=ATM_ALIGNMENT value=16 . auto/define
-        ATM_MACH_CACHE_LINE=32
+        have=NGX_ALIGNMENT value=16 . auto/define
+        NGX_MACH_CACHE_LINE=32
     ;;
-
 esac
+
 
 if test -z "$ATM_CPU_CACHE_LINE"; then
     ATM_CPU_CACHE_LINE=$ATM_MACH_CACHE_LINE
 fi
+
 
 have=ATM_CPU_CACHE_LINE value=$ATM_CPU_CACHE_LINE . auto/define

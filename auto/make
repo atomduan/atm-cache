@@ -1,12 +1,7 @@
 echo "creating $ATM_MAKEFILE"
 
-mkdir -p $ATM_BUILD/src/core $ATM_BUILD/src/event $ATM_BUILD/src/event/modules \
-         $ATM_BUILD/src/os/unix $ATM_BUILD/src/os/win32 \
-         $ATM_BUILD/src/http $ATM_BUILD/src/http/v2 $ATM_BUILD/src/http/modules \
-         $ATM_BUILD/src/http/modules/perl \
-         $ATM_BUILD/src/mail \
-         $ATM_BUILD/src/stream \
-         $ATM_BUILD/src/misc
+mkdir -p $ATM_BUILD/src/core \
+         $ATM_BUILD/src/test
 
 
 atm_build_dir=$ATM_BUILD$atm_regex_dirsep
@@ -17,17 +12,9 @@ cat << END                                                     > $ATM_MAKEFILE
 
 CC =	$CC
 CFLAGS = $CFLAGS
-CPP =	$CPP
 LINK =	$LINK
 
 END
-
-
-if test -n "$ATM_PERL_CFLAGS"; then
-    echo ATM_PERL_CFLAGS = $ATM_PERL_CFLAGS                   >> $ATM_MAKEFILE
-    echo ATM_PM_CFLAGS = $ATM_PM_CFLAGS                       >> $ATM_MAKEFILE
-    echo ATM_PM_LDFLAGS = $ATM_PM_LDFLAGS                     >> $ATM_MAKEFILE
-fi
 
 
 # ALL_INCS, required by the addons and by OpenWatcom C precompiled headers
@@ -66,117 +53,12 @@ CORE_INCS = $atm_include_opt$atm_incs
 END
 
 
-# the http dependencies and include paths
-
-if [ $HTTP = YES ]; then
-
-    atm_all_srcs="$atm_all_srcs $HTTP_SRCS"
-
-    atm_deps=`echo $HTTP_DEPS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_incs=`echo $HTTP_INCS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-HTTP_DEPS = $atm_deps
-
-
-HTTP_INCS = $atm_include_opt$atm_incs
-
-END
-
-fi
-
-
-# the mail dependencies and include paths
-
-if [ $MAIL != NO ]; then
-
-    if [ $MAIL = YES ]; then
-        atm_all_srcs="$atm_all_srcs $MAIL_SRCS"
-    fi
-
-    atm_deps=`echo $MAIL_DEPS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_incs=`echo $MAIL_INCS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-MAIL_DEPS = $atm_deps
-
-
-MAIL_INCS = $atm_include_opt$atm_incs
-
-END
-
-fi
-
-
-# the stream dependencies and include paths
-
-if [ $STREAM != NO ]; then
-
-    if [ $STREAM = YES ]; then
-        atm_all_srcs="$atm_all_srcs $STREAM_SRCS"
-    fi
-
-    atm_deps=`echo $STREAM_DEPS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_incs=`echo $STREAM_INCS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-STREAM_DEPS = $atm_deps
-
-
-STREAM_INCS = $atm_include_opt$atm_incs
-
-END
-
-fi
-
-
 atm_all_srcs="$atm_all_srcs $MISC_SRCS"
-
-
-if test -n "$ATM_ADDON_SRCS$DYNAMIC_MODULES"; then
-
-cat << END                                                >> $ATM_MAKEFILE
-
-ADDON_DEPS = \$(CORE_DEPS) $ATM_ADDON_DEPS
-
-END
-
-fi
 
 
 # atmcache
 
 atm_all_srcs=`echo $atm_all_srcs | sed -e "s/\//$atm_regex_dirsep/g"`
-
-for atm_src in $ATM_ADDON_SRCS
-do
-    atm_obj="addon/`basename \`dirname $atm_src\``"
-
-    test -d $ATM_BUILD/$atm_obj || mkdir -p $ATM_BUILD/$atm_obj
-
-    atm_obj=`echo $atm_obj/\`basename $atm_src\` \
-        | sed -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_all_srcs="$atm_all_srcs $atm_obj"
-done
 
 atm_all_build=`echo $atm_all_srcs \
     | sed -e "s#\([^ ]*\.\)cpp#$ATM_BUILD\/\1$atm_objext#g" \
@@ -184,23 +66,11 @@ atm_all_build=`echo $atm_all_srcs \
           -e "s#\([^ ]*\.\)c#$ATM_BUILD\/\1$atm_objext#g" \
           -e "s#\([^ ]*\.\)S#$ATM_BUILD\/\1$atm_objext#g"`
 
-atm_modules_c=`echo $ATM_MODULES_C | sed -e "s/\//$atm_regex_dirsep/g"`
-
-atm_modules_obj=`echo $atm_modules_c | sed -e "s/\(.*\.\)c/\1$atm_objext/"`
-
-
-if test -n "$ATM_RES"; then
-   atm_res=$ATM_RES
-else
-   atm_res="$ATM_RC $ATM_ICONS"
-   atm_rcc=`echo $ATM_RCC | sed -e "s/\//$atm_regex_dirsep/g"`
-fi
-
-atm_deps=`echo $atm_all_build $atm_modules_obj $atm_res $LINK_DEPS \
+atm_deps=`echo $atm_all_build $LINK_DEPS \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
           -e "s/\//$atm_regex_dirsep/g"`
 
-atm_build=`echo $atm_all_build $atm_modules_obj \
+atm_build=`echo $atm_all_build \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_long_regex_cont\1/g" \
           -e "s/\//$atm_regex_dirsep/g"`
 
@@ -219,7 +89,7 @@ atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
 
 cat << END                                                    >> $ATM_MAKEFILE
 
-build:	binary modules manpage
+build:	binary modules
 
 binary:	$ATM_BUILD${atm_dirsep}atmcache$atm_binext
 
@@ -232,20 +102,11 @@ modules:
 END
 
 
-# atm_modules.c
-
 if test -n "$ATM_PCH"; then
     atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
 else
     atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS)"
 fi
-
-cat << END                                                    >> $ATM_MAKEFILE
-
-$atm_modules_obj:	\$(CORE_DEPS)$atm_cont$atm_modules_c
-	$atm_cc$atm_tab$atm_objout$atm_modules_obj$atm_tab$atm_modules_c$ATM_AUX
-
-END
 
 
 # the core sources
@@ -269,199 +130,6 @@ END
 done
 
 
-# the http sources
-
-if [ $HTTP = YES ]; then
-
-    if test -n "$ATM_PCH"; then
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-    else
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS) \$(HTTP_INCS)"
-        atm_perl_cc="\$(CC) $atm_compile_opt \$(ATM_PERL_CFLAGS)"
-        atm_perl_cc="$atm_perl_cc \$(CORE_INCS) \$(HTTP_INCS)"
-    fi
-
-    for atm_source in $HTTP_SRCS
-    do
-        atm_src=`echo $atm_source | sed -e "s/\//$atm_regex_dirsep/g"`
-        atm_obj=`echo $atm_src \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        if [ $atm_source = src/http/modules/perl/atm_http_perl_module.c ]; then
-
-            cat << END                                        >> $ATM_MAKEFILE
-
-$atm_obj:	\$(CORE_DEPS) \$(HTTP_DEPS)$atm_cont$atm_src
-	$atm_perl_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-        else
-
-            cat << END                                        >> $ATM_MAKEFILE
-
-$atm_obj:	\$(CORE_DEPS) \$(HTTP_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-
-        fi
-     done
-
-fi
-
-
-# the mail sources
-
-if [ $MAIL = YES ]; then
-
-    if test -n "$ATM_PCH"; then
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-    else
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS) \$(MAIL_INCS)"
-    fi
-
-    for atm_src in $MAIL_SRCS
-    do
-        atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
-        atm_obj=`echo $atm_src \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        cat << END                                            >> $ATM_MAKEFILE
-
-$atm_obj:	\$(CORE_DEPS) \$(MAIL_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-     done
-
-fi
-
-
-# the stream sources
-
-if [ $STREAM = YES ]; then
-
-    if test -n "$ATM_PCH"; then
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-    else
-        atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS) \$(STREAM_INCS)"
-    fi
-
-    for atm_src in $STREAM_SRCS
-    do
-        atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
-        atm_obj=`echo $atm_src \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        cat << END                                            >> $ATM_MAKEFILE
-
-$atm_obj:	\$(CORE_DEPS) \$(STREAM_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-     done
-
-fi
-
-
-# the misc sources
-
-if test -n "$MISC_SRCS"; then
-
-    atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-
-    for atm_src in $MISC_SRCS
-    do
-        atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
-        atm_obj=`echo $atm_src \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        cat << END                                            >> $ATM_MAKEFILE
-
-$atm_obj:	\$(CORE_DEPS) $atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-     done
-
-fi
-
-
-# the addons sources
-
-if test -n "$ATM_ADDON_SRCS"; then
-
-    atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-
-    for atm_src in $ATM_ADDON_SRCS
-    do
-        atm_obj="addon/`basename \`dirname $atm_src\``"
-
-        atm_obj=`echo $atm_obj/\`basename $atm_src\` \
-            | sed -e "s/\//$atm_regex_dirsep/g"`
-
-        atm_obj=`echo $atm_obj \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
-
-        cat << END                                            >> $ATM_MAKEFILE
-
-$atm_obj:	\$(ADDON_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-     done
-
-fi
-
-
-# the addons config.make
-
-if test -n "$ATM_ADDONS$DYNAMIC_ADDONS"; then
-
-    for atm_addon_dir in $ATM_ADDONS $DYNAMIC_ADDONS
-    do
-        if test -f $atm_addon_dir/config.make; then
-            . $atm_addon_dir/config.make
-        fi
-    done
-fi
-
-
-# Win32 resource file
-
-if test -n "$ATM_RES"; then
-
-    atm_res=`echo "$ATM_RES:	$ATM_RC $ATM_ICONS" \
-                 | sed -e "s/\//$atm_regex_dirsep/g"`
-    atm_rcc=`echo $ATM_RCC | sed -e "s/\//$atm_regex_dirsep/g"`
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-$atm_res
-	$atm_rcc
-
-END
-
-fi
-
-
 # the precompiled headers
 
 if test -n "$ATM_PCH"; then
@@ -482,186 +150,3 @@ $atm_pch
 END
 
 fi
-
-
-# dynamic modules
-
-if test -n "$ATM_PCH"; then
-    atm_cc="\$(CC) $atm_compile_opt $atm_pic_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-else
-    atm_cc="\$(CC) $atm_compile_opt $atm_pic_opt \$(CFLAGS) \$(ALL_INCS)"
-    atm_perl_cc="\$(CC) $atm_compile_opt $atm_pic_opt \$(ATM_PERL_CFLAGS)"
-    atm_perl_cc="$atm_perl_cc \$(ALL_INCS)"
-fi
-
-for atm_module in $DYNAMIC_MODULES
-do
-    eval atm_module_srcs="\$${atm_module}_SRCS"
-    eval eval atm_module_libs="\\\"\$${atm_module}_LIBS\\\""
-
-    eval atm_module_modules="\$${atm_module}_MODULES"
-    eval atm_module_order="\$${atm_module}_ORDER"
-
-    atm_modules_c=$ATM_BUILD/${atm_module}_modules.c
-
-    cat << END                                    > $atm_modules_c
-
-#include <atm_config.h>
-#include <atm_core.h>
-
-END
-
-    for mod in $atm_module_modules
-    do
-        echo "extern atm_module_t  $mod;"         >> $atm_modules_c
-    done
-
-    echo                                          >> $atm_modules_c
-    echo 'atm_module_t *atm_modules[] = {'        >> $atm_modules_c
-
-    for mod in $atm_module_modules
-    do
-        echo "    &$mod,"                         >> $atm_modules_c
-    done
-
-    cat << END                                    >> $atm_modules_c
-    NULL
-};
-
-END
-
-    echo 'char *atm_module_names[] = {'           >> $atm_modules_c
-
-    for mod in $atm_module_modules
-    do
-        echo "    \"$mod\","                      >> $atm_modules_c
-    done
-
-    cat << END                                    >> $atm_modules_c
-    NULL
-};
-
-END
-
-    echo 'char *atm_module_order[] = {'           >> $atm_modules_c
-
-    for mod in $atm_module_order
-    do
-        echo "    \"$mod\","                      >> $atm_modules_c
-    done
-
-    cat << END                                    >> $atm_modules_c
-    NULL
-};
-
-END
-
-    atm_modules_c=`echo $atm_modules_c | sed -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_modules_obj=`echo $atm_modules_c \
-        | sed -e "s/\(.*\.\)c/\1$atm_objext/"`
-
-    atm_module_build=
-    for atm_src in $atm_module_srcs
-    do
-        case "$atm_src" in
-            src/*)
-                atm_obj=$atm_src
-                ;;
-            *)
-                atm_obj="addon/`basename \`dirname $atm_src\``"
-                mkdir -p $ATM_BUILD/$atm_obj
-                atm_obj="$atm_obj/`basename $atm_src`"
-                ;;
-        esac
-
-        atm_module_build="$atm_module_build $atm_obj"
-    done
-
-    atm_module_build=`echo $atm_module_build \
-        | sed -e "s#\([^ ]*\.\)cpp#$ATM_BUILD\/\1$atm_objext#g" \
-              -e "s#\([^ ]*\.\)cc#$ATM_BUILD\/\1$atm_objext#g" \
-              -e "s#\([^ ]*\.\)c#$ATM_BUILD\/\1$atm_objext#g" \
-              -e "s#\([^ ]*\.\)S#$ATM_BUILD\/\1$atm_objext#g"`
-
-    atm_deps=`echo $atm_module_build $atm_modules_obj $LINK_DEPS \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_build=`echo $atm_module_build $atm_modules_obj \
-        | sed -e "s/  *\([^ ][^ ]*\)/$atm_long_regex_cont\1/g" \
-              -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_obj=$ATM_BUILD$atm_dirsep$atm_module$atm_modext
-
-    if [ "$ATM_PLATFORM" = win32 ]; then
-        atm_module_libs="$CORE_LIBS $atm_module_libs"
-    fi
-
-    atm_libs=
-    if test -n "$ATM_LD_OPT$atm_module_libs"; then
-        atm_libs=`echo $ATM_LD_OPT $atm_module_libs \
-            | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`
-    fi
-
-    atm_link=${CORE_LINK:+`echo $CORE_LINK \
-        | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`}
-
-    atm_module_link=${MODULE_LINK:+`echo $MODULE_LINK \
-        | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`}
-
-
-    cat << END                                            >> $ATM_MAKEFILE
-
-modules:	$atm_obj
-
-$atm_obj:	$atm_deps$atm_spacer
-	\$(LINK) $atm_long_start$atm_binout$atm_obj$atm_long_cont$atm_build$atm_libs$atm_link$atm_module_link
-$atm_long_end
-
-$atm_modules_obj:	\$(CORE_DEPS)$atm_cont$atm_modules_c
-	$atm_cc$atm_tab$atm_objout$atm_modules_obj$atm_tab$atm_modules_c$ATM_AUX
-
-END
-
-    for atm_source in $atm_module_srcs
-    do
-        case "$atm_source" in
-            src/*)
-                atm_obj=`echo $atm_source | sed -e "s/\//$atm_regex_dirsep/g"`
-                ;;
-            *)
-                atm_obj="addon/`basename \`dirname $atm_source\``"
-                atm_obj=`echo $atm_obj/\`basename $atm_source\` \
-                    | sed -e "s/\//$atm_regex_dirsep/g"`
-                ;;
-        esac
-
-        atm_obj=`echo $atm_obj \
-            | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-                  -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
-
-        atm_src=`echo $atm_source | sed -e "s/\//$atm_regex_dirsep/g"`
-
-        if [ $atm_source = src/http/modules/perl/atm_http_perl_module.c ]; then
-
-            cat << END                                        >> $ATM_MAKEFILE
-
-$atm_obj:	\$(ADDON_DEPS)$atm_cont$atm_src
-	$atm_perl_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-        else
-
-            cat << END                                        >> $ATM_MAKEFILE
-
-$atm_obj:	\$(ADDON_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
-
-END
-
-        fi
-    done
-done

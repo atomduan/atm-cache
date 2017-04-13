@@ -1,17 +1,10 @@
 # gcc 2.7.2.3, 2.8.1, 2.95.4, egcs-1.1.2
 #     3.0.4, 3.1.1, 3.2.3, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.2
 #     4.0.0, 4.0.1, 4.1.0
-
-
 ATM_GCC_VER=`$CC -v 2>&1 | grep 'gcc version' 2>&1 \
                          | sed -e 's/^.* version \(.*\)/\1/'`
-
 echo " + gcc version: $ATM_GCC_VER"
-
 have=ATM_COMPILER value="\"gcc $ATM_GCC_VER\"" . auto/define
-
-
-# Solaris 7's /usr/ccs/bin/as does not support "-pipe"
 
 CC_TEST_FLAGS="-pipe"
 
@@ -25,19 +18,15 @@ atm_feature_test=
 . auto/feature
 
 CC_TEST_FLAGS=
-
 if [ $atm_found = yes ]; then
     PIPE="-pipe"
 fi
 
-
 case "$ATM_MACHINE" in
-
     sun4u | sun4v | sparc | sparc64 )
         # "-mcpu=v9" enables the "casa" assembler instruction
         CFLAGS="$CFLAGS -mcpu=v9"
     ;;
-
 esac
 
 
@@ -55,45 +44,38 @@ case $CPU in
         CPU_OPT="-march=pentium"
         ATM_CPU_CACHE_LINE=32
     ;;
-
     pentiumpro | pentium3)
         # optimize for Pentium Pro, Pentium II and Pentium III
         CPU_OPT="-march=pentiumpro"
         ATM_CPU_CACHE_LINE=32
     ;;
-
     pentium4)
         # optimize for Pentium 4, gcc 3.x
         CPU_OPT="-march=pentium4"
         ATM_CPU_CACHE_LINE=128
     ;;
-
     athlon)
         # optimize for Athlon, gcc 3.x
         CPU_OPT="-march=athlon"
         ATM_CPU_CACHE_LINE=64
     ;;
-
     opteron)
         # optimize for Opteron, gcc 3.x
         CPU_OPT="-march=opteron"
         ATM_CPU_CACHE_LINE=64
     ;;
-
     sparc32)
         # build 32-bit UltraSparc binary
         CPU_OPT="-m32"
         CORE_LINK="$CORE_LINK -m32"
         ATM_CPU_CACHE_LINE=64
     ;;
-
     sparc64)
         # build 64-bit UltraSparc binary
         CPU_OPT="-m64"
         CORE_LINK="$CORE_LINK -m64"
         ATM_CPU_CACHE_LINE=64
     ;;
-
     ppc64)
         # build 64-bit PowerPC binary
         CPU_OPT="-m64"
@@ -102,7 +84,6 @@ case $CPU in
         CORE_LINK="$CORE_LINK -m64"
         ATM_CPU_CACHE_LINE=128
     ;;
-
 esac
 
 CC_AUX_FLAGS="$CC_AUX_FLAGS $CPU_OPT"
@@ -116,18 +97,6 @@ esac
 
 
 CFLAGS="$CFLAGS $PIPE $CPU_OPT"
-
-if [ ".$PCRE_OPT" = "." ]; then
-    PCRE_OPT="-O2 -fomit-frame-pointer $PIPE $CPU_OPT"
-else
-    PCRE_OPT="$PCRE_OPT $PIPE"
-fi
-
-if [ ".$ZLIB_OPT" = "." ]; then
-    ZLIB_OPT="-O2 -fomit-frame-pointer $PIPE $CPU_OPT"
-else
-    ZLIB_OPT="$ZLIB_OPT $PIPE"
-fi
 
 
 # warnings
@@ -145,7 +114,6 @@ case "$ATM_GCC_VER" in
         # we have a lot of the unused function arguments
         CFLAGS="$CFLAGS -Wno-unused"
     ;;
-
     *)
         # we have a lot of the unused function arguments
         CFLAGS="$CFLAGS -Wno-unused-parameter"
@@ -165,10 +133,3 @@ CFLAGS="$CFLAGS -Werror"
 
 # debug
 CFLAGS="$CFLAGS -g"
-
-# DragonFly's gcc3 generates DWARF
-#CFLAGS="$CFLAGS -g -gstabs"
-
-if [ ".$CPP" = "." ]; then
-    CPP="$CC -E"
-fi

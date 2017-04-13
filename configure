@@ -12,9 +12,6 @@ test -d $ATM_BUILD || mkdir -p $ATM_BUILD
 echo > $ATM_AUTO_HEADERS_H
 echo > $ATM_AUTOCONF_ERR
 
-echo "#define ATM_CONFIGURE \"$ATM_CONFIGURE\"" > $ATM_AUTO_CONFIG_H
-
-
 if [ $ATM_DEBUG = YES ]; then
     have=ATM_DEBUG . auto/have
 fi
@@ -22,40 +19,21 @@ fi
 
 if test -z "$ATM_PLATFORM"; then
     echo "checking for OS"
-
     ATM_SYSTEM=`uname -s 2>/dev/null`
     ATM_RELEASE=`uname -r 2>/dev/null`
     ATM_MACHINE=`uname -m 2>/dev/null`
-
     echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
-
     ATM_PLATFORM="$ATM_SYSTEM:$ATM_RELEASE:$ATM_MACHINE";
-
-    case "$ATM_SYSTEM" in
-        MINGW32_*)
-            ATM_PLATFORM=win32
-        ;;
-    esac
-
 else
     echo "building for $ATM_PLATFORM"
     ATM_SYSTEM=$ATM_PLATFORM
 fi
 
 . auto/cc/conf
-
-if [ "$ATM_PLATFORM" != win32 ]; then
-    . auto/headers
-fi
-
+. auto/headers
 . auto/os/conf
-
-if [ "$ATM_PLATFORM" != win32 ]; then
-    . auto/unix
-fi
-
+. auto/unix
 . auto/threads
-. auto/modules
 . auto/lib/conf
 
 case ".$ATM_PREFIX" in
@@ -63,11 +41,9 @@ case ".$ATM_PREFIX" in
         ATM_PREFIX=${ATM_PREFIX:-/usr/local/atmcache}
         have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
     ;;
-
     .!)
         ATM_PREFIX=
     ;;
-
     *)
         have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
     ;;
@@ -83,19 +59,9 @@ have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
 have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define
 have=ATM_ERROR_LOG_PATH value="\"$ATM_ERROR_LOG_PATH\"" . auto/define
 
-have=ATM_HTTP_LOG_PATH value="\"$ATM_HTTP_LOG_PATH\"" . auto/define
-have=ATM_HTTP_CLIENT_TEMP_PATH value="\"$ATM_HTTP_CLIENT_TEMP_PATH\"" . auto/define
-have=ATM_HTTP_PROXY_TEMP_PATH value="\"$ATM_HTTP_PROXY_TEMP_PATH\"" . auto/define
-have=ATM_HTTP_FASTCGI_TEMP_PATH value="\"$ATM_HTTP_FASTCGI_TEMP_PATH\"" . auto/define
-have=ATM_HTTP_UWSGI_TEMP_PATH value="\"$ATM_HTTP_UWSGI_TEMP_PATH\"" . auto/define
-have=ATM_HTTP_SCGI_TEMP_PATH value="\"$ATM_HTTP_SCGI_TEMP_PATH\"" . auto/define
-
 . auto/make
 . auto/lib/make
 . auto/install
-
-# STUB
-. auto/stubs
 
 have=ATM_USER value="\"$ATM_USER\"" . auto/define
 have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define

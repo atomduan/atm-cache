@@ -598,17 +598,15 @@ ATM_INCLUDE_AUTO_CONFIG_H="#include \"atm_auto_config.h\""
 
 atm_type="uint32_t"; atm_types="u_int32_t"; . auto/types/typedef
 atm_type="uint64_t"; atm_types="u_int64_t"; . auto/types/typedef
-
 atm_type="sig_atomic_t"; atm_types="int"; . auto/types/typedef
+
 . auto/types/sizeof
+
 atm_param=ATM_SIG_ATOMIC_T_SIZE; atm_value=$atm_size; . auto/types/value
 
 atm_type="socklen_t"; atm_types="int"; . auto/types/typedef
-
 atm_type="in_addr_t"; atm_types="uint32_t u_int32_t"; . auto/types/typedef
-
 atm_type="in_port_t"; atm_types="u_short"; . auto/types/typedef
-
 atm_type="rlim_t"; atm_types="int"; . auto/types/typedef
 
 . auto/types/uintptr_t

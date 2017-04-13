@@ -12,11 +12,14 @@ atm_objext="o"
 atm_binext=
 atm_modext=".so"
 
+
 atm_long_start=
 atm_long_end=
 
+
 atm_regex_dirsep="\/"
 atm_dirsep='/'
+
 
 atm_regex_cont=' \\\
 	'
@@ -26,220 +29,121 @@ atm_tab=' \
 		'
 atm_spacer=
 
+
 atm_long_regex_cont=$atm_regex_cont
 atm_long_cont=$atm_cont
 
+
 . auto/cc/name
 
+
 if test -n "$CFLAGS"; then
-
     CC_TEST_FLAGS="$CFLAGS $ATM_CC_OPT"
-
-    case $ATM_CC_NAME in
-
-        ccc)
-            # Compaq C V6.5-207
-
-            atm_include_opt="-I"
-        ;;
-
-        sunc)
-
-            MAIN_LINK=
-            MODULE_LINK="-G"
-
-            case "$ATM_MACHINE" in
-
-                i86pc)
-                    ATM_AUX=" src/os/unix/atm_sunpro_x86.il"
-                ;;
-
-                sun4u | sun4v)
-                    ATM_AUX=" src/os/unix/atm_sunpro_sparc64.il"
-                ;;
-
-            esac
-
-            case $CPU in
-
-                amd64)
-                    ATM_AUX=" src/os/unix/atm_sunpro_amd64.il"
-                ;;
-
-            esac
-        ;;
-
-    esac
-
 else
-
     case $ATM_CC_NAME in
         gcc)
             # gcc 2.7.2.3, 2.8.1, 2.95.4, egcs-1.1.2
             #     3.0.4, 3.1.1, 3.2.3, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.2
             #     4.0.0, 4.0.1, 4.1.0
-
             . auto/cc/gcc
         ;;
-
         clang)
             # Clang C compiler
 
             . auto/cc/clang
         ;;
-
-        icc)
-            # Intel C++ compiler 7.1, 8.0, 8.1
-
-            . auto/cc/icc
-        ;;
-
-        sunc)
-            # Sun C 5.7 Patch 117837-04 2005/05/11
-
-            . auto/cc/sunc
-        ;;
-
-        ccc)
-            # Compaq C V6.5-207
-
-            . auto/cc/ccc
-        ;;
-
-        acc)
-            # aCC: HP ANSI C++ B3910B A.03.55.02
-
-            . auto/cc/acc
-        ;;
-
-        msvc*)
-            # MSVC++ 6.0 SP2, MSVC++ Toolkit 2003
-
-            . auto/cc/msvc
-        ;;
-
-        owc)
-            # Open Watcom C 1.0, 1.2
-
-            . auto/cc/owc
-        ;;
-
-        bcc)
-            # Borland C++ 5.5
-
-            . auto/cc/bcc
-        ;;
-
     esac
-
     CC_TEST_FLAGS="$CC_TEST_FLAGS $ATM_CC_OPT"
-
 fi
+
 
 CFLAGS="$CFLAGS $ATM_CC_OPT"
 ATM_TEST_LD_OPT="$ATM_LD_OPT"
 
-if [ "$ATM_PLATFORM" != win32 ]; then
 
-    if test -n "$ATM_LD_OPT"; then
-        atm_feature=--with-ld-opt=\"$ATM_LD_OPT\"
-        atm_feature_name=
-        atm_feature_run=no
-        atm_feature_incs=
-        atm_feature_path=
-        atm_feature_libs=
-        atm_feature_test=
-        . auto/feature
-
-        if [ $atm_found = no ]; then
-            echo $0: error: the invalid value in --with-ld-opt=\"$ATM_LD_OPT\"
-            echo
-            exit 1
-        fi
-    fi
-
-
-    atm_feature="-Wl,-E switch"
+if test -n "$ATM_LD_OPT"; then
+    atm_feature=--with-ld-opt=\"$ATM_LD_OPT\"
     atm_feature_name=
     atm_feature_run=no
     atm_feature_incs=
     atm_feature_path=
-    atm_feature_libs=-Wl,-E
+    atm_feature_libs=
     atm_feature_test=
     . auto/feature
-
-    if [ $atm_found = yes ]; then
-        MAIN_LINK="-Wl,-E"
+    if [ $atm_found = no ]; then
+        echo $0: error: the invalid value in --with-ld-opt=\"$ATM_LD_OPT\"
+        echo
+        exit 1
     fi
+fi
 
 
-    atm_feature="gcc builtin atomic operations"
-    atm_feature_name=ATM_HAVE_GCC_ATOMIC
-    atm_feature_run=yes
-    atm_feature_incs=
-    atm_feature_path=
-    atm_feature_libs=
-    atm_feature_test="long  n = 0;
-                      if (!__sync_bool_compare_and_swap(&n, 0, 1))
-                          return 1;
-                      if (__sync_fetch_and_add(&n, 1) != 1)
-                          return 1;
-                      if (n != 2)
-                          return 1;
-                      __sync_synchronize();"
-    . auto/feature
+atm_feature="-Wl,-E switch"
+atm_feature_name=
+atm_feature_run=no
+atm_feature_incs=
+atm_feature_path=
+atm_feature_libs=-Wl,-E
+atm_feature_test=
+. auto/feature
 
 
-    if [ "$ATM_CC_NAME" = "ccc" ]; then
-        echo "checking for C99 variadic macros ... disabled"
-    else
-        atm_feature="C99 variadic macros"
-        atm_feature_name="ATM_HAVE_C99_VARIADIC_MACROS"
-        atm_feature_run=yes
-        atm_feature_incs="#include <stdio.h>
-#define var(dummy, ...)  sprintf(__VA_ARGS__)"
-        atm_feature_path=
-        atm_feature_libs=
-        atm_feature_test="char  buf[30]; buf[0] = '0';
-                          var(0, buf, \"%d\", 1);
-                          if (buf[0] != '1') return 1"
-        . auto/feature
-     fi
+if [ $atm_found = yes ]; then
+    MAIN_LINK="-Wl,-E"
+fi
+atm_feature="gcc builtin atomic operations"
+atm_feature_name=ATM_HAVE_GCC_ATOMIC
+atm_feature_run=yes
+atm_feature_incs=
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="long  n = 0;
+                  if (!__sync_bool_compare_and_swap(&n, 0, 1))
+                      return 1;
+                  if (__sync_fetch_and_add(&n, 1) != 1)
+                      return 1;
+                  if (n != 2)
+                      return 1;
+                  __sync_synchronize();"
+. auto/feature
 
 
-    atm_feature="gcc variadic macros"
-    atm_feature_name="ATM_HAVE_GCC_VARIADIC_MACROS"
+if [ "$ATM_CC_NAME" = "ccc" ]; then
+    echo "checking for C99 variadic macros ... disabled"
+else
+    atm_feature="C99 variadic macros"
+    atm_feature_name="ATM_HAVE_C99_VARIADIC_MACROS"
     atm_feature_run=yes
     atm_feature_incs="#include <stdio.h>
-#define var(dummy, args...)  sprintf(args)"
+#define var(dummy, ...)  sprintf(__VA_ARGS__)"
     atm_feature_path=
     atm_feature_libs=
     atm_feature_test="char  buf[30]; buf[0] = '0';
                       var(0, buf, \"%d\", 1);
                       if (buf[0] != '1') return 1"
     . auto/feature
-
-
-    atm_feature="gcc builtin 64 bit byteswap"
-    atm_feature_name="ATM_HAVE_GCC_BSWAP64"
-    atm_feature_run=no
-    atm_feature_incs=
-    atm_feature_path=
-    atm_feature_libs=
-    atm_feature_test="if (__builtin_bswap64(0)) return 1"
-    . auto/feature
-
-
-#    atm_feature="inline"
-#    atm_feature_name=
-#    atm_feature_run=no
-#    atm_feature_incs="int inline f(void) { return 1 }"
-#    atm_feature_path=
-#    atm_feature_libs=
-#    atm_feature_test=
-#    . auto/feature
-#
-#    if [ $atm_found = yes ]; then
-#    fi
-
 fi
+
+
+atm_feature="gcc variadic macros"
+atm_feature_name="ATM_HAVE_GCC_VARIADIC_MACROS"
+atm_feature_run=yes
+atm_feature_incs="#include <stdio.h>
+#define var(dummy, args...)  sprintf(args)"
+
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="char  buf[30]; buf[0] = '0';
+                  var(0, buf, \"%d\", 1);
+                  if (buf[0] != '1') return 1"
+. auto/feature
+
+
+atm_feature="gcc builtin 64 bit byteswap"
+atm_feature_name="ATM_HAVE_GCC_BSWAP64"
+atm_feature_run=no
+atm_feature_incs=
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="if (__builtin_bswap64(0)) return 1"
+. auto/feature

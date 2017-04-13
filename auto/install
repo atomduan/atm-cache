@@ -1,197 +1,71 @@
-if [ $USE_PERL != NO ]; then
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-install_perl_modules:
-	cd $ATM_BUILD/src/http/modules/perl && \$(MAKE) install
-END
-
-    ATM_INSTALL_PERL_MODULES=install_perl_modules
-
-fi
-
+#convert relative path to absolute path for installation
 
 case ".$ATM_SBIN_PATH" in
     ./*)
     ;;
-
     *)
         ATM_SBIN_PATH=$ATM_PREFIX/$ATM_SBIN_PATH
     ;;
 esac
 
-
-case ".$ATM_MODULES_PATH" in
-    ./*)
-    ;;
-
-    *)
-        ATM_MODULES_PATH=$ATM_PREFIX/$ATM_MODULES_PATH
-    ;;
-esac
-
-ATM_MODULES_PATH=`dirname $ATM_MODULES_PATH/.`
-
-
 case ".$ATM_CONF_PATH" in
     ./*)
     ;;
-
     *)
         ATM_CONF_PATH=$ATM_PREFIX/$ATM_CONF_PATH
     ;;
 esac
 
-
 ATM_CONF_PREFIX=`dirname $ATM_CONF_PATH`
-
 
 case ".$ATM_PID_PATH" in
     ./*)
     ;;
-
     *)
         ATM_PID_PATH=$ATM_PREFIX/$ATM_PID_PATH
     ;;
 esac
 
-
 case ".$ATM_ERROR_LOG_PATH" in
     ./* | .)
     ;;
-
     *)
         ATM_ERROR_LOG_PATH=$ATM_PREFIX/$ATM_ERROR_LOG_PATH
     ;;
 esac
 
 
-case ".$ATM_HTTP_LOG_PATH" in
-    ./*)
-    ;;
-
-    *)
-        ATM_HTTP_LOG_PATH=$ATM_PREFIX/$ATM_HTTP_LOG_PATH
-    ;;
-esac
-
-
-if test -f man/atmcache.8 ; then
-    ATM_MAN=man/atmcache.8
-else
-    ATM_MAN=docs/man/atmcache.8
-fi
-
-if test -d html ; then
-    ATM_HTML=html
-else
-    ATM_HTML=docs/html
-fi
-
 cat << END                                                    >> $ATM_MAKEFILE
-
-manpage:	$ATM_BUILD/atmcache.8
-
-$ATM_BUILD/atmcache.8:	$ATM_MAN $ATM_AUTO_CONFIG_H
-	sed -e "s|%%PREFIX%%|$ATM_PREFIX|" \\
-		-e "s|%%PID_PATH%%|$ATM_PID_PATH|" \\
-		-e "s|%%CONF_PATH%%|$ATM_CONF_PATH|" \\
-		-e "s|%%ERROR_LOG_PATH%%|${ATM_ERROR_LOG_PATH:-stderr}|" \\
-		< $ATM_MAN > \$@
 
 install:	build $ATM_INSTALL_PERL_MODULES
 	test -d '$ATM_PREFIX' || mkdir -p '$ATM_PREFIX'
 
-	test -d '`dirname "$ATM_SBIN_PATH"`' \\
-		|| mkdir -p '`dirname "$ATM_SBIN_PATH"`'
-	test ! -f '$ATM_SBIN_PATH' \\
-		|| mv '$ATM_SBIN_PATH' \\
-			'$ATM_SBIN_PATH.old'
+	test -d '`dirname "$ATM_SBIN_PATH"`' || mkdir -p '`dirname "$ATM_SBIN_PATH"`'
+	test ! -f '$ATM_SBIN_PATH' || mv '$ATM_SBIN_PATH' '$ATM_SBIN_PATH.old'
+
 	cp $ATM_BUILD/atmcache '$ATM_SBIN_PATH'
 
-	test -d '$ATM_CONF_PREFIX' \\
-		|| mkdir -p '$ATM_CONF_PREFIX'
-
-	cp conf/koi-win '$ATM_CONF_PREFIX'
-	cp conf/koi-utf '$ATM_CONF_PREFIX'
-	cp conf/win-utf '$ATM_CONF_PREFIX'
-
-	test -f '$ATM_CONF_PREFIX/mime.types' \\
-		|| cp conf/mime.types '$ATM_CONF_PREFIX'
-	cp conf/mime.types '$ATM_CONF_PREFIX/mime.types.default'
-
-	test -f '$ATM_CONF_PREFIX/fastcgi_params' \\
-		|| cp conf/fastcgi_params '$ATM_CONF_PREFIX'
-	cp conf/fastcgi_params \\
-		'$ATM_CONF_PREFIX/fastcgi_params.default'
-
-	test -f '$ATM_CONF_PREFIX/fastcgi.conf' \\
-		|| cp conf/fastcgi.conf '$ATM_CONF_PREFIX'
-	cp conf/fastcgi.conf '$ATM_CONF_PREFIX/fastcgi.conf.default'
-
-	test -f '$ATM_CONF_PREFIX/uwsgi_params' \\
-		|| cp conf/uwsgi_params '$ATM_CONF_PREFIX'
-	cp conf/uwsgi_params \\
-		'$ATM_CONF_PREFIX/uwsgi_params.default'
-
-	test -f '$ATM_CONF_PREFIX/scgi_params' \\
-		|| cp conf/scgi_params '$ATM_CONF_PREFIX'
-	cp conf/scgi_params \\
-		'$ATM_CONF_PREFIX/scgi_params.default'
-
-	test -f '$ATM_CONF_PATH' \\
-		|| cp conf/atmcache.conf '$ATM_CONF_PATH'
+	test -d '$ATM_CONF_PREFIX' || mkdir -p '$ATM_CONF_PREFIX'
+	test -f '$ATM_CONF_PATH' || cp config/atmcache.conf '$ATM_CONF_PATH'
 	cp conf/atmcache.conf '$ATM_CONF_PREFIX/atmcache.conf.default'
 
-	test -d '`dirname "$ATM_PID_PATH"`' \\
-		|| mkdir -p '`dirname "$ATM_PID_PATH"`'
-
-	test -d '`dirname "$ATM_HTTP_LOG_PATH"`' \\
-		|| mkdir -p '`dirname "$ATM_HTTP_LOG_PATH"`'
-
-	test -d '$ATM_PREFIX/html' \\
-		|| cp -R $ATM_HTML '$ATM_PREFIX'
+	test -d '`dirname "$ATM_PID_PATH"`' || mkdir -p '`dirname "$ATM_PID_PATH"`'
 END
 
 
 if test -n "$ATM_ERROR_LOG_PATH"; then
     cat << END                                                >> $ATM_MAKEFILE
 
-	test -d '`dirname "$ATM_ERROR_LOG_PATH"`' \\
-		|| mkdir -p '`dirname "$ATM_ERROR_LOG_PATH"`'
+	test -d '`dirname "$ATM_ERROR_LOG_PATH"`' || mkdir -p '`dirname "$ATM_ERROR_LOG_PATH"`'
 END
 
 fi
-
-
-if test -n "$DYNAMIC_MODULES"; then
-    cat << END                                                >> $ATM_MAKEFILE
-
-	test -d '$ATM_MODULES_PATH' \\
-		|| mkdir -p '$ATM_MODULES_PATH'
-END
-
-fi
-
-
-for atm_module in $DYNAMIC_MODULES
-do
-    atm_module=$atm_module$atm_modext
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-	test ! -f '$ATM_MODULES_PATH/$atm_module' \\
-		|| mv '$ATM_MODULES_PATH/$atm_module' \\
-			'$ATM_MODULES_PATH/$atm_module.old'
-	cp $ATM_BUILD/$atm_module '$ATM_MODULES_PATH/$atm_module'
-END
-
-done
 
 
 # create Makefile
 
 cat << END >> Makefile
+.PHONY:build
 
 build:
 	\$(MAKE) -f $ATM_MAKEFILE

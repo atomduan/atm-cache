@@ -1,5 +1,5 @@
-#include "atm_config.h"
-#include "atm_core.h"
+#include <atm_config.h>
+#include <atm_core.h>
 
 void *atm_malloc(size_t size) {
     void * ptr = NULL;

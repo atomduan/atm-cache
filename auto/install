@@ -65,8 +65,8 @@ fi
 # create Makefile
 
 cat << END >> Makefile
-.PHONY:build
 
+.PHONY:build
 build:
 	\$(MAKE) -f $ATM_MAKEFILE
 

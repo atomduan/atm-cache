@@ -1,27 +1,3 @@
-ATM_USER=${ATM_USER:-nobody}
-
-if [ -z "$ATM_GROUP" ]; then
-    if [ $ATM_USER = nobody ]; then
-        if grep nobody /etc/group 2>&1 >/dev/null; then
-            echo "checking for nobody group ... found"
-            ATM_GROUP=nobody
-        else
-            echo "checking for nobody group ... not found"
-
-            if grep nogroup /etc/group 2>&1 >/dev/null; then
-                echo "checking for nogroup group ... found"
-                ATM_GROUP=nogroup
-            else
-                echo "checking for nogroup group ... not found"
-                ATM_GROUP=nobody
-            fi
-        fi
-    else
-        ATM_GROUP=$ATM_USER
-    fi
-fi
-
-
 atm_feature="poll()"
 atm_feature_name=
 atm_feature_run=no
@@ -40,6 +16,7 @@ if [ $atm_found = no ]; then
     EVENT_POLL=NONE
 fi
 
+#--------------------------------------------
 
 atm_feature="/dev/poll"
 atm_feature_name="ATM_HAVE_DEVPOLL"
@@ -62,6 +39,7 @@ if [ $atm_found = yes ]; then
     EVENT_FOUND=YES
 fi
 
+#--------------------------------------------
 
 if test -z "$ATM_KQUEUE_CHECKED"; then
     atm_feature="kqueue"
@@ -143,6 +121,7 @@ END
 
 fi
 
+#--------------------------------------------
 
 atm_feature="crypt()"
 atm_feature_name=
@@ -169,6 +148,7 @@ if [ $atm_found = no ]; then
     fi
 fi
 
+#--------------------------------------------
 
 atm_feature="F_READAHEAD"
 atm_feature_name="ATM_HAVE_F_READAHEAD"
@@ -179,6 +159,7 @@ atm_feature_libs=
 atm_feature_test="fcntl(0, F_READAHEAD, 1);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="posix_fadvise()"
 atm_feature_name="ATM_HAVE_POSIX_FADVISE"
@@ -189,6 +170,7 @@ atm_feature_libs=
 atm_feature_test="posix_fadvise(0, 0, 0, POSIX_FADV_SEQUENTIAL);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="O_DIRECT"
 atm_feature_name="ATM_HAVE_O_DIRECT"
@@ -213,6 +195,7 @@ atm_feature_libs=
 atm_feature_test="fcntl(0, F_NOCACHE, 1);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="directio()"
 atm_feature_name="ATM_HAVE_DIRECTIO"
@@ -224,6 +207,7 @@ atm_feature_libs=
 atm_feature_test="directio(0, DIRECTIO_ON);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="statfs()"
 atm_feature_name="ATM_HAVE_STATFS"
@@ -237,6 +221,7 @@ atm_feature_test="struct statfs  fs;
                   statfs(\".\", &fs);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="statvfs()"
 atm_feature_name="ATM_HAVE_STATVFS"
@@ -249,6 +234,7 @@ atm_feature_test="struct statvfs  fs;
                   statvfs(\".\", &fs);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="dlopen()"
 atm_feature_name="ATM_HAVE_DLOPEN"
@@ -272,6 +258,7 @@ if [ $atm_found = no ]; then
     fi
 fi
 
+#--------------------------------------------
 
 atm_feature="sched_yield()"
 atm_feature_name="ATM_HAVE_SCHED_YIELD"
@@ -294,6 +281,7 @@ if [ $atm_found = no ]; then
     fi
 fi
 
+#--------------------------------------------
 
 atm_feature="SO_SETFIB"
 atm_feature_name="ATM_HAVE_SETFIB"
@@ -304,6 +292,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, SOL_SOCKET, SO_SETFIB, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="SO_REUSEPORT"
 atm_feature_name="ATM_HAVE_REUSEPORT"
@@ -314,6 +303,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, SOL_SOCKET, SO_REUSEPORT, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="SO_ACCEPTFILTER"
 atm_feature_name="ATM_HAVE_DEFERRED_ACCEPT"
@@ -324,6 +314,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, SOL_SOCKET, SO_ACCEPTFILTER, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # NetBSD bind to any address for transparent proxying
 
@@ -336,6 +327,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, SOL_SOCKET, SO_BINDANY, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # Linux IP_BIND_ADDRESS_NO_PORT
 
@@ -349,6 +341,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IP, IP_BIND_ADDRESS_NO_PORT, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # Linux transparent proxying
 
@@ -362,6 +355,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IP, IP_TRANSPARENT, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # FreeBSD bind to any address for transparent proxying
 
@@ -375,6 +369,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IP, IP_BINDANY, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # BSD way to get IPv4 datagram destination address
 
@@ -388,6 +383,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IP, IP_RECVDSTADDR, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # Linux way to get IPv4 datagram destination address
 
@@ -401,6 +397,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IP, IP_PKTINFO, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 # RFC 3542 way to get IPv6 datagram destination address
 
@@ -414,6 +411,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_IPV6, IPV6_RECVPKTINFO, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="TCP_DEFER_ACCEPT"
 atm_feature_name="ATM_HAVE_DEFERRED_ACCEPT"
@@ -426,6 +424,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_TCP, TCP_DEFER_ACCEPT, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="TCP_KEEPIDLE"
 atm_feature_name="ATM_HAVE_KEEPALIVE_TUNABLE"
@@ -440,6 +439,7 @@ atm_feature_test="setsockopt(0, IPPROTO_TCP, TCP_KEEPIDLE, NULL, 0);
                   setsockopt(0, IPPROTO_TCP, TCP_KEEPCNT, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="TCP_FASTOPEN"
 atm_feature_name="ATM_HAVE_TCP_FASTOPEN"
@@ -452,6 +452,7 @@ atm_feature_libs=
 atm_feature_test="setsockopt(0, IPPROTO_TCP, TCP_FASTOPEN, NULL, 0)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="TCP_INFO"
 atm_feature_name="ATM_HAVE_TCP_INFO"
@@ -470,6 +471,7 @@ atm_feature_test="socklen_t optlen = sizeof(struct tcp_info);
                   getsockopt(0, IPPROTO_TCP, TCP_INFO, &ti, &optlen)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="accept4()"
 atm_feature_name="ATM_HAVE_ACCEPT4"
@@ -574,11 +576,13 @@ else
     fi
 fi
 
+#--------------------------------------------
 
 have=ATM_HAVE_UNIX_DOMAIN . auto/have
 
-atm_feature_libs=
+#--------------------------------------------
 
+atm_feature_libs=
 
 # C types
 
@@ -590,7 +594,6 @@ atm_type="long long"; . auto/types/sizeof
 
 atm_type="void *"; . auto/types/sizeof; atm_ptr_size=$atm_size
 atm_param=ATM_PTR_SIZE; atm_value=$atm_size; . auto/types/value
-
 
 # POSIX types
 
@@ -627,8 +630,9 @@ atm_param=ATM_TIME_T_LEN; atm_value=$atm_max_len; . auto/types/value
 atm_param=ATM_MAX_TIME_T_VALUE; atm_value=$atm_max_value; . auto/types/value
 
 
-# syscalls, libc calls and some features
-
+#--------------------------------------------#
+# syscalls, libc calls and some features     #
+#--------------------------------------------#
 
 atm_feature="AF_INET6"
 atm_feature_name="ATM_HAVE_INET6"
@@ -643,6 +647,7 @@ atm_feature_test="struct sockaddr_in6  sin6;
                   (void) sin6"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="setproctitle()"
 atm_feature_name="ATM_HAVE_SETPROCTITLE"
@@ -653,6 +658,7 @@ atm_feature_libs=$ATM_SETPROCTITLE_LIB
 atm_feature_test="setproctitle(\"test\");"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="pread()"
 atm_feature_name="ATM_HAVE_PREAD"
@@ -664,6 +670,7 @@ atm_feature_test="char buf[1]; ssize_t n; n = pread(0, buf, 1, 0);
                   if (n == -1) return 1"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="pwrite()"
 atm_feature_name="ATM_HAVE_PWRITE"
@@ -675,6 +682,7 @@ atm_feature_test="char buf[1]; ssize_t n; n = pwrite(1, buf, 1, 0);
                   if (n == -1) return 1"
 . auto/feature
 
+#--------------------------------------------
 
 # pwritev() was introduced in FreeBSD 6 and Linux 2.6.30, glibc 2.10
 
@@ -691,6 +699,7 @@ atm_feature_test="char buf[1]; struct iovec vec[1]; ssize_t n;
                   if (n == -1) return 1"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="sys_nerr"
 atm_feature_name="ATM_SYS_NERR"
@@ -701,7 +710,6 @@ atm_feature_path=
 atm_feature_libs=
 atm_feature_test='printf("%d", sys_nerr);'
 . auto/feature
-
 
 if [ $atm_found = no ]; then
 
@@ -716,7 +724,6 @@ if [ $atm_found = no ]; then
     atm_feature_test='printf("%d", _sys_nerr);'
     . auto/feature
 fi
-
 
 if [ $atm_found = no ]; then
 
@@ -745,6 +752,7 @@ if [ $atm_found = no ]; then
     . auto/feature
 fi
 
+#--------------------------------------------
 
 atm_feature="localtime_r()"
 atm_feature_name="ATM_HAVE_LOCALTIME_R"
@@ -755,6 +763,7 @@ atm_feature_libs=
 atm_feature_test="struct tm t; time_t c=0; localtime_r(&c, &t)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="posix_memalign()"
 atm_feature_name="ATM_HAVE_POSIX_MEMALIGN"
@@ -766,6 +775,7 @@ atm_feature_test="void *p; int n; n = posix_memalign(&p, 4096, 4096);
                   if (n != 0) return 1"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="memalign()"
 atm_feature_name="ATM_HAVE_MEMALIGN"
@@ -778,6 +788,7 @@ atm_feature_test="void *p; p = memalign(4096, 4096);
                   if (p == NULL) return 1"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="mmap(MAP_ANON|MAP_SHARED)"
 atm_feature_name="ATM_HAVE_MAP_ANON"
@@ -791,6 +802,7 @@ atm_feature_test="void *p;
                   if (p == MAP_FAILED) return 1;"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature='mmap("/dev/zero", MAP_SHARED)'
 atm_feature_name="ATM_HAVE_MAP_DEVZERO"
@@ -806,6 +818,7 @@ atm_feature_test='void *p; int  fd;
                   if (p == MAP_FAILED) return 1;'
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="System V shared memory"
 atm_feature_name="ATM_HAVE_SYSVSHM"
@@ -820,6 +833,7 @@ atm_feature_test="int  id;
                   shmctl(id, IPC_RMID, NULL);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="POSIX semaphores"
 atm_feature_name="ATM_HAVE_POSIX_SEM"
@@ -858,6 +872,7 @@ if [ $atm_found = no ]; then
     fi
 fi
 
+#--------------------------------------------
 
 atm_feature="struct msghdr.msg_control"
 atm_feature_name="ATM_HAVE_MSGHDR_MSG_CONTROL"
@@ -870,6 +885,7 @@ atm_feature_test="struct msghdr  msg;
                   printf(\"%d\", (int) sizeof(msg.msg_control))"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="ioctl(FIONBIO)"
 atm_feature_name="ATM_HAVE_FIONBIO"
@@ -882,6 +898,7 @@ atm_feature_libs=
 atm_feature_test="int i = FIONBIO; printf(\"%d\", i)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="struct tm.tm_gmtoff"
 atm_feature_name="ATM_HAVE_GMTOFF"
@@ -894,6 +911,7 @@ atm_feature_test="struct tm  tm; tm.tm_gmtoff = 0;
                   printf(\"%d\", (int) tm.tm_gmtoff)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="struct dirent.d_namlen"
 atm_feature_name="ATM_HAVE_D_NAMLEN"
@@ -906,6 +924,7 @@ atm_feature_test="struct dirent  dir; dir.d_namlen = 0;
                   printf(\"%d\", (int) dir.d_namlen)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="struct dirent.d_type"
 atm_feature_name="ATM_HAVE_D_TYPE"
@@ -918,6 +937,7 @@ atm_feature_test="struct dirent  dir; dir.d_type = DT_REG;
                   printf(\"%d\", (int) dir.d_type)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="sysconf(_SC_NPROCESSORS_ONLN)"
 atm_feature_name="ATM_HAVE_SC_NPROCESSORS_ONLN"
@@ -928,6 +948,7 @@ atm_feature_libs=
 atm_feature_test="sysconf(_SC_NPROCESSORS_ONLN)"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="openat(), fstatat()"
 atm_feature_name="ATM_HAVE_OPENAT"
@@ -942,6 +963,7 @@ atm_feature_test="struct stat sb;
                   fstatat(AT_FDCWD, \".\", &sb, AT_SYMLINK_NOFOLLOW);"
 . auto/feature
 
+#--------------------------------------------
 
 atm_feature="getaddrinfo()"
 atm_feature_name="ATM_HAVE_GETADDRINFO"
@@ -955,3 +977,17 @@ atm_feature_test='struct addrinfo *res;
                   if (getaddrinfo("localhost", NULL, NULL, &res) != 0) return 1;
                   freeaddrinfo(res)'
 . auto/feature
+
+#--------------------------------------------
+
+#unix thread feature config
+#TODO. need checking?
+if [ $USE_THREADS = YES ]; then
+    have=ATM_THREADS . auto/have
+    CORE_DEPS="$CORE_DEPS $THREAD_POOL_DEPS"
+    CORE_SRCS="$CORE_SRCS $THREAD_POOL_SRCS"
+    CORE_LIBS="$CORE_LIBS -lpthread"
+fi
+
+#--------------------------------------------
+

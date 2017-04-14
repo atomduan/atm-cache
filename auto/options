@@ -1,8 +1,17 @@
-############ GLOBAL #############
 ATM_DEBUG=NO
-ATM_USER=
-ATM_GROUP=
 
+############ PLATFORM #############
+ATM_SYSTEM=`uname -s 2>/dev/null`
+ATM_RELEASE=`uname -r 2>/dev/null`
+ATM_MACHINE=`uname -m 2>/dev/null`
+ATM_PLATFORM="$ATM_SYSTEM:$ATM_RELEASE:$ATM_MACHINE";
+
+############ GLOBAL #############
+ATM_BUILD=build
+ATM_PREFIX=${ATM_PREFIX:-/usr/local/atmcache}
+
+ATM_USER=${ATM_USER:-nobody}
+ATM_GROUP=
 
 USE_THREADS=NO
 ATM_FILE_AIO=NO
@@ -10,29 +19,32 @@ EVENT_FOUND=NO
 EVENT_POLL=NO
 ATM_CPU_CACHE_LINE=
 
-
-############ THIRD PARTY LIB #############
+############ LIB CONFIGURE #############
 ATM_LIBATOMIC=NO
 
+############ CONFIGURE  #############
+ATM_MAKEFILE=$ATM_BUILD/Makefile
+ATM_AUTOTEST=$ATM_BUILD/autotest
+ATM_AUTOCONF_ERR=$ATM_BUILD/autoconf.err
+ATM_AUTO_SYS_HEADERS_H=$ATM_BUILD/atm_auto_headers.h
+ATM_AUTO_CONFIG_H=$ATM_BUILD/atm_auto_config.h
 
-############ BUILD #############
-ATM_PREFIX=
-CPU=NO
-ATM_BUILD=build
-ATM_PLATFORM=
-CC=${CC:-cc}
-ATM_CC_OPT=
-ATM_LD_OPT=
-ATM_RPATH=NO
-
-
+############ INSTALL #############
 ATM_SBIN_PATH=${ATM_SBIN_PATH:-sbin/atmcache}
 ATM_CONF_PATH=${ATM_CONF_PATH:-config/atmcache.conf}
 ATM_CONF_PREFIX=`dirname $ATM_CONF_PATH`
 ATM_PID_PATH=${ATM_PID_PATH:-logs/atmcache.pid}
 ATM_LOCK_PATH=${ATM_LOCK_PATH:-logs/atmcache.lock}
-if [ ".$ATM_ERROR_LOG_PATH" = ".stderr" ]; then
-    ATM_ERROR_LOG_PATH=
-else
-    ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
-fi
+ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
+
+############ COMPILER #############
+CPU=NO
+CC=${CC:-cc}
+ATM_RPATH=NO
+
+#gcc -c options, supplement to CFLAGS, 
+#Note: The system CFLAG should be set in /cc/gcc in this case
+ATM_CC_OPT=
+#supplement to CORE_LIBS, .a -R -L can be set here 
+#more infos in auto/lib/${libname}/conf
+ATM_LD_OPT=

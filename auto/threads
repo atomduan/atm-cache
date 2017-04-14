@@ -1,6 +1,0 @@
-if [ $USE_THREADS = YES ]; then
-    have=ATM_THREADS . auto/have
-    CORE_DEPS="$CORE_DEPS $THREAD_POOL_DEPS"
-    CORE_SRCS="$CORE_SRCS $THREAD_POOL_SRCS"
-    CORE_LIBS="$CORE_LIBS -lpthread"
-fi

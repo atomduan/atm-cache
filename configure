@@ -1,73 +1,28 @@
-#!/bin/sh
-
+#!/bin/sh 
 LC_ALL=C
 export LC_ALL
-
 . auto/options
 . auto/init
+
+
+# Config : var check and setting and header gen...
+# sources var setting
 . auto/sources
-
-test -d $ATM_BUILD || mkdir -p $ATM_BUILD
-
-echo > $ATM_AUTO_SYS_HEADERS_H
-echo > $ATM_AUTOCONF_ERR
-
-if [ $ATM_DEBUG = YES ]; then
-    have=ATM_DEBUG . auto/have
-fi
-
-
-if test -z "$ATM_PLATFORM"; then
-    echo "checking for OS"
-    ATM_SYSTEM=`uname -s 2>/dev/null`
-    ATM_RELEASE=`uname -r 2>/dev/null`
-    ATM_MACHINE=`uname -m 2>/dev/null`
-    echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
-    ATM_PLATFORM="$ATM_SYSTEM:$ATM_RELEASE:$ATM_MACHINE";
-else
-    echo "building for $ATM_PLATFORM"
-    ATM_SYSTEM=$ATM_PLATFORM
-fi
-
+# compiler var setting
 . auto/cc/conf
-. auto/sys_headers
+# system header info config
+. auto/headers
+# OS specific features config
 . auto/os/conf
+# unix features senity checking and config
 . auto/unix
-. auto/threads
+# third party lib features checking and config
 . auto/lib/conf
 
-case ".$ATM_PREFIX" in
-    .)
-        ATM_PREFIX=${ATM_PREFIX:-/usr/local/atmcache}
-        have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
-    ;;
-    .!)
-        ATM_PREFIX=
-    ;;
-    *)
-        have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
-    ;;
-esac
-
-if [ ".$ATM_CONF_PREFIX" != "." ]; then
-    have=ATM_CONF_PREFIX value="\"$ATM_CONF_PREFIX/\"" . auto/define
-fi
-
-have=ATM_SBIN_PATH value="\"$ATM_SBIN_PATH\"" . auto/define
-have=ATM_CONF_PATH value="\"$ATM_CONF_PATH\"" . auto/define
-have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
-have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define
-have=ATM_ERROR_LOG_PATH value="\"$ATM_ERROR_LOG_PATH\"" . auto/define
-
+# Makefile Gen...
 . auto/make
 . auto/lib/make
 . auto/install
 
-have=ATM_USER value="\"$ATM_USER\"" . auto/define
-have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define
-
-if [ ".$ATM_BUILD" != "." ]; then
-    have=ATM_BUILD value="\"$ATM_BUILD\"" . auto/define
-fi
-
+# Summary Gen...
 . auto/summary

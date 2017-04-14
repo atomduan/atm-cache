@@ -1,46 +1,57 @@
-ATM_MAKEFILE=$ATM_BUILD/Makefile
-ATM_MODULES_C=$ATM_BUILD/atm_modules.c
-
-ATM_AUTO_SYS_HEADERS_H=$ATM_BUILD/atm_auto_sys_headers.h
-ATM_AUTO_CONFIG_H=$ATM_BUILD/atm_auto_config.h
-
-ATM_AUTOTEST=$ATM_BUILD/autotest
-ATM_AUTOCONF_ERR=$ATM_BUILD/autoconf.err
-
-# STUBs
-ATM_ERR=$ATM_BUILD/autoconf.err
-MAKEFILE=$ATM_BUILD/Makefile
-
-
-ATM_PCH=
-ATM_USE_PCH=
-
-
-# check the echo's "-n" option and "\c" capability
-
-if echo "test\c" | grep c >/dev/null; then
-
-    if echo -n test | grep n >/dev/null; then
-        atm_n=
-        atm_c=
-
-    else
-        atm_n=-n
-        atm_c=
-    fi
-
-else
-    atm_n=
-    atm_c='\c'
+if [ $ATM_DEBUG = YES ]; then
+    have=ATM_DEBUG . auto/have
 fi
 
+# platform info
+echo "checking for OS"
+echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
 
-# create Makefile
-
+# create Makefile on Top Level
 cat << END > Makefile
-
 default:	build
-
 clean:
 	rm -rf Makefile $ATM_BUILD
+.PHONY:build
+build:
+	\$(MAKE) -f $ATM_MAKEFILE
+install:
+	\$(MAKE) -f $ATM_MAKEFILE install
 END
+
+
+test -d $ATM_BUILD || mkdir -p $ATM_BUILD
+echo > $ATM_AUTO_SYS_HEADERS_H
+echo > $ATM_AUTOCONF_ERR
+echo > $ATM_AUTO_CONFIG_H
+
+if [ -z "$ATM_GROUP" ]; then
+    if [ $ATM_USER = nobody ]; then
+        if grep nobody /etc/group 2>&1 >/dev/null; then
+            echo "checking for nobody group ... found"
+            ATM_GROUP=nobody
+        else
+            echo "checking for nobody group ... not found"
+
+            if grep nogroup /etc/group 2>&1 >/dev/null; then
+                echo "checking for nogroup group ... found"
+                ATM_GROUP=nogroup
+            else
+                echo "checking for nogroup group ... not found"
+                ATM_GROUP=nobody
+            fi
+        fi
+    else
+        ATM_GROUP=$ATM_USER
+    fi
+fi
+
+have=ATM_USER value="\"$ATM_USER\"" . auto/define
+have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define
+have=ATM_BUILD value="\"$ATM_BUILD\"" . auto/define
+have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
+have=ATM_CONF_PREFIX value="\"$ATM_CONF_PREFIX/\"" . auto/define
+have=ATM_SBIN_PATH value="\"$ATM_SBIN_PATH\"" . auto/define
+have=ATM_CONF_PATH value="\"$ATM_CONF_PATH\"" . auto/define
+have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
+have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define
+have=ATM_ERROR_LOG_PATH value="\"$ATM_ERROR_LOG_PATH\"" . auto/define

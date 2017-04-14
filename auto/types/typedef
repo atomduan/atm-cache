@@ -1,4 +1,4 @@
-echo $atm_n "checking for $atm_type ...$atm_c"
+echo -n "checking for $atm_type ..."
 
 cat << END >> $ATM_AUTOCONF_ERR
 
@@ -46,9 +46,9 @@ END
 
     if [ $atm_found = no ]; then
         if [ $atm_try = $atm_type ]; then
-            echo $atm_n " $atm_try not found$atm_c"
+            echo -n " $atm_try not found"
         else
-            echo $atm_n ", $atm_try not found$atm_c"
+            echo -n ", $atm_try not found"
         fi
 
         echo "----------"    >> $ATM_AUTOCONF_ERR

@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <atm_auto_config.h>
-#include <atm_auto_sys_headers.h>
+#include <atm_auto_headers.h>
 
 typedef intptr_t        atm_int_t;
 typedef uintptr_t       atm_uint_t;

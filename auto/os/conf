@@ -4,16 +4,12 @@ case "$ATM_PLATFORM" in
     Linux:*)
         . auto/os/linux
     ;;
-
     Darwin:*)
         . auto/os/darwin
     ;;
-
     *)
         cat << END
-
 $0: current PLATFORM [$ATM_PLATFORM] has not support yet
-
 END
         exit 1
     ;;

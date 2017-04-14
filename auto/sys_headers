@@ -1,8 +1,0 @@
-atm_include="unistd.h";      . auto/sys_include
-atm_include="inttypes.h";    . auto/sys_include
-atm_include="limits.h";      . auto/sys_include
-atm_include="sys/filio.h";   . auto/sys_include
-atm_include="sys/param.h";   . auto/sys_include
-atm_include="sys/mount.h";   . auto/sys_include
-atm_include="sys/statvfs.h"; . auto/sys_include
-atm_include="crypt.h";       . auto/sys_include

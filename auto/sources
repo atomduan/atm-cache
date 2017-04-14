@@ -1,3 +1,11 @@
+#Example:
+#gcc -I option: 
+#   CORE_INCS="$CORE_INCS $OPENSSL/.openssl/include"
+#gcc file plus these dep files to make each .c file target .o: 
+#   CORE_DEPS="$CORE_DEPS $OPENSSL/.openssl/include/openssl/ssl.h"
+#gcc lib option. .a -R -L can be here 
+#   CORE_LIBS="$CORE_LIBS $OPENSSL/.openssl/lib/libssl.a"
+
 CORE_INCS="src/core"
 
 CORE_DEPS="src/core/atmcache.h \

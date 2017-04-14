@@ -1,4 +1,4 @@
-echo $atm_n "checking for system byte ordering ...$atm_c"
+echo -n "checking for system byte ordering ..."
 
 cat << END >> $ATM_AUTOCONF_ERR
 

@@ -1,4 +1,4 @@
-have=ATM_DARWIN . auto/sys_have_headers
+have=ATM_DARWIN . auto/have_headers
 
 atm_spacer='
 '

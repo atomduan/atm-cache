@@ -1,4 +1,4 @@
-echo $atm_n "checking for $atm_type size ...$atm_c"
+echo -n "checking for $atm_type size ..."
 
 cat << END >> $ATM_AUTOCONF_ERR
 

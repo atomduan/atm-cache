@@ -49,7 +49,6 @@ else
         ;;
         clang)
             # Clang C compiler
-
             . auto/cc/clang
         ;;
     esac

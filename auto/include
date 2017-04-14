@@ -1,4 +1,4 @@
-echo $atm_n "checking for $atm_include ...$atm_c"
+echo -n "checking for $atm_include ..."
 
 cat << END >> $ATM_AUTOCONF_ERR
 
@@ -36,7 +36,7 @@ if [ -x $ATM_AUTOTEST ]; then
               | tr abcdefghijklmnopqrstuvwxyz/. ABCDEFGHIJKLMNOPQRSTUVWXYZ__`
 
 
-    have=ATM_HAVE_$atm_name . auto/sys_have_headers
+    have=ATM_HAVE_$atm_name . auto/have_headers
 
     eval "ATM_INCLUDE_$atm_name='#include <$atm_include>'"
 

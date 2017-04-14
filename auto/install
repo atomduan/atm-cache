@@ -1,71 +1,22 @@
 #convert relative path to absolute path for installation
-
-case ".$ATM_SBIN_PATH" in
-    ./*)
-    ;;
-    *)
-        ATM_SBIN_PATH=$ATM_PREFIX/$ATM_SBIN_PATH
-    ;;
-esac
-
-case ".$ATM_CONF_PATH" in
-    ./*)
-    ;;
-    *)
-        ATM_CONF_PATH=$ATM_PREFIX/$ATM_CONF_PATH
-    ;;
-esac
-
-ATM_CONF_PREFIX=`dirname $ATM_CONF_PATH`
-
-case ".$ATM_PID_PATH" in
-    ./*)
-    ;;
-    *)
-        ATM_PID_PATH=$ATM_PREFIX/$ATM_PID_PATH
-    ;;
-esac
-
-case ".$ATM_ERROR_LOG_PATH" in
-    ./* | .)
-    ;;
-    *)
-        ATM_ERROR_LOG_PATH=$ATM_PREFIX/$ATM_ERROR_LOG_PATH
-    ;;
-esac
-
-
+ATM_CONF_PREFIX=`dirname $ATM_PREFIX/$ATM_CONF_PATH`
 cat << END                                                    >> $ATM_MAKEFILE
 
 install:	build $ATM_INSTALL_PERL_MODULES
 	test -d '$ATM_PREFIX' || mkdir -p '$ATM_PREFIX'
-	test -d '`dirname "$ATM_SBIN_PATH"`' || mkdir -p '`dirname "$ATM_SBIN_PATH"`'
-	test ! -f '$ATM_SBIN_PATH' || mv '$ATM_SBIN_PATH' '$ATM_SBIN_PATH.old'
-	cp $ATM_BUILD/atmcache '$ATM_SBIN_PATH'
+	test -d '`dirname "$ATM_PREFIX/$ATM_SBIN_PATH"`' || mkdir -p '`dirname "$ATM_PREFIX/$ATM_SBIN_PATH"`'
+	test ! -f '$ATM_PREFIX/$ATM_SBIN_PATH' || mv '$ATM_PREFIX/$ATM_SBIN_PATH' '$ATM_PREFIX/$ATM_SBIN_PATH.old'
+	cp $ATM_BUILD/atmcache '$ATM_PREFIX/$ATM_SBIN_PATH'
 	test -d '$ATM_CONF_PREFIX' || mkdir -p '$ATM_CONF_PREFIX'
-	test -f '$ATM_CONF_PATH' || cp config/atmcache.conf '$ATM_CONF_PATH'
+	test -f '$ATM_PREFIX/$ATM_CONF_PATH' || cp config/atmcache.conf '$ATM_PREFIX/$ATM_CONF_PATH'
 	cp conf/atmcache.conf '$ATM_CONF_PREFIX/atmcache.conf.default'
-	test -d '`dirname "$ATM_PID_PATH"`' || mkdir -p '`dirname "$ATM_PID_PATH"`'
+	test -d '`dirname "$ATM_PREFIX/$ATM_PID_PATH"`' || mkdir -p '`dirname "$ATM_PREFIX/$ATM_PID_PATH"`'
 END
 
 
 if test -n "$ATM_ERROR_LOG_PATH"; then
     cat << END                                                >> $ATM_MAKEFILE
-	test -d '`dirname "$ATM_ERROR_LOG_PATH"`' || mkdir -p '`dirname "$ATM_ERROR_LOG_PATH"`'
+	test -d '`dirname "$ATM_PREFIX/$ATM_ERROR_LOG_PATH"`' || mkdir -p '`dirname "$ATM_PREFIX/$ATM_ERROR_LOG_PATH"`'
 END
 
 fi
-
-
-# create Outer Makefile
-
-cat << END >> Makefile
-
-.PHONY:build
-
-build:
-	\$(MAKE) -f $ATM_MAKEFILE
-
-install:
-	\$(MAKE) -f $ATM_MAKEFILE install
-END

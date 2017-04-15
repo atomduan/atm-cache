@@ -105,3 +105,11 @@ atm_feature_libs=
 atm_feature_test="int32_t  lock = 0;
                   if (!OSAtomicCompareAndSwap32Barrier(0, 1, &lock)) return 1"
 . auto/feature
+
+
+# ------------------------------------------------------
+# SOURCE CONFIGURE
+CORE_INCS="$CORE_INCS $OS_DARWIN_INCS"
+CORE_DEPS="$CORE_DEPS $OS_DARWIN_DEPS"
+CORE_SRCS="$CORE_SRCS $OS_DARWIN_SRCS"
+CORE_LIBS="$CORE_LIBS $OS_DARWIN_LIBS"

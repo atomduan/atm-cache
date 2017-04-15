@@ -1,6 +1,7 @@
 echo "creating $ATM_MAKEFILE"
 
 mkdir -p $ATM_BUILD/src/core \
+         $ATM_BUILD/src/os/unix \
          $ATM_BUILD/src/test
 
 

@@ -15,7 +15,6 @@ CORE_DEPS="src/core/atmcache.h \
            src/core/atm_list.h \
            src/core/atm_string.h"
 
-
 CORE_SRCS="src/core/atmcache.c \
            src/core/atm_core.c \
            src/core/atm_hash.c \
@@ -24,3 +23,25 @@ CORE_SRCS="src/core/atmcache.c \
            src/core/atm_string.c"
 
 CORE_LIBS=""
+
+#------------------------------------------------------
+#CONFIG OS TYPE DIFFERENCE SOURCE
+OS_INCS="src/os \
+         src/os/unix"
+OS_DEPS=""
+OS_SRCS=""
+OS_LIBS=""
+
+#Linux
+OS_LINUX_INCS="$OS_INCS"
+OS_LINUX_DEPS="$OS_DEPS src/os/unix/atm_linux_config.h"
+OS_LINUX_SRCS="$OS_SRCS"
+OS_LINUX_LIBS="$OS_LIBS"
+
+#Darwin
+OS_DARWIN_INCS="OS_INCS"
+OS_DARWIN_DEPS="OS_DEPS src/os/unix/atm_darwin_config.h"
+OS_DARWIN_SRCS="OS_SRCS"
+OS_DARWIN_LIBS="OS_LIBS"
+
+#------------------------------------------------------

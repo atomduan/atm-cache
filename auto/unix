@@ -613,8 +613,7 @@ atm_type="in_port_t"; atm_types="u_short"; . auto/types/typedef
 atm_type="rlim_t"; atm_types="int"; . auto/types/typedef
 
 . auto/types/uintptr_t
-
-. auto/endianness
+. auto/types/endianness
 
 atm_type="size_t"; . auto/types/sizeof
 atm_param=ATM_MAX_SIZE_T_VALUE; atm_value=$atm_max_value; . auto/types/value

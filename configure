@@ -4,7 +4,7 @@ export LC_ALL
 . auto/options
 . auto/init
 
-# Config : var check and setting and header gen...
+# Config : var(cfg var use for other file and Makefile) check and setting and header gen...
 # sources var setting
 . auto/sources
 # compiler var setting
@@ -13,7 +13,7 @@ export LC_ALL
 . auto/headers
 # OS specific features config
 . auto/os/conf
-# unix features senity checking and config
+# unix features senity checking , type checking and config
 . auto/unix
 # third party lib features checking and config
 . auto/lib/conf

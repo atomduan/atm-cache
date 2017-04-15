@@ -179,3 +179,11 @@ atm_include="sys/vfs.h";     . auto/include
 
 
 CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64"
+
+
+# ------------------------------------------------------
+# SOURCE CONFIGURE
+CORE_INCS="$CORE_INCS $OS_LINUX_INCS"
+CORE_DEPS="$CORE_DEPS $OS_LINUX_DEPS"
+CORE_SRCS="$CORE_SRCS $OS_LINUX_SRCS"
+CORE_LIBS="$CORE_LIBS $OS_LINUS_LIBS"

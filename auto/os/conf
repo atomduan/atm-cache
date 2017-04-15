@@ -18,26 +18,26 @@ esac
 
 case "$ATM_MACHINE" in
     i386 | i686 | i86pc)
-        have=NGX_HAVE_NONALIGNED . auto/have
-        NGX_MACH_CACHE_LINE=32
+        have=ATM_HAVE_NONALIGNED . auto/have
+        ATM_MACH_CACHE_LINE=32
     ;;
     amd64 | x86_64)
-        have=NGX_HAVE_NONALIGNED . auto/have
-        NGX_MACH_CACHE_LINE=64
+        have=ATM_HAVE_NONALIGNED . auto/have
+        ATM_MACH_CACHE_LINE=64
     ;;
     sun4u | sun4v | sparc | sparc64)
-        have=NGX_ALIGNMENT value=16 . auto/define
+        have=ATM_ALIGNMENT value=16 . auto/define
         # TODO
-        NGX_MACH_CACHE_LINE=64
+        ATM_MACH_CACHE_LINE=64
     ;;
     ia64 )
-        have=NGX_ALIGNMENT value=16 . auto/define
+        have=ATM_ALIGNMENT value=16 . auto/define
         # TODO
-        NGX_MACH_CACHE_LINE=64
+        ATM_MACH_CACHE_LINE=64
     ;;
     *)
-        have=NGX_ALIGNMENT value=16 . auto/define
-        NGX_MACH_CACHE_LINE=32
+        have=ATM_ALIGNMENT value=16 . auto/define
+        ATM_MACH_CACHE_LINE=32
     ;;
 esac
 

@@ -1,3 +1,4 @@
+#!/bin/sh
 echo -n "checking for system byte ordering ..."
 
 cat << END >> $ATM_AUTOCONF_ERR

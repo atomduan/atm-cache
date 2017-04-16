@@ -1,3 +1,4 @@
+#!/bin/sh
 ATM_DEBUG=YES
 ATM_UNIT_TEST=YES
 
@@ -21,7 +22,7 @@ EVENT_POLL=NO
 ATM_CPU_CACHE_LINE=
 
 ############ LIB CONFIGURE #############
-ATM_LIBATOMIC=NO
+ATM_LIBATOMIC=YES
 
 ############ CONFIGURE  #############
 ATM_MAKEFILE=$ATM_BUILD/Makefile
@@ -41,7 +42,7 @@ ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
 ############ COMPILER #############
 #USE clang for dev, cc for default
 ATM_CC=clang
-CC=${CC:-cc}
+CC=${ATM_CC:-cc}
 
 CPU=NO
 ATM_RPATH=NO

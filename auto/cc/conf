@@ -1,3 +1,4 @@
+#!/bin/sh
 LINK="\$(CC)"
 
 MAIN_LINK=
@@ -9,51 +10,32 @@ atm_pic_opt="-fPIC"
 atm_objout="-o "
 atm_binout="-o "
 atm_objext="o"
-atm_binext=
 atm_modext=".so"
-
-
 atm_long_start=
 atm_long_end=
-
-
 atm_regex_dirsep="\/"
-atm_dirsep='/'
-
-
 atm_regex_cont=' \\\
 	'
 atm_cont=' \
 	'
 atm_tab=' \
 		'
-atm_spacer=
-
-
-atm_long_regex_cont=$atm_regex_cont
-atm_long_cont=$atm_cont
 
 
 . auto/cc/name
-
-
-if test -n "$CFLAGS"; then
-    CC_TEST_FLAGS="$CFLAGS $ATM_CC_OPT"
-else
-    case $ATM_CC_NAME in
-        gcc)
-            # gcc 2.7.2.3, 2.8.1, 2.95.4, egcs-1.1.2
-            #     3.0.4, 3.1.1, 3.2.3, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.2
-            #     4.0.0, 4.0.1, 4.1.0
-            . auto/cc/gcc
-        ;;
-        clang)
-            # Clang C compiler
-            . auto/cc/clang
-        ;;
-    esac
-    CC_TEST_FLAGS="$CC_TEST_FLAGS $ATM_CC_OPT"
-fi
+case $ATM_CC_NAME in
+    gcc)
+        # gcc 2.7.2.3, 2.8.1, 2.95.4, egcs-1.1.2
+        #     3.0.4, 3.1.1, 3.2.3, 3.3.2, 3.3.3, 3.3.4, 3.4.0, 3.4.2
+        #     4.0.0, 4.0.1, 4.1.0
+        . auto/cc/gcc
+    ;;
+    clang)
+        # Clang C compiler
+        . auto/cc/clang
+    ;;
+esac
+CC_TEST_FLAGS="$CC_TEST_FLAGS $ATM_CC_OPT"
 
 
 CFLAGS="$CFLAGS $ATM_CC_OPT"
@@ -85,11 +67,11 @@ atm_feature_path=
 atm_feature_libs=-Wl,-E
 atm_feature_test=
 . auto/feature
-
-
 if [ $atm_found = yes ]; then
     MAIN_LINK="-Wl,-E"
 fi
+
+
 atm_feature="gcc builtin atomic operations"
 atm_feature_name=ATM_HAVE_GCC_ATOMIC
 atm_feature_run=yes
@@ -107,21 +89,17 @@ atm_feature_test="long  n = 0;
 . auto/feature
 
 
-if [ "$ATM_CC_NAME" = "ccc" ]; then
-    echo "checking for C99 variadic macros ... disabled"
-else
-    atm_feature="C99 variadic macros"
-    atm_feature_name="ATM_HAVE_C99_VARIADIC_MACROS"
-    atm_feature_run=yes
-    atm_feature_incs="#include <stdio.h>
+atm_feature="C99 variadic macros"
+atm_feature_name="ATM_HAVE_C99_VARIADIC_MACROS"
+atm_feature_run=yes
+atm_feature_incs="#include <stdio.h>
 #define var(dummy, ...)  sprintf(__VA_ARGS__)"
-    atm_feature_path=
-    atm_feature_libs=
-    atm_feature_test="char  buf[30]; buf[0] = '0';
-                      var(0, buf, \"%d\", 1);
-                      if (buf[0] != '1') return 1"
-    . auto/feature
-fi
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="char  buf[30]; buf[0] = '0';
+                  var(0, buf, \"%d\", 1);
+                  if (buf[0] != '1') return 1"
+. auto/feature
 
 
 atm_feature="gcc variadic macros"
@@ -129,7 +107,6 @@ atm_feature_name="ATM_HAVE_GCC_VARIADIC_MACROS"
 atm_feature_run=yes
 atm_feature_incs="#include <stdio.h>
 #define var(dummy, args...)  sprintf(args)"
-
 atm_feature_path=
 atm_feature_libs=
 atm_feature_test="char  buf[30]; buf[0] = '0';

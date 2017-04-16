@@ -1,3 +1,4 @@
+#!/bin/sh
 have=ATM_DARWIN . auto/have_headers
 
 atm_spacer='

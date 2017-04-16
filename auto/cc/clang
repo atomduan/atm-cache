@@ -1,3 +1,4 @@
+#!/bin/sh
 # clang
 ATM_CLANG_VER=`$CC -v 2>&1 | grep '\(clang\|LLVM\) version' 2>&1 \
                            | sed -e 's/^.* version \(.*\)/\1/'`

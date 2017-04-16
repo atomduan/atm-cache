@@ -1,3 +1,4 @@
+#!/bin/sh
 echo "creating $ATM_MAKEFILE"
 
 mkdir -p $ATM_BUILD/src/core \
@@ -5,147 +6,69 @@ mkdir -p $ATM_BUILD/src/core \
          $ATM_BUILD/src/test
 
 
-atm_build_dir=$ATM_BUILD$atm_regex_dirsep
-atm_use_pch=`echo $ATM_USE_PCH | sed -e "s/\//$atm_regex_dirsep/g"`
-
-
-cat << END                                                     > $ATM_MAKEFILE
-
+cat << END > $ATM_MAKEFILE
 CC =	$CC
 CFLAGS = $CFLAGS
 LINK =	$LINK
 
 END
 
-
-# ALL_INCS, required by the addons and by OpenWatcom C precompiled headers
-
-atm_incs=`echo $CORE_INCS $ATM_BUILD $HTTP_INCS $MAIL_INCS $STREAM_INCS\
-    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g" \
-          -e "s/\//$atm_regex_dirsep/g"`
-
-cat << END                                                    >> $ATM_MAKEFILE
-
-ALL_INCS = $atm_include_opt$atm_incs
-
-END
-
-
 atm_all_srcs="$CORE_SRCS"
-
 
 # the core dependencies and include paths
 
-atm_deps=`echo $CORE_DEPS $ATM_AUTO_CONFIG_H $ATM_PCH \
-    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-          -e "s/\//$atm_regex_dirsep/g"`
+atm_deps=`echo $CORE_DEPS $ATM_AUTO_CONFIG_H \
+    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
 
 atm_incs=`echo $CORE_INCS $ATM_BUILD \
-    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g" \
-          -e "s/\//$atm_regex_dirsep/g"`
+    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g"`
 
-cat << END                                                    >> $ATM_MAKEFILE
-
+cat << END >> $ATM_MAKEFILE
 CORE_DEPS = $atm_deps
-
-
 CORE_INCS = $atm_include_opt$atm_incs
 
 END
 
-
-atm_all_srcs="$atm_all_srcs $MISC_SRCS"
-
-
 # atmcache
-
-atm_all_srcs=`echo $atm_all_srcs | sed -e "s/\//$atm_regex_dirsep/g"`
-
-atm_all_build=`echo $atm_all_srcs \
-    | sed -e "s#\([^ ]*\.\)cpp#$ATM_BUILD\/\1$atm_objext#g" \
-          -e "s#\([^ ]*\.\)cc#$ATM_BUILD\/\1$atm_objext#g" \
-          -e "s#\([^ ]*\.\)c#$ATM_BUILD\/\1$atm_objext#g" \
-          -e "s#\([^ ]*\.\)S#$ATM_BUILD\/\1$atm_objext#g"`
-
-atm_deps=`echo $atm_all_build $LINK_DEPS \
-    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g" \
-          -e "s/\//$atm_regex_dirsep/g"`
-
-atm_build=`echo $atm_all_build \
-    | sed -e "s/  *\([^ ][^ ]*\)/$atm_long_regex_cont\1/g" \
-          -e "s/\//$atm_regex_dirsep/g"`
+atm_all_objs=`echo $atm_all_srcs \
+    | sed -e "s#\([^ ]*\.\)c#$ATM_BUILD\/\1$atm_objext#g"`
+atm_deps=`echo $atm_all_objs $LINK_DEPS \
+    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
+atm_build=`echo $atm_all_objs \
+    | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
 
 atm_libs=
 if test -n "$ATM_LD_OPT$CORE_LIBS"; then
-    atm_libs=`echo $ATM_LD_OPT $CORE_LIBS \
-        | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`
+    atm_libs=`echo $ATM_LD_OPT $CORE_LIBS | sed -e "s/^/$atm_regex_cont/"`
 fi
 
 atm_link=${CORE_LINK:+`echo $CORE_LINK \
-    | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`}
+    | sed -e "s/^/$atm_regex_cont/"`}
 
 atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
-    | sed -e "s/\//$atm_regex_dirsep/g" -e "s/^/$atm_long_regex_cont/"`}
+    | sed -e "s/^/$atm_regex_cont/"`}
 
-
-cat << END                                                    >> $ATM_MAKEFILE
-
+cat << END >> $ATM_MAKEFILE
 build:	binary 
+binary:	${ATM_BUILD}/atmcache
+${ATM_BUILD}/atmcache:	$atm_deps
+	\$(LINK) -o ${ATM_BUILD}/atmcache \
+	    $atm_build$atm_libs$atm_link$atm_main_link
 
-binary:	$ATM_BUILD${atm_dirsep}atmcache$atm_binext
-
-$ATM_BUILD${atm_dirsep}atmcache$atm_binext:	$atm_deps$atm_spacer
-	\$(LINK) $atm_long_start$atm_binout$ATM_BUILD${atm_dirsep}atmcache$atm_long_cont$atm_build$atm_libs$atm_link$atm_main_link
-	$atm_rcc
-$atm_long_end
 END
 
 
-if test -n "$ATM_PCH"; then
-    atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) $atm_use_pch \$(ALL_INCS)"
-else
-    atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS)"
-fi
-
-
 # the core sources
-
-for atm_src in $CORE_SRCS
+atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS)"
+for atm_src in $atm_all_srcs
 do
-    atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
     atm_obj=`echo $atm_src \
-        | sed -e "s#^\(.*\.\)cpp\\$#$atm_build_dir\1$atm_objext#g" \
-              -e "s#^\(.*\.\)cc\\$#$atm_build_dir\1$atm_objext#g" \
-              -e "s#^\(.*\.\)c\\$#$atm_build_dir\1$atm_objext#g" \
-              -e "s#^\(.*\.\)S\\$#$atm_build_dir\1$atm_objext#g"`
+        | sed -e "s#^\(.*\.\)c\\$#${ATM_BUILD}\/\1$atm_objext#g"`
 
-    cat << END                                                >> $ATM_MAKEFILE
+    cat << END >> $ATM_MAKEFILE
 
 $atm_obj:	\$(CORE_DEPS)$atm_cont$atm_src
 	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
 
 END
-
 done
-
-
-# the precompiled headers
-
-if test -n "$ATM_PCH"; then
-    echo "#include <atm_config.h>" > $ATM_BUILD/atm_pch.c
-
-    atm_pch="src/core/atm_config.h $OS_CONFIG $ATM_BUILD/atm_auto_config.h"
-    atm_pch=`echo "$ATM_PCH:	$atm_pch" | sed -e "s/\//$atm_regex_dirsep/g"`
-
-    atm_src="\$(CC) \$(CFLAGS) $ATM_BUILD_PCH $atm_compile_opt \$(ALL_INCS)"
-    atm_src="$atm_src $atm_objout$ATM_BUILD/atm_pch.obj $ATM_BUILD/atm_pch.c"
-    atm_src=`echo $atm_src | sed -e "s/\//$atm_regex_dirsep/g"`
-
-    cat << END                                                >> $ATM_MAKEFILE
-
-$atm_pch
-	$atm_src
-
-END
-
-fi

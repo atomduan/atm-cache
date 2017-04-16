@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ $ATM_LIBATOMIC != NO -a $ATM_LIBATOMIC != YES ]; then
     . auto/lib/libatomic/make
 fi

@@ -1,3 +1,4 @@
+#!/bin/sh
 atm_feature="poll()"
 atm_feature_name=
 atm_feature_run=no

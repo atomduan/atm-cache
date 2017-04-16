@@ -1,12 +1,10 @@
+#!/bin/sh
 if [ $ATM_LIBATOMIC != YES ]; then
-
     have=ATM_HAVE_LIBATOMIC . auto/have
     CORE_INCS="$CORE_INCS $ATM_LIBATOMIC/src"
     LINK_DEPS="$LINK_DEPS $ATM_LIBATOMIC/src/libatomic_ops.a"
     CORE_LIBS="$CORE_LIBS $ATM_LIBATOMIC/src/libatomic_ops.a"
-
 else
-
     atm_feature="atomic_ops library"
     atm_feature_name=ATM_HAVE_LIBATOMIC
     atm_feature_run=yes
@@ -23,14 +21,13 @@ else
                           return 1;
                       AO_nop();"
     . auto/feature
-
     if [ $atm_found = yes ]; then
         CORE_LIBS="$CORE_LIBS $atm_feature_libs"
     else
-
 cat << END
 
 $0: error: libatomic_ops library was not found.
+Try to use "yum install libatomic_ops-devel" to install package
 
 END
         exit 1

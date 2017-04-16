@@ -1,3 +1,4 @@
+#!/bin/sh
 echo -n "checking for $atm_type size ..."
 
 cat << END >> $ATM_AUTOCONF_ERR

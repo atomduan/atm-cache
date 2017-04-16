@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ $ATM_LIBATOMIC != NO ]; then
     . auto/lib/libatomic/conf
 fi

@@ -1,3 +1,4 @@
+#!/bin/sh
 have=ATM_LINUX . auto/have_headers
 
 atm_spacer='

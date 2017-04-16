@@ -1,4 +1,4 @@
-echo
+#!/bin/sh
 echo "Configuration summary"
 
 

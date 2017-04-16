@@ -1,3 +1,4 @@
+#!/bin/sh
 atm_feature="C compiler"
 atm_feature_name=
 atm_feature_run=yes

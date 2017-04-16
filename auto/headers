@@ -1,3 +1,4 @@
+#!/bin/sh
 atm_include="unistd.h";      . auto/include
 atm_include="inttypes.h";    . auto/include
 atm_include="limits.h";      . auto/include

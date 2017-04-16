@@ -1,4 +1,5 @@
-cat << END                                            >> $ATM_MAKEFILE
+#!/bin/sh
+cat << END >> $ATM_MAKEFILE
 
 $ATM_LIBATOMIC/src/libatomic_ops.a:	$ATM_LIBATOMIC/Makefile
 	cd $ATM_LIBATOMIC && \$(MAKE)

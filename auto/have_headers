@@ -1,3 +1,4 @@
+#!/bin/sh
 cat << END >> $ATM_AUTO_SYS_HEADERS_H
 
 #ifndef $have

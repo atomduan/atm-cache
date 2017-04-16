@@ -1,3 +1,4 @@
+#!/bin/sh
 #convert relative path to absolute path for installation
 ATM_CONF_PREFIX=`dirname $ATM_PREFIX/$ATM_CONF_PATH`
 cat << END                                                    >> $ATM_MAKEFILE

@@ -1,3 +1,4 @@
+#!/bin/sh
 #Example:
 #gcc -I option: 
 #   CORE_INCS="$CORE_INCS $OPENSSL/.openssl/include"

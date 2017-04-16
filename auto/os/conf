@@ -1,3 +1,4 @@
+#!/bin/sh
 echo "checking for $ATM_SYSTEM specific features"
 
 case "$ATM_PLATFORM" in

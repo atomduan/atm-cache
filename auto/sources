@@ -25,6 +25,14 @@ CORE_SRCS="src/core/atmcache.c \
 CORE_LIBS=""
 
 #------------------------------------------------------
+#TEST Config
+if [ $ATM_UNIT_TEST = YES ]; then
+    CORE_INCS="$CORE_INCS src/test"
+    CORE_DEPS="$CORE_DEPS src/test/atm_unit_test.h" 
+    CORE_SRCS="$CORE_SRCS src/test/atm_unit_test.c"
+fi
+
+#------------------------------------------------------
 #CONFIG OS TYPE DIFFERENCE SOURCE
 OS_INCS="src/os \
          src/os/unix"
@@ -43,5 +51,3 @@ OS_DARWIN_INCS="OS_INCS"
 OS_DARWIN_DEPS="OS_DEPS src/os/unix/atm_darwin_config.h"
 OS_DARWIN_SRCS="OS_SRCS"
 OS_DARWIN_LIBS="OS_LIBS"
-
-#------------------------------------------------------

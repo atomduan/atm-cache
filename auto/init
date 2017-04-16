@@ -7,6 +7,10 @@ if [ $ATM_DEBUG = YES ]; then
     have=ATM_DEBUG . auto/have
 fi
 
+if [ $ATM_UNIT_TEST = YES ]; then
+    have=ATM_UNIT_TEST . auto/have
+fi
+
 # platform info
 echo "checking for OS"
 echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"

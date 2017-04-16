@@ -1,4 +1,5 @@
 ATM_DEBUG=YES
+ATM_UNIT_TEST=YES
 
 ############ PLATFORM #############
 ATM_SYSTEM=`uname -s 2>/dev/null`
@@ -38,8 +39,11 @@ ATM_LOCK_PATH=${ATM_LOCK_PATH:-logs/atmcache.lock}
 ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
 
 ############ COMPILER #############
-CPU=NO
+#USE clang for dev, cc for default
+ATM_CC=clang
 CC=${CC:-cc}
+
+CPU=NO
 ATM_RPATH=NO
 
 #gcc -c options, supplement to CFLAGS, 

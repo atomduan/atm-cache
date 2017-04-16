@@ -25,6 +25,7 @@ atm_incs=`echo $CORE_INCS $ATM_BUILD \
 
 cat << END >> $ATM_MAKEFILE
 CORE_DEPS = $atm_deps
+
 CORE_INCS = $atm_include_opt$atm_incs
 
 END
@@ -50,9 +51,12 @@ atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
 
 cat << END >> $ATM_MAKEFILE
 build:	binary 
+
 binary:	${ATM_BUILD}/atmcache
+
 ${ATM_BUILD}/atmcache:	$atm_deps
-	\$(LINK) -o ${ATM_BUILD}/atmcache \
+
+	\$(LINK) -o ${ATM_BUILD}/atmcache \\
 	    $atm_build$atm_libs$atm_link$atm_main_link
 
 END

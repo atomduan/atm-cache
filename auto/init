@@ -8,10 +8,6 @@ if [ $ATM_DEBUG = YES ]; then
     have=ATM_DEBUG . auto/have
 fi
 
-if [ $ATM_UNIT_TEST = YES ]; then
-    have=ATM_UNIT_TEST . auto/have
-fi
-
 # platform info
 echo "checking for OS"
 echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
@@ -47,6 +43,16 @@ if [ -z "$ATM_GROUP" ]; then
     else
         ATM_GROUP=$ATM_USER
     fi
+fi
+
+#------------------------------------------------------------------
+
+if [ $ATM_UNIT_TEST = YES ]; then
+    have=ATM_UNIT_TEST . auto/have
+    have=ATM_UNIT_TEST_SKIP value=$ATM_UNIT_TEST_SKIP . auto/define
+    have=ATM_UNIT_TEST_PREP value=$ATM_UNIT_TEST_PREP . auto/define
+    have=ATM_UNIT_TEST_ONLY value=$ATM_UNIT_TEST_ONLY . auto/define
+    have=ATM_UNIT_TEST_LV value=$ATM_UNIT_TEST_LV . auto/define
 fi
 
 have=ATM_USER value="\"$ATM_USER\"" . auto/define

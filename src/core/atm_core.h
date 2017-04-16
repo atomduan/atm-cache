@@ -15,4 +15,4 @@ void *atm_malloc(size_t size);
 void *atm_calloc(size_t nmemb, size_t size);
 void atm_free(void *ptr);
 
-#endif
+#endif /* _ATM_CORE_H_INCLUDED_ */

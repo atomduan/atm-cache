@@ -26,7 +26,7 @@ CORE_SRCS="src/core/atmcache.c \
 CORE_LIBS=""
 
 #------------------------------------------------------
-#TEST Config
+#TEST SRC Config
 if [ $ATM_UNIT_TEST = YES ]; then
     CORE_INCS="$CORE_INCS src/test"
     CORE_DEPS="$CORE_DEPS src/test/atm_unit_test.h" 
@@ -34,7 +34,8 @@ if [ $ATM_UNIT_TEST = YES ]; then
 fi
 
 #------------------------------------------------------
-#CONFIG OS TYPE DIFFERENCE SOURCE
+#CONFIG OS TYPE DIFFERENCE SOURCE, 
+#NOTE: OS SRC settings are configed in auto/os/conf and sub confs.
 OS_INCS="src/os \
          src/os/unix"
 OS_DEPS=""

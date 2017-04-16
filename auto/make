@@ -7,9 +7,9 @@ mkdir -p $ATM_BUILD/src/core \
 
 
 cat << END > $ATM_MAKEFILE
-CC =	$CC
+CC = $CC
 CFLAGS = $CFLAGS
-LINK =	$LINK
+LINK = $LINK
 
 END
 
@@ -57,7 +57,7 @@ binary:	${ATM_BUILD}/atmcache
 ${ATM_BUILD}/atmcache:	$atm_deps
 
 	\$(LINK) -o ${ATM_BUILD}/atmcache \\
-	    $atm_build$atm_libs$atm_link$atm_main_link
+	$atm_build$atm_libs$atm_link$atm_main_link
 
 END
 
@@ -70,9 +70,8 @@ do
         | sed -e "s#^\(.*\.\)c\\$#${ATM_BUILD}\/\1$atm_objext#g"`
 
     cat << END >> $ATM_MAKEFILE
-
 $atm_obj:	\$(CORE_DEPS)$atm_cont$atm_src
-	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src$ATM_AUX
+	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src
 
 END
 done

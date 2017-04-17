@@ -20,7 +20,7 @@ atm_all_srcs="$CORE_SRCS"
 
 # the core dependencies and include paths
 
-atm_deps=`echo $CORE_DEPS $ATM_AUTO_CONFIG_H \
+atm_deps=`echo $CORE_DEPS $ATM_AUTO_CONFIG_H $ATM_AUTO_SYS_HEADERS_H \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
 
 atm_incs=`echo $CORE_INCS $ATM_BUILD \

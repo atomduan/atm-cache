@@ -13,6 +13,7 @@ CORE_DEPS="src/core/atmcache.h \
            src/core/atm_config.h \
            src/core/atm_core.h \
            src/core/atm_hash.h \
+           src/core/atm_siphash.h \
            src/core/atm_list.h \
            src/core/atm_logger.h \
            src/core/atm_string.h"
@@ -20,9 +21,9 @@ CORE_DEPS="src/core/atmcache.h \
 CORE_SRCS="src/core/atmcache.c \
            src/core/atm_core.c \
            src/core/atm_hash.c \
+           src/core/atm_siphash.c \
            src/core/atm_list.c \
            src/core/atm_logger.c \
-           src/core/atm_siphash.c \
            src/core/atm_string.c"
 
 CORE_LIBS=""
@@ -37,6 +38,7 @@ if [ $ATM_UNIT_TEST = YES ]; then
 
     CORE_DEPS="$CORE_DEPS src/test/atm_unit_test.h \
                src/test/core/atm_test_hash.h \
+               src/test/core/atm_test_siphash.h \
                src/test/os/unix/atm_test_process.h"
 
     CORE_SRCS="$CORE_SRCS src/test/atm_unit_test.c \

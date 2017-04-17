@@ -5,7 +5,11 @@
 #include <atm_core.h>
 
 #include <atm_test_hash.h>
+#include <atm_test_siphash.h>
 #include <atm_test_process.h>
+
+#define ATM_TEST_FAIL 0
+#define ATM_TEST_PASS 1
 
 /*
  * The entry point of unit test system

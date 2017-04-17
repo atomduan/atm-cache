@@ -10,6 +10,7 @@ typedef struct {
     struct atm_hash_entry_t *next;
 } atm_hash_entry_t;
 
+
 typedef struct {
     atm_hash_entry_t **table;
     atm_ulong_t size;
@@ -17,14 +18,13 @@ typedef struct {
     atm_uint_t (* key_compare)(atm_str_t *key1, atm_str_t *key2);
 } atm_hash_t;
 
-void atm_hash_init_siphash_seed();
 
-atm_hash_t *atm_hash_init();
+void atm_hash_init();
 atm_int_t atm_hash_contains(atm_string_t *key);
 atm_uint_t atm_hash_key_func(atm_string_t *key);
 void *atm_hash_get(atm_hash_t *hash, atm_string_t *key);
 void *atm_hash_set(atm_hash_t *hash, atm_string_t *key, atm_string_t *value);
 atm_int_t atm_hash_remove(atm_hash_t *hash, atm_string_t *key);
 
-uint64_t atm_siphash(atm_str_t in, size_t inlen, uint8_t *k);
+
 #endif

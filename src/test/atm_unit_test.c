@@ -2,10 +2,10 @@
 #include <atm_core.h>
 
 void atm_test_report(atm_str_t func_name, atm_uint_t result) {
-    if (ATM_TEST_HASH_PASS == result) {
+    if (ATM_TEST_PASS == result) {
         atm_log("PASS : test func name is [%s]", func_name);
     }
-    if (ATM_TEST_HASH_FAIL == result) {
+    if (ATM_TEST_FAIL == result) {
         atm_log("FAIL : test func name is [%s]", func_name);
     }
 }

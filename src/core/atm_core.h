@@ -4,6 +4,7 @@
 #include <atm_config.h>
 #include <atm_string.h>
 #include <atm_hash.h>
+#include <atm_siphash.h>
 #include <atm_list.h>
 #include <atm_logger.h>
 #include <atmcache.h>

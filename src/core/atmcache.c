@@ -68,7 +68,7 @@ static void atm_unit_test_suit(int argc, char **argv) {
 static void atm_initialize() {
     printf("atm_initialize enter......\n");
     atm_signal_register();
-    atm_hash_init_siphash_seed();
+    atm_hash_init();
 }
 
 static void atm_service() {

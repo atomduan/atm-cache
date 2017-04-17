@@ -41,11 +41,11 @@ atm_hash_t *atm_hash_init() {
     return hash;
 }
 
-atm_int_t atm_hash_contains(atm_str_t *key) {
+atm_int_t atm_hash_contains(atm_string_t *key) {
     return 0;
 }
 
-atm_uint_t atm_hash_key_func(atm_str_t *key) {
+atm_uint_t atm_hash_key_func(atm_string_t *key) {
     uint64_t hash;
     uint8_t *hash_seed;
     hash_seed = siphash_seed;
@@ -53,14 +53,15 @@ atm_uint_t atm_hash_key_func(atm_str_t *key) {
     return (atm_uint_t) hash;
 }
 
-void *atm_hash_get(atm_hash_t *hash, atm_str_t *key) {
+void *atm_hash_get(atm_hash_t *hash, atm_string_t *key) {
     return (void *)NULL;
 }
 
-void *atm_hash_set(atm_hash_t *hash, atm_str_t *key, atm_str_t *value) {
+void *atm_hash_set(
+        atm_hash_t *hash, atm_string_t *key, atm_string_t *value) {
     return (void *)NULL;
 }
 
-atm_int_t atm_hash_remove(atm_hash_t *hash, atm_str_t *key) {
+atm_int_t atm_hash_remove(atm_hash_t *hash, atm_string_t *key) {
     return 0;
 }

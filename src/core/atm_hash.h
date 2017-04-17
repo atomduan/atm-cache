@@ -20,11 +20,11 @@ typedef struct {
 void atm_hash_init_siphash_seed();
 
 atm_hash_t *atm_hash_init();
-atm_int_t atm_hash_contains(atm_str_t *key);
-atm_uint_t atm_hash_key_func(atm_str_t *key);
-void *atm_hash_get(atm_hash_t *hash, atm_str_t *key);
-void *atm_hash_set(atm_hash_t *hash, atm_str_t *key, atm_str_t *value);
-atm_int_t atm_hash_remove(atm_hash_t *hash, atm_str_t *key);
+atm_int_t atm_hash_contains(atm_string_t *key);
+atm_uint_t atm_hash_key_func(atm_string_t *key);
+void *atm_hash_get(atm_hash_t *hash, atm_string_t *key);
+void *atm_hash_set(atm_hash_t *hash, atm_string_t *key, atm_string_t *value);
+atm_int_t atm_hash_remove(atm_hash_t *hash, atm_string_t *key);
 
-uint64_t atm_siphash(uint8_t *in, size_t inlen, uint8_t *k);
+uint64_t atm_siphash(atm_str_t in, size_t inlen, uint8_t *k);
 #endif

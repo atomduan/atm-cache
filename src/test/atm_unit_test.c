@@ -13,7 +13,7 @@ void atm_test_report(atm_str_t func_name, atm_uint_t result) {
 /*
  * Main entry point of unit test system
  */
-int atm_unit_test_proc(int argc, char **argv) {
+atm_int_t atm_unit_test_proc(atm_int_t argc, atm_str_t *argv) {
     atm_log("Hello world unit test ......");
     atm_test_hash_suit();
     return 0;

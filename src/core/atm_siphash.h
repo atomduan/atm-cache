@@ -8,8 +8,8 @@
 void atm_siphash_init();
  
 
-uint64_t atm_siphash(atm_str_t input, size_t inlen);
-uint64_t atm_siphash_nocase(atm_str_t input, size_t inlen);
+uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen);
+uint64_t atm_siphash_nocase(atm_str_t input, atm_uint_t inlen);
 
 
 #endif

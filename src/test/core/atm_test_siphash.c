@@ -2,7 +2,7 @@
 #include <atm_core.h>
 
 
-static const uint8_t atm_vectors_sip64[64][8] = {
+static const atm_byte_t atm_vectors_sip64[64][8] = {
     { 0x31, 0x0e, 0x0e, 0xdd, 0x47, 0xdb, 0x6f, 0x72, },
     { 0xfd, 0x67, 0xdc, 0x93, 0xc5, 0x39, 0xf8, 0x74, },
     { 0x5a, 0x4f, 0xa9, 0xd9, 0x09, 0x80, 0x6c, 0x0d, },
@@ -77,18 +77,15 @@ static const uint8_t atm_vectors_sip64[64][8] = {
  * the test revert back the siphash() function to 2-4 rounds since
  * now it uses 1-2 rounds. */
 static atm_int_t atm_test_siphash_proc() {
-    atm_char_t in[64], k[16];
-    int i;
-    int fails = 0;
-
-    for (i = 0; i < 16; ++i)
-        k[i] = i;
+    atm_char_t in[64];
+    atm_int_t i;
+    atm_int_t fails = 0;
 
     for (i = 0; i < 64; ++i) {
         in[i] = i;
         uint64_t hash = atm_siphash(in, i);
-        const uint8_t *v = NULL;
-        v = (uint8_t *)atm_vectors_sip64;
+        const atm_byte_t *v = NULL;
+        v = (atm_byte_t *)atm_vectors_sip64;
         if (memcmp(&hash, v + (i * 8), 8)) {
             printf("fail for %d bytes\n", i);
             fails++;

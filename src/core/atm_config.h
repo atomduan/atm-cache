@@ -10,24 +10,34 @@
 #endif
 
 
-typedef size_t          atm_size_t;
-typedef intptr_t        atm_int_t;
-typedef uintptr_t       atm_uint_t;
-typedef long            atm_long_t;
-typedef long long       atm_llong_t;
-typedef unsigned long   atm_ulong_t;
-
-typedef char            atm_char_t;
-typedef atm_char_t *    atm_str_t;
-typedef struct {
-    atm_size_t  len;
-    atm_str_t   str;
-} atm_string_t;
-
-typedef uint8_t         atm_byte_t;
-
-
+/* 
+ * Primitive data type define
+ */
+typedef int8_t          atm_bool_t;
 #define ATM_TRUE    1
 #define ATM_FALSE   0
+
+/* int64_t or int32_t */
+typedef int32_t         atm_int_t; 
+/* In 64 system same to: size_t and unsigned long int
+ * In 32 system: same to: size_t and unsigned int 
+ */
+typedef uint32_t        atm_uint_t;
+typedef int64_t         atm_long_t;
+typedef uint64_t        atm_ulong_t;
+
+/*
+ * Char and string relevant
+ */
+typedef char            atm_char_t;
+typedef atm_char_t *    atm_str_t;
+
+/* 
+ * Byte oriented data type define:
+ *      we recommand to use unint*_t 
+ *      to represent bit wise data type 
+ */
+typedef uint8_t         atm_byte_t;/* same to u_char */
+
 
 #endif

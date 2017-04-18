@@ -15,9 +15,9 @@ atm_uint_t atm_test_hash_contains() {
 }
 
 
-atm_uint_t atm_test_hash_key_func() {
+atm_uint_t atm_test_hash_key_gen() {
     atm_uint_t result = ATM_TEST_PASS;
-    atm_test_report("atm_test_hash_key_func", result);
+    atm_test_report("atm_test_hash_key_gen", result);
     return result;
 }
 
@@ -49,7 +49,7 @@ atm_uint_t atm_test_hash_suit() {
     if (!atm_test_hash_contains()) {
         return ATM_TEST_FAIL;
     }
-    if (!atm_test_hash_key_func()) {
+    if (!atm_test_hash_key_gen()) {
         return ATM_TEST_FAIL;
     }
     if (!atm_test_hash_get()) {

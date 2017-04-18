@@ -17,9 +17,9 @@
 #include <atm_config.h>
 #include <atm_core.h>
 
-static void atm_signal_handler(int signo) {
+static void atm_signal_handler(atm_int_t signo) {
     pid_t pid;
-    int status;
+    atm_int_t status;
     if (signal(SIGCLD, atm_signal_handler) == SIG_ERR) {
         printf("signal error\n");
         exit(0);
@@ -37,10 +37,10 @@ static void atm_signal_register() {
 }
 
 #ifdef ATM_UNIT_TEST
-static void atm_unit_test_suit(int argc, char **argv) { 
+static void atm_unit_test_suit(atm_int_t argc, atm_str_t *argv) { 
     printf("atm_unit_test_suit entry....\n");
-    int mod = ATM_UNIT_TEST_LV;
-    int status;
+    atm_int_t mod = ATM_UNIT_TEST_LV;
+    atm_int_t status;
     pid_t pid;
 
     if (ATM_UNIT_TEST_SKIP == mod) {
@@ -75,7 +75,7 @@ static void atm_service() {
     printf("atm_service enter......\n");
 }
 
-int main(int argc, char **argv) {
+atm_int_t main(atm_int_t argc,  atm_str_t *argv) {
 #ifdef ATM_UNIT_TEST
     atm_unit_test_suit(argc, argv);
 #endif

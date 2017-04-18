@@ -4,27 +4,42 @@
 #include <atm_config.h>
 #include <atm_core.h>
 
-typedef struct {
+
+#define ATM_HASH_INITIAL_SIZE 256
+
+
+typedef struct atm_hash_entry_s atm_hash_entry_t;
+struct atm_hash_entry_s {
+    atm_string_t *key;
     void *value;
-    atm_str_t *key;
-    struct atm_hash_entry_t *next;
-} atm_hash_entry_t;
+    atm_hash_entry_t *next;
+};
 
 
-typedef struct {
-    atm_hash_entry_t **table;
-    atm_ulong_t size;
-    atm_uint_t (* hash_func)(atm_str_t *key);
-    atm_uint_t (* key_compare)(atm_str_t *key1, atm_str_t *key2);
-} atm_hash_t;
+typedef atm_hash_entry_t *      atm_hash_buck_t;
+
+
+typedef struct atm_hash_s atm_hash_t;
+struct atm_hash_s {
+    atm_hash_buck_t *table;
+    atm_uint_t size;
+};
 
 
 void atm_hash_init();
-atm_int_t atm_hash_contains(atm_string_t *key);
-atm_uint_t atm_hash_key_func(atm_string_t *key);
+
+atm_hash_entry_t *atm_hash_entry_new (atm_string_t *key, void *value);
+void atm_hash_entry_free(atm_hash_entry_t* e);
+
+atm_hash_t *atm_hash_new();
+void atm_hash_free(atm_hash_t* e);
+
+
+atm_uint_t atm_hash_key_gen(atm_hash_t *hash, atm_string_t *key);
+atm_bool_t atm_hash_contains(atm_hash_t *hash, atm_string_t *key);
 void *atm_hash_get(atm_hash_t *hash, atm_string_t *key);
-void *atm_hash_set(atm_hash_t *hash, atm_string_t *key, atm_string_t *value);
-atm_int_t atm_hash_remove(atm_hash_t *hash, atm_string_t *key);
+atm_bool_t atm_hash_set(atm_hash_t *hash, atm_string_t *key, void *value);
+void atm_hash_remove(atm_hash_t *hash, atm_string_t *key);
 
 
 #endif

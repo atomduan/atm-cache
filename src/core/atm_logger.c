@@ -42,7 +42,7 @@ void atm_log(atm_str_t fmt, ...) {
 }
 
 
-void atm_log_routine( atm_uint_t level, atm_str_t fmt, ...) {
+void atm_log_routine(atm_uint_t level, atm_str_t fmt, ...) {
     atm_str_t message 
         = (atm_str_t)atm_malloc(ATM_LOG_MAX_LEN);
     va_list args;

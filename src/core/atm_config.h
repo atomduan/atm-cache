@@ -14,8 +14,8 @@
  * Primitive data type define
  */
 typedef int8_t          atm_bool_t;
-#define ATM_TRUE    1
-#define ATM_FALSE   0
+#define ATM_TRUE        1
+#define ATM_FALSE       0
 
 /* int64_t or int32_t */
 typedef int32_t         atm_int_t; 

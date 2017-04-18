@@ -18,4 +18,4 @@ void atm_log(atm_str_t fmt, ...);
 
 void atm_log_routine(atm_uint_t level, atm_str_t fmt, ...);
 
-#endif
+#endif /* _ATM_LOGGER_H_INCLUDED_ */

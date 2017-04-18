@@ -75,7 +75,7 @@ static void atm_initialize()
 {
     atm_log("atm_initialize enter......");
     atm_signal_register();
-    atm_hash_init();
+    atm_dict_init();
 }
 
 

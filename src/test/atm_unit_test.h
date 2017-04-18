@@ -4,7 +4,7 @@
 #include <atm_config.h>
 #include <atm_core.h>
 
-#include <atm_test_hash.h>
+#include <atm_test_dict.h>
 #include <atm_test_siphash.h>
 #include <atm_test_process.h>
 

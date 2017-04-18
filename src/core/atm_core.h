@@ -3,7 +3,7 @@
 
 #include <atm_config.h>
 #include <atm_string.h>
-#include <atm_hash.h>
+#include <atm_dict.h>
 #include <atm_siphash.h>
 #include <atm_list.h>
 #include <atm_logger.h>
@@ -13,13 +13,9 @@
 #include <atm_unit_test.h>
 #endif
 
-void *
-atm_malloc(atm_uint_t size);
+void *atm_malloc(atm_uint_t size);
+void *atm_calloc(atm_uint_t nmemb, atm_uint_t size);
+void atm_free(void *ptr);
 
-void *
-atm_calloc(atm_uint_t nmemb, atm_uint_t size);
-
-void
-atm_free(void *ptr);
 
 #endif /* _ATM_CORE_H_INCLUDED_ */

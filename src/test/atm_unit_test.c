@@ -17,6 +17,6 @@ void atm_test_report(atm_str_t func_name, atm_uint_t result)
 atm_int_t atm_unit_test_proc(atm_int_t argc, atm_str_t *argv) 
 {
     atm_log("Hello world unit test ......");
-    atm_test_hash_suit();
+    atm_test_dict_suit();
     return ATM_OK;
 }

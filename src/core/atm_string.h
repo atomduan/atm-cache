@@ -5,19 +5,26 @@
 #include <atm_core.h>
 
 
+#define ATM_STR_TMN \0
+
+typedef struct atm_string_s atm_string_t;
 /* 
  * Encapsutalted data type define:
  *      currently we only have string type
  */
-typedef struct {
+struct atm_string_s {
     atm_str_t   str;
     atm_int_t   len;
-} atm_string_t;
+};
 
-#define ATM_STR_TMN \0
 
-void atm_string_free(atm_string_t *s);
+void atm_string_init();
+
+atm_string_t *atm_string_new(atm_str_t str);
+void atm_string_free(atm_string_t *e);
+
 atm_bool_t atm_string_equal(
         const atm_string_t *s1, const atm_string_t *s2);
 
-#endif
+
+#endif /* _ATM_STRING_H_INCLUDED_ */

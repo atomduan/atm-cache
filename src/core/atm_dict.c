@@ -42,8 +42,8 @@ atm_dict_entry_t * atm_dict_entry_new (atm_string_t *key, void *value)
 
 void atm_dict_entry_free(atm_dict_entry_t *e) 
 {
+    e->dict->free_value(e->value);
     atm_string_free(e->key); 
-    atm_free(e->value); //TODO: how to do with it!!??
     atm_free(e);
 }
 

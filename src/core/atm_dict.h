@@ -16,10 +16,12 @@ typedef atm_dict_entry_t *          atm_dict_bucket_t;
 struct atm_dict_s {
     atm_dict_bucket_t  *table;
     atm_uint_t          size;
+    void (* free_value)(void *v);
 };
 
 
 struct atm_dict_entry_s {
+    atm_dict_t         *dict;
     atm_string_t       *key;
     void               *value;
     atm_dict_entry_t   *next;

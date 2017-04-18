@@ -34,7 +34,6 @@ void atm_hash_entry_free(atm_hash_entry_t* e);
 atm_hash_t *atm_hash_new();
 void atm_hash_free(atm_hash_t* e);
 
-
 atm_uint_t atm_hash_key_gen(atm_hash_t *hash, atm_string_t *key);
 atm_bool_t atm_hash_contains(atm_hash_t *hash, atm_string_t *key);
 void *atm_hash_get(atm_hash_t *hash, atm_string_t *key);

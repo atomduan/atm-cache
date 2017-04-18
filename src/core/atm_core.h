@@ -13,8 +13,13 @@
 #include <atm_unit_test.h>
 #endif
 
-void *atm_malloc(atm_uint_t size);
-void *atm_calloc(atm_uint_t nmemb, atm_uint_t size);
-void atm_free(void *ptr);
+void *
+atm_malloc(atm_uint_t size);
+
+void *
+atm_calloc(atm_uint_t nmemb, atm_uint_t size);
+
+void
+atm_free(void *ptr);
 
 #endif /* _ATM_CORE_H_INCLUDED_ */

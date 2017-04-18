@@ -1,7 +1,8 @@
 #include <atm_config.h>
 #include <atm_core.h>
 
-void atm_test_report(atm_str_t func_name, atm_uint_t result) {
+void atm_test_report(atm_str_t func_name, atm_uint_t result) 
+{
     if (ATM_TEST_PASS == result) {
         atm_log("PASS : test func name is [%s]", func_name);
     }
@@ -13,8 +14,9 @@ void atm_test_report(atm_str_t func_name, atm_uint_t result) {
 /*
  * Main entry point of unit test system
  */
-atm_int_t atm_unit_test_proc(atm_int_t argc, atm_str_t *argv) {
+atm_int_t atm_unit_test_proc(atm_int_t argc, atm_str_t *argv) 
+{
     atm_log("Hello world unit test ......");
     atm_test_hash_suit();
-    return 0;
+    return ATM_OK;
 }

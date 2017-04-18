@@ -5,7 +5,8 @@
 static uint8_t siphash_seed[16];
 
 
-void atm_siphash_init() {
+void atm_siphash_init() 
+{
     atm_str_t p = (atm_str_t) siphash_seed;
     atm_uint_t len = sizeof(siphash_seed);
     atm_str_t charset = "0123456789abcdef";
@@ -38,15 +39,18 @@ void atm_siphash_init() {
     }
 }
 
+
 /* Fast tolower() alike function that does not care about locale
  * but just returns a-z insetad of A-Z. */
-static atm_int_t siptlw(atm_int_t c) {
+static atm_int_t siptlw(atm_int_t c) 
+{
     if (c >= 'A' && c <= 'Z') {
         return c+('a'-'A');
     } else {
         return c;
     }
 }
+
 
 /* Test of the CPU is Little Endian and supports not aligned accesses.
  * Two interesting conditions to speedup the function that happen to be
@@ -105,7 +109,9 @@ static atm_int_t siptlw(atm_int_t c) {
         v2 = ROTL(v2, 32);                                                     \
     } while (0)
 
-uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen) {
+
+uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen) 
+{
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;
 #ifndef UNALIGNED_LE_CPU
@@ -166,7 +172,8 @@ uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen) {
 #endif
 }
 
-uint64_t atm_siphash_nocase(atm_str_t input, atm_uint_t inlen) {
+uint64_t atm_siphash_nocase(atm_str_t input, atm_uint_t inlen) 
+{
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;
 #ifndef UNALIGNED_LE_CPU

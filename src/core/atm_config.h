@@ -1,14 +1,14 @@
 #ifndef _ATM_CONFIG_H_INCLUDED_
 #define _ATM_CONFIG_H_INCLUDED_
 
-
 #include <atm_auto_headers.h>
-
 
 #if (ATM_LINUX)
 #include <atm_linux_config.h>
 #endif
 
+#define ATM_OK      0
+#define ATM_ERR     1
 
 /* 
  * Primitive data type define

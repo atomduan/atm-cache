@@ -1,7 +1,3 @@
-/*
- * this header will be include by atm_config.h if ATM_LINUX is set.
- */
-
 #ifndef _ATM_LINUX_CONFIG_H_INCLUDED_
 #define _ATM_LINUX_CONFIG_H_INCLUDED_
 

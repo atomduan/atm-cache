@@ -34,7 +34,7 @@ typedef uint8_t         atm_byte_t;/* same to u_char */
  * Biz system headers.
  */
 typedef struct atm_list_T_s         atm_list_T_t;
-typedef struct atm_list_ele_s       atm_list_ele_t;
+typedef struct atm_list_entry_s     atm_list_entry_t;
 typedef struct atm_list_s           atm_list_t;
 
 typedef struct atm_dict_T_s         atm_dict_T_t;

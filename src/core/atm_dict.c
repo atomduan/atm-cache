@@ -24,7 +24,7 @@ atm_dict_t *atm_dict_new(atm_dict_T_t *type)
 {
     atm_uint_t bsz = ATM_DICT_INITIAL_BUCKET_SIZE;
     atm_dict_t *dict = (atm_dict_t *) atm_malloc(sizeof(atm_dict_t));
-    dict->shallow_free = ATM_TRUE;
+    dict->deep_free = ATM_TRUE;
     dict->bucket = (atm_list_t **) atm_malloc(sizeof(atm_list_t *) * bsz);
     dict->bucket_size = bsz;
     dict->size = 0;
@@ -40,7 +40,7 @@ void atm_dict_free(void *d)
     atm_list_t *lptr;
     for (;i<dict->bucket_size; ++i) {
         lptr = dict->bucket[i];
-        if (ATM_FALSE == lptr->shallow_free) {
+        if (lptr->deep_free) {
             /*
              * containers inner container must be free_deep
              * or else the top container's free can not triger
@@ -73,7 +73,7 @@ void atm_dict_entry_free(void *e)
     atm_dict_entry_t *entry = (atm_dict_entry_t *)e;
     atm_dict_t *dict = entry->dict; 
     atm_dict_T_t *type = dict->type;
-    if (ATM_FALSE == dict->shallow_free) {
+    if (dict->deep_free) {
         type->free_key(entry->key);
         type->free_value(entry->value);
     }
@@ -83,10 +83,9 @@ void atm_dict_entry_free(void *e)
 
 atm_bool_t atm_dict_entry_match(void *entry, void *key)
 {
-    atm_dict_entry_t *e = (atm_dict_entry_t *)entry;
     atm_bool_t result = ATM_FALSE;
-    atm_dict_t *dict = NULL;
-    atm_dict_T_t *type = dict->type;
+    atm_dict_entry_t *e = (atm_dict_entry_t *)entry;
+    atm_dict_T_t *dict_type = NULL;
 
     if (e == NULL && key == NULL) {
         result = ATM_TRUE;
@@ -94,9 +93,8 @@ atm_bool_t atm_dict_entry_match(void *entry, void *key)
     if (e != NULL && key == NULL) {
         result = ATM_FALSE;
     } else {
-        dict = e->dict;
-        type = dict->type;
-        result = type->match(e->key, key);
+        dict_type = e->dict->type;
+        result = dict_type->match(e->key, key);
     }
     return result;
 }
@@ -156,7 +154,8 @@ void atm_dict_set(atm_dict_t *dict, void *key, void *value)
         lptr = dict->bucket[hash_key];
         if (lptr == NULL) {
             lptr = atm_list_new(&ATM_DICT_LIST_T);
-            lptr->shallow_free = ATM_FALSE;
+            /* lptr is part of data structure so need to set deep free */
+            lptr->deep_free = ATM_TRUE;
             dict->bucket[hash_key] = lptr;
         }
         new_entry = atm_dict_entry_new(key,value);   

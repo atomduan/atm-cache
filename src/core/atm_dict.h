@@ -15,7 +15,7 @@ struct atm_dict_T_s {
 
 
 struct atm_dict_s {
-    atm_bool_t          shallow_free;
+    atm_bool_t          deep_free;
     atm_list_t        **bucket;
     atm_uint_t          bucket_size;
     atm_uint_t          size;
@@ -35,7 +35,7 @@ void atm_dict_init();
 
 
 atm_dict_t *atm_dict_new(atm_dict_T_t *type);
-void atm_dict_free(void *d);
+void atm_dict_free(void *dict);
 
 
 atm_bool_t atm_dict_contains(atm_dict_t *dict, void *key);

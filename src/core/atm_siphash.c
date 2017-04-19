@@ -4,6 +4,11 @@
 static uint8_t siphash_seed[16];
 
 
+/* 
+ * FUNCTIONS BIGIN
+ * */
+
+
 void atm_siphash_init() 
 {
     atm_str_t p = (atm_str_t) siphash_seed;

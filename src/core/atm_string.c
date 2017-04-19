@@ -1,9 +1,14 @@
 #include <atm_core.h>
 
 
+/* 
+ * FUNCTIONS BIGIN
+ * */
+
+
 void atm_string_init()
 {
-    /* DO Nothing */
+    /* TODO */
 }
 
 
@@ -20,10 +25,11 @@ atm_string_t *atm_string_new(atm_str_t str)
 }
 
 
-void atm_string_free(atm_string_t *s) 
+void atm_string_free(void *string) 
 {
-   atm_free(s->str);
-   atm_free(s); 
+    atm_string_t *s = (atm_string_t *) string;
+    atm_free(s->str);
+    atm_free(s); 
 }
 
 

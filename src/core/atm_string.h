@@ -6,7 +6,7 @@
 
 #define ATM_STR_TMN \0
 
-typedef struct atm_string_s atm_string_t;
+
 /* 
  * Encapsutalted data type define:
  *      currently we only have string type
@@ -20,7 +20,7 @@ struct atm_string_s {
 void atm_string_init();
 
 atm_string_t *atm_string_new(atm_str_t str);
-void atm_string_free(atm_string_t *e);
+void atm_string_free(void *string);
 
 atm_bool_t atm_string_equal(
         const atm_string_t *s1, const atm_string_t *s2);

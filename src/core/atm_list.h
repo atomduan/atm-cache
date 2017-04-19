@@ -4,18 +4,12 @@
 #include <atm_core.h>
 
 
-struct atm_list_T_s {
-    atm_bool_t  (* match)(void *entry, void *hint);
-    void        (* free_value)(void *v);
-};
-
-
 struct atm_list_s {
     atm_bool_t          deep_free;
+    atm_T_t            *type;
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
-    atm_list_T_t       *type;
 };
 
 
@@ -30,8 +24,8 @@ struct atm_list_entry_s {
 void atm_list_init();
 
 
-atm_list_t *atm_list_new(atm_list_T_t *type);
-void atm_list_free(void *l);
+atm_list_t *atm_list_new(atm_T_t *type);
+void atm_list_free(void *list);
 
 
 void atm_list_push(atm_list_t *list, void *value);

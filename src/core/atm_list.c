@@ -1,20 +1,25 @@
 #include <atm_core.h>
 
 
-static void atm_list_entry_isol(atm_list_entry_t * e);
+static void atm_list_entry_isol(atm_list_entry_t * entry);
 static atm_list_entry_t *atm_list_find_linear(atm_list_t *list, void *key);
 static atm_list_entry_t *atm_list_lpop_entry(atm_list_t *list);
 static atm_list_entry_t *atm_list_rpop_entry(atm_list_t *list);
 static atm_list_entry_t *atm_list_entry_new(void *value);
-static void atm_list_entry_free(void *e);
+static void atm_list_entry_free(void *entry);
+
+
+/* 
+ * FUNCTIONS BIGIN
+ * */
 
 
 /* make sure that the entry has no deps with the list position */
-static void atm_list_entry_isol(atm_list_entry_t * e)
+static void atm_list_entry_isol(atm_list_entry_t * entry)
 {
-    if (e != NULL) {
-        e->prev = NULL;
-        e->next = NULL;
+    if (entry != NULL) {
+        entry->prev = NULL;
+        entry->next = NULL;
     }
 }
 
@@ -25,7 +30,7 @@ void atm_list_init()
 }
 
 
-atm_list_t *atm_list_new(atm_list_T_t *type)
+atm_list_t *atm_list_new(atm_T_t *type)
 {
     atm_list_t *result = NULL;
     result = (atm_list_t *) atm_malloc(sizeof(atm_list_t));
@@ -38,15 +43,15 @@ atm_list_t *atm_list_new(atm_list_T_t *type)
 }
 
 
-void atm_list_free(void *l)
+void atm_list_free(void *list)
 {
-    atm_list_t * list = (atm_list_t *) l;
+    atm_list_t * l = (atm_list_t *) list;
     atm_list_entry_t *curr = NULL;
     /* purge list elements */
-    while ((curr=atm_list_lpop_entry(list)) != NULL) {
+    while ((curr=atm_list_lpop_entry(l)) != NULL) {
         atm_list_entry_free(curr);
     }
-    atm_free(list);
+    atm_free(l);
 }
 
 
@@ -201,15 +206,15 @@ static atm_list_entry_t *atm_list_entry_new (void *value)
 }
 
 
-static void atm_list_entry_free(void *e)
+static void atm_list_entry_free(void *entry)
 {
-    atm_list_entry_t *entry = (atm_list_entry_t *) e;
-    atm_list_t list = entry->list;
-    atm_list_T_t *type = list->type;
+    atm_list_entry_t *e = (atm_list_entry_t *) entry;
+    atm_list_t *list = e->list;
+    atm_T_t *type = list->type;
 
-    atm_list_entry_isol(entry);
+    atm_list_entry_isol(e);
     if (list->deep_free) {
-        type->free_value(entry->value);
+        type->free_value(e->value);
     }
-    atm_free(entry);
+    atm_free(e);
 }

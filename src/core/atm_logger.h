@@ -1,8 +1,8 @@
 #ifndef _ATM_LOGGER_H_INCLUDED_
 #define _ATM_LOGGER_H_INCLUDED_
 
-#include <atm_config.h>
 #include <atm_core.h>
+
 
 #define ATM_LOG_OFF     0
 #define ATM_LOG_ALL     1

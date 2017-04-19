@@ -14,7 +14,6 @@
  *
  * =====================================================================================
  */
-#include <atm_config.h>
 #include <atm_core.h>
 
 static void atm_signal_handler(atm_int_t signo) 
@@ -56,7 +55,7 @@ static void atm_unit_test_suit(atm_int_t argc, atm_str_t *argv)
         atm_log("atm_service unit test before all");
         if ((pid = fork()) < 0) {
             atm_log("fork error occure....");
-            exit(ATM_ERR);
+            exit(ATM_FATAL);
         } else if (pid == 0) {
             atm_unit_test_proc(argc, argv);
             exit(ATM_OK);

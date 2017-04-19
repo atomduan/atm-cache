@@ -1,4 +1,3 @@
-#include <atm_config.h>
 #include <atm_core.h>
 
 static const atm_str_t ATM_LOG_LV_ENUM[] = {

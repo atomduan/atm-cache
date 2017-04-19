@@ -1,15 +1,17 @@
 #ifndef _ATM_UNITEST_H_INCLUDED_
 #define _ATM_UNITEST_H_INCLUDED_
 
-#include <atm_config.h>
 #include <atm_core.h>
+
+
+#define ATM_TEST_FAIL 0
+#define ATM_TEST_PASS 1
+
 
 #include <atm_test_dict.h>
 #include <atm_test_siphash.h>
 #include <atm_test_process.h>
 
-#define ATM_TEST_FAIL 0
-#define ATM_TEST_PASS 1
 
 /*
  * The entry point of unit test system

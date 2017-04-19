@@ -11,6 +11,7 @@ CORE_INCS="src/core"
 
 CORE_DEPS="src/core/atmcache.h \
            src/core/atm_config.h \
+           src/core/atm_types.h \
            src/core/atm_core.h \
            src/core/atm_dict.h \
            src/core/atm_siphash.h \

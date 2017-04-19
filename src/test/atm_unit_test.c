@@ -1,4 +1,3 @@
-#include <atm_config.h>
 #include <atm_core.h>
 
 void atm_test_report(atm_str_t func_name, atm_uint_t result) 

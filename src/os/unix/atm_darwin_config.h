@@ -1,7 +1,6 @@
 #ifndef _ATM_DARWIN_CONFIG_H_INCLUDED_
 #define _ATM_DARWIN_CONFIG_H_INCLUDED_
 
-
 #include <sys/types.h>
 #include <sys/time.h>
 #include <unistd.h>

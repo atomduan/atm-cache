@@ -7,19 +7,27 @@
 
 typedef struct atm_list_s       atm_list_t;
 typedef struct atm_list_ele_s   atm_list_ele_t;
+typedef struct atm_list_T_s     atm_list_T_t;
 
 
 struct atm_list_s {
     atm_list_ele_t     *head;
     atm_list_ele_t     *tail;
     atm_uint_t          size;
+    atm_list_T_t       *type;
 };
 
 
 struct atm_list_ele_s {
+    atm_list_t         *list;
     void               *value;
     atm_list_ele_t     *prev;
     atm_list_ele_t     *next;
+};
+
+
+struct atm_list_T_s {
+    void (* free_ele)(void *v);
 };
 
 
@@ -27,6 +35,9 @@ void atm_list_init();
 
 atm_list_t *atm_list_new();
 void atm_list_free(atm_list_t *e);
+
+atm_list_ele_t *atm_list_lpop(atm_list_t *list);
+atm_list_ele_t *atm_list_rpop(atm_list_t *list);
 
 atm_list_ele_t *atm_list_ele_new (void *value);
 void atm_list_ele_free(atm_list_ele_t *e);

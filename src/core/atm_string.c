@@ -21,10 +21,10 @@ atm_str_new(char *str)
     char *copy = NULL;
 
     len = strlen(str);
-    copy = atm_malloc(len+1);//TODO include 0?
+    copy = atm_alloc(len+1);//TODO include 0?
     memset(copy, 0, len+1);
     //TODO bug here, no string copy
-    res = atm_malloc(sizeof(atm_str_t));
+    res = atm_alloc(sizeof(atm_str_t));
     res->val = copy;
     res->len = len;
     return res;

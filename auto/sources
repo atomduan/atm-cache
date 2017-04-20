@@ -20,7 +20,6 @@ CORE_DEPS="src/core/atmcache.h \
            src/core/atm_string.h"
 
 CORE_SRCS="src/core/atmcache.c \
-           src/core/atm_core.c \
            src/core/atm_dict.c \
            src/core/atm_siphash.c \
            src/core/atm_list.c \
@@ -53,18 +52,20 @@ fi
 #NOTE: OS SRC settings are configed in auto/os/conf and sub confs.
 OS_INCS="src/os \
          src/os/unix"
-OS_DEPS="src/os/unix/atm_process.h"
-OS_SRCS="src/os/unix/atm_process.c"
+OS_DEPS="src/os/atm_process.h \
+         src/os/atm_alloc.h"
+OS_SRCS="src/os/unix/atm_process.c \
+         src/os/unix/atm_alloc.c"
 OS_LIBS=""
 
 #Linux
-OS_LINUX_INCS="$OS_INCS"
-OS_LINUX_DEPS="$OS_DEPS src/os/unix/atm_linux_config.h"
+OS_LINUX_INCS="$OS_INCS src/os/unix/linux"
+OS_LINUX_DEPS="$OS_DEPS src/os/unix/linux/atm_linux_config.h"
 OS_LINUX_SRCS="$OS_SRCS"
 OS_LINUX_LIBS="$OS_LIBS"
 
 #Darwin
-OS_DARWIN_INCS="$OS_INCS"
-OS_DARWIN_DEPS="$OS_DEPS src/os/unix/atm_darwin_config.h"
+OS_DARWIN_INCS="$OS_INCS src/os/unix/darwin"
+OS_DARWIN_DEPS="$OS_DEPS src/os/unix/darwin/atm_darwin_config.h"
 OS_DARWIN_SRCS="$OS_SRCS"
 OS_DARWIN_LIBS="$OS_LIBS"

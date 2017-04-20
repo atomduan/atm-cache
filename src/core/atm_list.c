@@ -56,7 +56,7 @@ atm_list_entry_new (void *val)
     atm_list_entry_t *res = NULL;
 
     res = (atm_list_entry_t *) 
-        atm_malloc(sizeof(atm_list_entry_t));
+        atm_alloc(sizeof(atm_list_entry_t));
 
     res->val = val;
     atm_list_entry_isol(res);
@@ -166,7 +166,7 @@ atm_list_new(atm_T_t *v_type)
     atm_list_t *res = NULL;
 
     res = (atm_list_t *) 
-        atm_malloc(sizeof(atm_list_t));
+        atm_alloc(sizeof(atm_list_t));
 
     res->head = NULL;
     res->tail = NULL;

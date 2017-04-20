@@ -76,7 +76,7 @@ atm_dict_entry_new(void *key, void *val)
     atm_dict_entry_t *res = NULL;
 
     res = (atm_dict_entry_t *)
-        atm_malloc(sizeof(*res));
+        atm_alloc(sizeof(*res));
 
     res->dict = NULL;
     res->key = key; 
@@ -248,11 +248,11 @@ atm_dict_new(atm_T_t *k_type, atm_T_t *v_type)
 
     bsz = ATM_DICT_INITIAL_BUCKET_SIZE;
     dict = (atm_dict_t *) 
-        atm_malloc(sizeof(atm_dict_t));
+        atm_alloc(sizeof(atm_dict_t));
 
     dict->deep_free = ATM_TRUE;
     dict->bucket = (atm_list_t **) 
-        atm_malloc(sizeof(atm_list_t *) * bsz);
+        atm_alloc(sizeof(atm_list_t *) * bsz);
 
     dict->bucket_size = bsz;
     dict->size = 0;

@@ -2,7 +2,7 @@
 
 
 void *
-atm_malloc(atm_uint_t size) 
+atm_alloc(atm_uint_t size) 
 {
     void * ptr = NULL;
     ptr = malloc(size);

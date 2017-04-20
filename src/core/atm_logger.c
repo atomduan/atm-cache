@@ -45,7 +45,7 @@ atm_log(char *fmt, ...)
 {
     char *msg = NULL;
 
-    msg = (char *) atm_malloc(ATM_LOG_MAX_LEN);
+    msg = (char *) atm_alloc(ATM_LOG_MAX_LEN);
 
     va_list args;
     va_start(args, fmt);
@@ -62,7 +62,7 @@ atm_log_routine(atm_uint_t level, char *fmt, ...)
 {
     char *msg = NULL;
 
-    msg = (char *) atm_malloc(ATM_LOG_MAX_LEN);
+    msg = (char *) atm_alloc(ATM_LOG_MAX_LEN);
 
     va_list args;
     va_start(args, fmt);

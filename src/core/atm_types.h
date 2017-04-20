@@ -35,11 +35,9 @@ typedef uint8_t         atm_byte_t;/* same to u_char */
 /* General Type For Container New */
 typedef struct atm_T_s              atm_T_t;
 struct atm_T_s {
-    atm_bool_t  (* match)(void *key1, void *key2);
-    void        (* free)(void *value);
-    void        (* free_key)(void *key);
-    void        (* free_value)(void *value);
-    uint        (* hash_key)(void *key);
+    atm_bool_t  (* match)(void *v1, void *v2);
+    void        (* free)(void *v);
+    uint        (* hash)(void *v);
 };
 /* Specific Types */
 typedef struct atm_string_s         atm_string_t;

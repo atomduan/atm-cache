@@ -214,7 +214,7 @@ static void atm_list_entry_free(void *entry)
 
     atm_list_entry_isol(e);
     if (list->deep_free) {
-        type->free_value(e->value);
+        type->free(e->value);
     }
     atm_free(e);
 }

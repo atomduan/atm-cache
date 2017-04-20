@@ -7,12 +7,11 @@ static atm_bool_t atm_dict_entry_match(void *entry, void *key);
 static atm_dict_entry_t *atm_dict_get_entry(atm_dict_t *dict, void *key); 
 static void atm_dict_entry_free(void *entry);
 
-
+/* TODO IF atm_T_s define change all of such define will change too
+ * That is a problem */
 static atm_T_t ATM_DICT_ENTRY_T = {
     atm_dict_entry_match,
     atm_dict_entry_free,
-    NULL,
-    NULL,
     NULL,
 };
 
@@ -28,7 +27,7 @@ void atm_dict_init()
 }
 
 
-atm_dict_t *atm_dict_new(atm_T_t *type) 
+atm_dict_t *atm_dict_new(atm_T_t *k_type, atm_T_t *v_type) 
 {
     atm_uint_t bsz = ATM_DICT_INITIAL_BUCKET_SIZE;
     atm_dict_t *dict = (atm_dict_t *) atm_malloc(sizeof(atm_dict_t));
@@ -36,7 +35,8 @@ atm_dict_t *atm_dict_new(atm_T_t *type)
     dict->bucket = (atm_list_t **) atm_malloc(sizeof(atm_list_t *) * bsz);
     dict->bucket_size = bsz;
     dict->size = 0;
-    dict->type = type;
+    dict->k_type = k_type;
+    dict->v_type = v_type;
     return dict;
 }
 
@@ -80,15 +80,13 @@ void atm_dict_entry_free(void *entry)
 {
     atm_dict_entry_t *e;
     atm_dict_t *dict;
-    atm_T_t *type;
     if (entry != NULL) {
         e = (atm_dict_entry_t *)entry;
         dict = e->dict; 
         if (dict != NULL) {
-            type = dict->type;
             if (dict->deep_free) {
-                type->free_key(e->key);
-                type->free_value(e->value);
+                dict->k_type->free(e->key);
+                dict->v_type->free(e->value);
             }
         }
         atm_free(e);
@@ -101,7 +99,7 @@ atm_bool_t atm_dict_entry_match(void *entry, void *hint)
     atm_bool_t result = ATM_FALSE;
     atm_dict_entry_t *e = (atm_dict_entry_t *)entry;
     atm_dict_entry_t *h = (atm_dict_entry_t *)hint;
-    atm_T_t *type = NULL;
+    atm_T_t *k_type = NULL;
 
     if (e == NULL || hint == NULL) {
         atm_log_routine(ATM_LOG_ERROR, 
@@ -109,8 +107,8 @@ atm_bool_t atm_dict_entry_match(void *entry, void *hint)
                 "entry carrupted should not NULL");
         exit(ATM_ERROR);
     } else {
-        type = e->dict->type;
-        result = type->match(e->key, h->key);
+        k_type = e->dict->k_type;
+        result = k_type->match(e->key, h->key);
     }
     return result;
 }
@@ -120,8 +118,8 @@ atm_uint_t atm_dict_hash_key_gen(atm_dict_t *dict, void *k)
 {
     atm_uint_t result = 0;
     uint64_t hash_key;
-    atm_T_t *type = dict->type;
-    hash_key = type->hash_key(k);
+    atm_T_t *k_type = dict->k_type;
+    hash_key = k_type->hash(k);
     result = hash_key % dict->bucket_size;
     return result;
 }

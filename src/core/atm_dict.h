@@ -12,7 +12,8 @@ struct atm_dict_s {
     atm_list_t        **bucket;
     atm_uint_t          bucket_size;
     atm_uint_t          size;
-    atm_T_t            *type;
+    atm_T_t            *k_type;
+    atm_T_t            *v_type;
 };
 
 
@@ -27,7 +28,7 @@ struct atm_dict_entry_s {
 void atm_dict_init();
 
 
-atm_dict_t *atm_dict_new(atm_T_t *type);
+atm_dict_t *atm_dict_new(atm_T_t *k_type, atm_T_t *v_type);
 void atm_dict_free(void *dict);
 
 

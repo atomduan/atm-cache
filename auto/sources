@@ -39,7 +39,7 @@ if [ $ATM_UNIT_TEST = YES ]; then
     CORE_DEPS="$CORE_DEPS src/test/atm_unit_test.h \
                src/test/core/atm_test_dict.h \
                src/test/core/atm_test_siphash.h \
-               src/test/os/unix/atm_test_process.h"
+               src/test/os/atm_test_process.h"
 
     CORE_SRCS="$CORE_SRCS src/test/atm_unit_test.c \
                src/test/core/atm_test_dict.c \
@@ -52,8 +52,8 @@ fi
 #NOTE: OS SRC settings are configed in auto/os/conf and sub confs.
 OS_INCS="src/os \
          src/os/unix"
-OS_DEPS="src/os/atm_process.h \
-         src/os/atm_alloc.h"
+OS_DEPS="src/os/unix/atm_process.h \
+         src/os/unix/atm_alloc.h"
 OS_SRCS="src/os/unix/atm_process.c \
          src/os/unix/atm_alloc.c"
 OS_LIBS=""

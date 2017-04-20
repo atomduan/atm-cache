@@ -14,9 +14,9 @@
 #define ATM_TRUE        1
 #define ATM_FALSE       0
 
-#define ATM_COMP_LESS  -1
-#define ATM_COMP_EQUAL  0
-#define ATM_COMP_MORE   1
+#define ATM_CMP_LT     -1
+#define ATM_CMP_EQ      0
+#define ATM_CMP_GT      1
 
 
 #endif /* _ATM_CONFIG_H_INCLUDED_ */

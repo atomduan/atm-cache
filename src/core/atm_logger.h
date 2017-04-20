@@ -14,8 +14,10 @@
 
 #define ATM_LOG_MAX_LEN   1024
 
-void atm_log(atm_str_t fmt, ...);
+void 
+atm_log(char *fmt, ...);
 
-void atm_log_routine(atm_uint_t level, atm_str_t fmt, ...);
+void 
+atm_log_routine(atm_uint_t level, char *fmt, ...);
 
 #endif /* _ATM_LOGGER_H_INCLUDED_ */

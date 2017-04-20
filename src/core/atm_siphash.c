@@ -9,14 +9,15 @@ static uint8_t siphash_seed[16];
  * */
 
 
-void atm_siphash_init() 
+void 
+atm_siphash_init() 
 {
-    atm_str_t p = (atm_str_t) siphash_seed;
+    char *p = (char *)siphash_seed;
     atm_uint_t len = sizeof(siphash_seed);
-    atm_str_t charset = "0123456789abcdef";
+    char *charset = "0123456789abcdef";
     atm_uint_t j;
 
-    atm_str_t x = p;
+    char *x = p;
     atm_uint_t l = len;
     struct timeval tv;
     pid_t pid = getpid();
@@ -46,7 +47,8 @@ void atm_siphash_init()
 
 /* Fast tolower() alike function that does not care about locale
  * but just returns a-z insetad of A-Z. */
-static atm_int_t siptlw(atm_int_t c) 
+static atm_int_t 
+siptlw(atm_int_t c) 
 {
     if (c >= 'A' && c <= 'Z') {
         return c+('a'-'A');
@@ -114,7 +116,8 @@ static atm_int_t siptlw(atm_int_t c)
     } while (0)
 
 
-uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen) 
+uint64_t 
+atm_siphash(char *input, atm_uint_t inlen) 
 {
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;
@@ -176,7 +179,8 @@ uint64_t atm_siphash(atm_str_t input, atm_uint_t inlen)
 #endif
 }
 
-uint64_t atm_siphash_nocase(atm_str_t input, atm_uint_t inlen) 
+uint64_t 
+atm_siphash_nocase(char *input, atm_uint_t inlen) 
 {
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;

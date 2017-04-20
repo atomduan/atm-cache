@@ -14,12 +14,16 @@
  *
  * =====================================================================================
  */
+
 #include <atm_core.h>
 
-static void atm_signal_handler(atm_int_t signo) 
+
+static void 
+atm_signal_handler(atm_int_t signo) 
 {
-    pid_t pid;
-    atm_int_t status;
+    pid_t pid = 0;
+    atm_int_t status = 0;
+
     if (signal(SIGCLD, atm_signal_handler) == SIG_ERR) {
         atm_log("signal error");
         exit(ATM_OK);
@@ -30,7 +34,8 @@ static void atm_signal_handler(atm_int_t signo)
 }
 
 
-static void atm_signal_register() 
+static void
+atm_signal_register() 
 {
     if (signal(SIGCLD, atm_signal_handler) == SIG_ERR) {
         atm_log("sgnal error in in init");
@@ -40,18 +45,20 @@ static void atm_signal_register()
 
 
 #ifdef ATM_UNIT_TEST
-static void atm_unit_test_suit(atm_int_t argc, atm_str_t *argv) 
+static void
+atm_unit_test_suit(int argc, char **argv) 
 { 
     atm_log("atm_unit_test_suit entry....");
     atm_int_t level = ATM_UNIT_TEST_LV;
-    atm_int_t status;
-    pid_t pid;
+    atm_int_t status = 0;
+    pid_t pid = 0;
 
     if (ATM_UNIT_TEST_SKIP == level) {
         atm_log("atm_service skip unit test....");
         return;
     }
-    if (ATM_UNIT_TEST_ONLY == level || ATM_UNIT_TEST_PREP == level) {
+    if (ATM_UNIT_TEST_ONLY == level 
+            || ATM_UNIT_TEST_PREP == level) {
         atm_log("atm_service unit test before all");
         if ((pid = fork()) < 0) {
             atm_log("fork error occure....");
@@ -70,7 +77,8 @@ static void atm_unit_test_suit(atm_int_t argc, atm_str_t *argv)
 #endif
 
 
-static void atm_initialize() 
+static void 
+atm_initialize() 
 {
     atm_log("atm_initialize enter......");
     atm_signal_register();
@@ -78,13 +86,15 @@ static void atm_initialize()
 }
 
 
-static void atm_service() 
+static void 
+atm_service() 
 {
     atm_log("atm_service enter......");
 }
 
 
-int main(int argc,  char **argv) 
+int 
+main(int argc,  char **argv) 
 {
 #ifdef ATM_UNIT_TEST
     atm_unit_test_suit(argc, argv);

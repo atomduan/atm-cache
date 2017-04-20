@@ -75,9 +75,10 @@ static const atm_byte_t atm_vectors_sip64[64][8] = {
  * IMPORTANT: The test vector is for SipHash 2-4. Before running
  * the test revert back the siphash() function to 2-4 rounds since
  * now it uses 1-2 rounds. */
-static atm_int_t atm_test_siphash_proc() 
+static atm_int_t 
+atm_test_siphash_proc() 
 {
-    atm_char_t in[64];
+    char in[64];
     atm_int_t i;
     atm_int_t fails = 0;
 
@@ -111,15 +112,19 @@ static atm_int_t atm_test_siphash_proc()
 }
 
 
-atm_uint_t atm_test_siphash() 
+atm_uint_t 
+atm_test_siphash() 
 {
-    atm_uint_t result = atm_test_siphash_proc();
-    atm_test_report("atm_test_siphash", result);
-    return result;
+    atm_uint_t res = 0;
+
+    res = atm_test_siphash_proc();
+    atm_test_report("atm_test_siphash", res);
+    return res;
 }
 
 
-atm_uint_t atm_test_siphash_suit() 
+atm_uint_t 
+atm_test_siphash_suit() 
 {
     atm_siphash_init();
     if (!atm_test_siphash()) {

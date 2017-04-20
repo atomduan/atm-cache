@@ -6,50 +6,62 @@
  * */
 
 
-void atm_string_init()
+void 
+atm_str_init()
 {
     /* TODO */
 }
 
 
-atm_string_t *atm_string_new(atm_str_t str)
+atm_str_t *
+atm_str_new(char *str)
 {
-    atm_string_t *result = NULL;
-    atm_uint_t len = strlen(str);
-    atm_str_t copy = atm_malloc(len+1);//TODO include 0?
+    atm_str_t *res = NULL;
+    atm_uint_t len = 0;
+    char *copy = NULL;
+
+    len = strlen(str);
+    copy = atm_malloc(len+1);//TODO include 0?
     memset(copy, 0, len+1);
     //TODO bug here, no string copy
-    result = atm_malloc(sizeof(atm_string_t));
-    result->str = copy;
-    result->len = len;
-    return result;
+    res = atm_malloc(sizeof(atm_str_t));
+    res->val = copy;
+    res->len = len;
+    return res;
 }
 
 
-void atm_string_free(void *string) 
+void
+atm_str_free(void *str) 
 {
-    atm_string_t *s = (atm_string_t *) string;
-    atm_free(s->str);
+    atm_str_t *s = NULL;
+
+    s = (atm_str_t *) str;
+    atm_free(s->val);
     atm_free(s); 
 }
 
 
-atm_string_t *atm_string_fmt(atm_str_t str,...)
+atm_str_t *
+atm_str_fmt(char *str,...)
 {
-    atm_string_t *result = NULL;
-    return result;
+    atm_str_t *res = NULL;
+    return res;
 }
 
 
-atm_string_t *atm_string_ptr_tostr()
+atm_str_t *
+atm_str_ptr_tostr()
 {
-    atm_string_t *result = NULL;
-    return result;
+    atm_str_t *res = NULL;
+    return res;
 }
 
 
-atm_bool_t atm_string_equal( 
-        const atm_string_t *s1, const atm_string_t *s2) 
+atm_bool_t 
+atm_str_equal(const atm_str_t *s1, const atm_str_t *s2) 
 {
-    return strcmp(s1->str, s2->str)==0 ? ATM_TRUE : ATM_FALSE;
+    atm_int_t res = 0;
+    res = strcmp(s1->val, s2->val);
+    return res==0?ATM_TRUE:ATM_FALSE;
 }

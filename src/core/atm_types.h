@@ -16,19 +16,20 @@ typedef int32_t         atm_int_t;
 typedef uint32_t        atm_uint_t;
 typedef int64_t         atm_long_t;
 typedef uint64_t        atm_ulong_t;
-/*
- * Char and string relevant
- */
-typedef char                        atm_char_t;
-typedef atm_char_t *                atm_str_t;
-typedef struct atm_string_s         atm_string_t;
 /* 
  * Byte oriented data type define:
  *      we recommand to use unint*_t 
  *      to represent bit wise data type 
  */
 typedef uint8_t         atm_byte_t;/* same to u_char */
-
+/*
+ * Char and string relevant
+ */
+typedef struct atm_str_s atm_str_t;
+struct atm_str_s {
+    char       *val;
+    atm_int_t   len;
+};
 
 /*
  * Non Primitive Data types define
@@ -40,7 +41,7 @@ struct atm_T_s {
     atm_bool_t      (* match)(void *v1, void *v2);
     uint64_t        (* hash)(void *v);
     atm_int_t       (* compare)(void *v1, void *v2);
-    atm_string_t   *(* string)(void *v);
+    atm_str_t      *(* str)(void *v);
     void            (* free)(void *v);
 };
 /* Specific Types */

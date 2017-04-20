@@ -19,8 +19,9 @@ typedef uint64_t        atm_ulong_t;
 /*
  * Char and string relevant
  */
-typedef char            atm_char_t;
-typedef atm_char_t *    atm_str_t;
+typedef char                        atm_char_t;
+typedef atm_char_t *                atm_str_t;
+typedef struct atm_string_s         atm_string_t;
 /* 
  * Byte oriented data type define:
  *      we recommand to use unint*_t 
@@ -35,12 +36,14 @@ typedef uint8_t         atm_byte_t;/* same to u_char */
 /* General Type For Container New */
 typedef struct atm_T_s              atm_T_t;
 struct atm_T_s {
-    atm_bool_t  (* match)(void *v1, void *v2);
-    void        (* free)(void *v);
-    uint        (* hash)(void *v);
+    void              *spec;
+    atm_bool_t      (* match)(void *v1, void *v2);
+    uint64_t        (* hash)(void *v);
+    atm_int_t       (* compare)(void *v1, void *v2);
+    atm_string_t   *(* string)(void *v);
+    void            (* free)(void *v);
 };
 /* Specific Types */
-typedef struct atm_string_s         atm_string_t;
 typedef struct atm_list_entry_s     atm_list_entry_t;
 typedef struct atm_list_s           atm_list_t;
 typedef struct atm_dict_entry_s     atm_dict_entry_t;

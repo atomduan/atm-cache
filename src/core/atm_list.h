@@ -6,7 +6,7 @@
 
 struct atm_list_s {
     atm_bool_t          deep_free;
-    atm_T_t            *type;
+    atm_T_t            *v_type;
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
@@ -21,13 +21,18 @@ struct atm_list_entry_s {
 };
 
 
+/* public list type lifecycle */
 void atm_list_init();
-
-
-atm_list_t *atm_list_new(atm_T_t *type);
+atm_list_t *atm_list_new(atm_T_t *v_type);
+void *atm_list_spec(void *list);
+atm_bool_t atm_list_match(void *list1,void *list2); 
+uint64_t atm_list_hash(void *list);
+atm_int_t atm_list_compare(void *list1, void *list2);
+atm_string_t *atm_list_string(void *list);
 void atm_list_free(void *list);
 
 
+/* public funcs */
 void atm_list_push(atm_list_t *list, void *value);
 void atm_list_del(atm_list_t *list, void *hint);
 void *atm_list_find(atm_list_t *list, void *hint);

@@ -1,17 +1,67 @@
 #include <atm_core.h>
 
 
-static void atm_list_entry_isol(atm_list_entry_t * entry);
-static atm_list_entry_t *atm_list_find_linear(atm_list_t *list, void *key);
-static atm_list_entry_t *atm_list_lpop_entry(atm_list_t *list);
-static atm_list_entry_t *atm_list_rpop_entry(atm_list_t *list);
+/*
+ * Private
+ * */
+
+
 static atm_list_entry_t *atm_list_entry_new(void *value);
 static void atm_list_entry_free(void *entry);
 
 
-/* 
- * FUNCTIONS BIGIN
+/* funcs */
+static void atm_list_entry_isol(atm_list_entry_t * entry);
+static atm_list_entry_t *atm_list_find_linear(atm_list_t *list, void *key);
+static atm_list_entry_t *atm_list_lpop_entry(atm_list_t *list);
+static atm_list_entry_t *atm_list_rpop_entry(atm_list_t *list);
+
+
+/*
+ * Public
  * */
+
+
+atm_T_t ATM_LIST_T = {
+    atm_list_spec,
+    atm_list_match,
+    atm_list_hash,
+    atm_list_compare,
+    atm_list_string,
+    atm_list_free,
+};
+
+
+/* ---------------------IMPLEMENTATIONS--------------------------- */
+
+
+/*
+ * Private
+ * */
+
+
+static atm_list_entry_t *atm_list_entry_new (void *value)
+{
+    atm_list_entry_t *result = NULL;
+    result = (atm_list_entry_t *) atm_malloc(sizeof(atm_list_entry_t));
+    result->value = value;
+    atm_list_entry_isol(result);
+    return result;
+}
+
+
+static void atm_list_entry_free(void *entry)
+{
+    atm_list_entry_t *e = (atm_list_entry_t *) entry;
+    atm_list_t *list = e->list;
+    atm_T_t *v_type = list->v_type;
+
+    atm_list_entry_isol(e);
+    if (list->deep_free) {
+        v_type->free(e->value);
+    }
+    atm_free(e);
+}
 
 
 /* make sure that the entry has no deps with the list position */
@@ -24,21 +74,129 @@ static void atm_list_entry_isol(atm_list_entry_t * entry)
 }
 
 
+static atm_list_entry_t *atm_list_find_linear(atm_list_t *list, void *hint)
+{
+    atm_list_entry_t *result = NULL;
+    atm_list_entry_t *curr = NULL;         
+    if (list != NULL) {
+        curr = list->head;       
+        while (curr != NULL) {
+            if (list->v_type->match(curr->value, hint)) {
+                result = curr;
+                break;
+            }
+            curr = curr->next;    
+        }
+    }
+    return result;
+}
+
+
+static atm_list_entry_t *atm_list_lpop_entry(atm_list_t *list)
+{
+    atm_list_entry_t *result = list->head;
+    if (result != NULL) {
+        list->head = result->next;
+        if (list->head != NULL)
+            list->head->prev = NULL;
+        list->size--;
+        atm_list_entry_isol(result);
+    }
+    return result;
+}
+
+
+static atm_list_entry_t *atm_list_rpop_entry(atm_list_t *list)
+{
+    atm_list_entry_t *result = list->tail;
+    if (result != NULL) {
+        list->tail = result->prev;
+        if (list->tail != NULL)
+            list->tail->next = NULL;
+        list->size--;
+        atm_list_entry_isol(result);
+    }
+    return result;
+}
+
+
+/*
+ * Public
+ * */
+
+
 void atm_list_init()
 {
     /*TODO*/
 }
 
 
-atm_list_t *atm_list_new(atm_T_t *type)
+atm_list_t *atm_list_new(atm_T_t *v_type)
 {
     atm_list_t *result = NULL;
     result = (atm_list_t *) atm_malloc(sizeof(atm_list_t));
     result->head = NULL;
     result->tail = NULL;
     result->size = 0;
-    result->type = type;
+    result->v_type = v_type;
     result->deep_free = ATM_FALSE;
+    return result;
+}
+
+
+void *atm_list_spec(void *list)
+{
+    void *result = NULL;
+    return result;
+}
+
+
+atm_bool_t atm_list_match(void *list1, void *list2)
+{
+    atm_bool_t result = ATM_FALSE;
+    if (list1 == list2) {
+        result = ATM_TRUE;
+    }
+    return result;
+
+}
+
+
+uint64_t atm_list_hash(void *list)
+{
+    uint64_t result;
+    atm_list_t *l; 
+    atm_string_t *l_str;
+
+    l = (atm_list_t *) list;
+    l_str = atm_string_ptr_tostr(l); 
+    result = atm_siphash(l_str->str, l_str->len);
+
+    atm_string_free(l_str);
+    return result;
+}
+
+
+atm_int_t atm_list_compare(void *list1, void *list2)
+{
+    return ATM_COMP_EQUAL;
+}
+
+
+atm_string_t *atm_list_string(void *list)
+{
+    atm_string_t *result;
+    atm_list_t *l; 
+
+    l = (atm_list_t *) list;
+    if (l != NULL) {
+        result = atm_string_fmt(
+                "deep_free[%d];size[%ld]",
+                l->deep_free,
+                l->size);
+    } else {
+        result = atm_string_new("NULL");
+    }
     return result;
 }
 
@@ -78,24 +236,6 @@ void atm_list_push(atm_list_t *list, void *value)
         }
         list->size++;
     }
-}
-
-
-static atm_list_entry_t *atm_list_find_linear(atm_list_t *list, void *hint)
-{
-    atm_list_entry_t *result = NULL;
-    atm_list_entry_t *curr = NULL;         
-    if (list != NULL) {
-        curr = list->head;       
-        while (curr != NULL) {
-            if (list->type->match(curr->value, hint)) {
-                result = curr;
-                break;
-            }
-            curr = curr->next;    
-        }
-    }
-    return result;
 }
 
 
@@ -156,20 +296,6 @@ void *atm_list_lpop(atm_list_t *list) {
 }
 
 
-static atm_list_entry_t *atm_list_lpop_entry(atm_list_t *list)
-{
-    atm_list_entry_t *result = list->head;
-    if (result != NULL) {
-        list->head = result->next;
-        if (list->head != NULL)
-            list->head->prev = NULL;
-        list->size--;
-        atm_list_entry_isol(result);
-    }
-    return result;
-}
-
-
 void *atm_list_rpop(atm_list_t *list)
 {
     void *result = NULL;
@@ -179,42 +305,4 @@ void *atm_list_rpop(atm_list_t *list)
         atm_free(entry);
     }
     return result;
-}
-
-
-static atm_list_entry_t *atm_list_rpop_entry(atm_list_t *list)
-{
-    atm_list_entry_t *result = list->tail;
-    if (result != NULL) {
-        list->tail = result->prev;
-        if (list->tail != NULL)
-            list->tail->next = NULL;
-        list->size--;
-        atm_list_entry_isol(result);
-    }
-    return result;
-}
-
-
-static atm_list_entry_t *atm_list_entry_new (void *value)
-{
-    atm_list_entry_t *result = NULL;
-    result = (atm_list_entry_t *) atm_malloc(sizeof(atm_list_entry_t));
-    result->value = value;
-    atm_list_entry_isol(result);
-    return result;
-}
-
-
-static void atm_list_entry_free(void *entry)
-{
-    atm_list_entry_t *e = (atm_list_entry_t *) entry;
-    atm_list_t *list = e->list;
-    atm_T_t *type = list->type;
-
-    atm_list_entry_isol(e);
-    if (list->deep_free) {
-        type->free(e->value);
-    }
-    atm_free(e);
 }

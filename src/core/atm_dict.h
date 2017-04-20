@@ -25,13 +25,18 @@ struct atm_dict_entry_s {
 };
 
 
+/* public dict type lifecycle */
 void atm_dict_init();
-
-
 atm_dict_t *atm_dict_new(atm_T_t *k_type, atm_T_t *v_type);
+void *atm_dict_spec(void *dict);
+atm_bool_t atm_dict_match(void *dict1, void *dict2); 
+uint64_t atm_dict_hash(void *dict);
+atm_int_t atm_dict_compare(void *dict1, void *dict2);
+atm_string_t *atm_dict_string(void *dict);
 void atm_dict_free(void *dict);
 
 
+/* public funcs */
 atm_bool_t atm_dict_contains(atm_dict_t *dict, void *key);
 void *atm_dict_get(atm_dict_t *dict, void *key);
 void atm_dict_set(atm_dict_t *dict, void *key, void *value);

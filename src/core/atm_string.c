@@ -18,6 +18,7 @@ atm_string_t *atm_string_new(atm_str_t str)
     atm_uint_t len = strlen(str);
     atm_str_t copy = atm_malloc(len+1);//TODO include 0?
     memset(copy, 0, len+1);
+    //TODO bug here, no string copy
     result = atm_malloc(sizeof(atm_string_t));
     result->str = copy;
     result->len = len;
@@ -30,6 +31,20 @@ void atm_string_free(void *string)
     atm_string_t *s = (atm_string_t *) string;
     atm_free(s->str);
     atm_free(s); 
+}
+
+
+atm_string_t *atm_string_fmt(atm_str_t str,...)
+{
+    atm_string_t *result = NULL;
+    return result;
+}
+
+
+atm_string_t *atm_string_ptr_tostr()
+{
+    atm_string_t *result = NULL;
+    return result;
 }
 
 

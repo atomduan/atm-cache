@@ -4,6 +4,14 @@
 #include <atm_core.h>
 
 
+/* this is a inner type 
+ * so we do not define it in atm_types.h 
+ * plz do not use it in other file, consciously
+ * the global type should be define is atm_types.h Specific Tyes sect
+ * */
+typedef struct atm_list_entry_s atm_list_entry_t;
+
+
 struct atm_list_s {
     atm_bool_t          deep_free;
     atm_T_t            *v_type;

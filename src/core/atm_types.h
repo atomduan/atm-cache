@@ -4,24 +4,33 @@
  * MUST BE INCLUDED BEFORE ANY OTHERS BIZ HEADERS
  */
 
+
 /* 
  * Primitive data type define
  */
 typedef int8_t          atm_bool_t;
+
+
 /* int64_t or int32_t */
 typedef int32_t         atm_int_t; 
+
+
 /* In 64 system same to: size_t and unsigned long int
  * In 32 system: same to: size_t and unsigned int 
  */
 typedef uint32_t        atm_uint_t;
 typedef int64_t         atm_long_t;
 typedef uint64_t        atm_ulong_t;
+
+
 /* 
  * Byte oriented data type define:
  *      we recommand to use unint*_t 
  *      to represent bit wise data type 
  */
 typedef uint8_t         atm_byte_t;/* same to u_char */
+
+
 /*
  * Char and string relevant
  */
@@ -30,6 +39,7 @@ struct atm_str_s {
     char       *val;
     atm_int_t   len;
 };
+
 
 /*
  * Non Primitive Data types define
@@ -44,10 +54,10 @@ struct atm_T_s {
     atm_str_t      *(* str)(void *v);
     void            (* free)(void *v);
 };
+
+
 /* Specific Types */
-typedef struct atm_list_entry_s     atm_list_entry_t;
 typedef struct atm_list_s           atm_list_t;
-typedef struct atm_dict_entry_s     atm_dict_entry_t;
 typedef struct atm_dict_s           atm_dict_t;
 
 

@@ -39,7 +39,7 @@ if [ $ATM_UNIT_TEST = YES ]; then
     CORE_DEPS="$CORE_DEPS src/test/atm_unit_test.h \
                src/test/core/atm_test_dict.h \
                src/test/core/atm_test_siphash.h \
-               src/test/os/atm_test_process.h"
+               src/test/os/unix/atm_test_process.h"
 
     CORE_SRCS="$CORE_SRCS src/test/atm_unit_test.c \
                src/test/core/atm_test_dict.c \

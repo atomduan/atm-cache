@@ -1,4 +1,7 @@
 #!/bin/sh
+ATM_BINARY_NAME="atmc"
+ATM_BINARY_SUFFIX=""
+
 ATM_DEBUG=YES
 #LV:
 #0: Do not process unit test. gen pure binary
@@ -18,7 +21,7 @@ ATM_PLATFORM="$ATM_SYSTEM:$ATM_RELEASE:$ATM_MACHINE";
 
 ############ GLOBAL #############
 ATM_BUILD=build
-ATM_PREFIX=${ATM_PREFIX:-/usr/local/atmcache}
+ATM_PREFIX=${ATM_PREFIX:-/usr/local/$ATM_BINARY_NAME}
 
 ATM_USER=${ATM_USER:-nobody}
 ATM_GROUP=
@@ -40,11 +43,11 @@ ATM_AUTO_SYS_HEADERS_H=$ATM_BUILD/atm_auto_headers.h
 ATM_AUTO_CONFIG_H=$ATM_BUILD/atm_auto_config.h
 
 ############ INSTALL #############
-ATM_SBIN_PATH=${ATM_SBIN_PATH:-sbin/atmcache}
-ATM_CONF_PATH=${ATM_CONF_PATH:-config/atmcache.conf}
+ATM_SBIN_PATH=${ATM_SBIN_PATH:-sbin/$ATM_BINARY_NAME}
+ATM_CONF_PATH=${ATM_CONF_PATH:-config/$ATM_BINARY_NAME.conf}
 ATM_CONF_PREFIX=`dirname $ATM_CONF_PATH`
-ATM_PID_PATH=${ATM_PID_PATH:-logs/atmcache.pid}
-ATM_LOCK_PATH=${ATM_LOCK_PATH:-logs/atmcache.lock}
+ATM_PID_PATH=${ATM_PID_PATH:-logs/$ATM_BINARY_NAME.pid}
+ATM_LOCK_PATH=${ATM_LOCK_PATH:-logs/$ATM_BINARY_NAME.lock}
 ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
 
 ############ COMPILER #############

@@ -33,7 +33,7 @@ CORE_INCS = $atm_include_opt$atm_incs
 
 END
 
-# atmcache
+# build binary
 atm_all_objs=`echo $atm_all_srcs \
     | sed -e "s#\([^ ]*\.\)c#$ATM_BUILD\/\1$atm_objext#g"`
 atm_deps=`echo $atm_all_objs $LINK_DEPS \
@@ -55,11 +55,11 @@ atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
 cat << END >> $ATM_MAKEFILE
 build:	binary 
 
-binary:	${ATM_BUILD}/atmcache
+binary:	${ATM_BUILD}/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}
 
-${ATM_BUILD}/atmcache:	$atm_deps
+${ATM_BUILD}/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}:	$atm_deps
 
-	\$(LINK) -o ${ATM_BUILD}/atmcache \\
+	\$(LINK) -o ${ATM_BUILD}/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX} \\
 	$atm_build$atm_libs$atm_link$atm_main_link
 
 END

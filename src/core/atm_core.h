@@ -12,7 +12,7 @@
 #include <atm_siphash.h>
 #include <atm_log.h>
 #include <atm_alloc.h>
-#include <atmcache.h>
+#include <atm_main.h>
 
 
 #ifdef ATM_UNIT_TEST

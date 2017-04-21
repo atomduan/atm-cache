@@ -8,6 +8,15 @@ if [ $ATM_DEBUG = YES ]; then
     have=ATM_DEBUG . auto/have
 fi
 
+if [ ".$ATM_BINARY_NAME" = "." ]; then
+    echo "ATM_BINARY_NAME can not be empty"
+    exit 1
+else
+    have=ATM_BINARY_NAME 
+    value="\"$ATM_BINARY_NAME\""
+    . auto/define
+fi
+
 # platform info
 echo "checking for OS"
 echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
@@ -17,6 +26,9 @@ cat << END > Makefile
 default:	build
 clean:
 	rm -rf Makefile $ATM_BUILD
+rmobj:
+	rm build/$ATM_BINARY_NAME
+	find build/src -type f -name '*.o' -delete
 .PHONY:build
 build:
 	\$(MAKE) -f $ATM_MAKEFILE

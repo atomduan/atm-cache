@@ -19,17 +19,17 @@ cat << END
 
   platform info: "$ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
 
-  atmcache path prefix: "$ATM_PREFIX"
-  atmcache binary file: "$ATM_PREFIX/$ATM_SBIN_PATH"
-  atmcache configuration prefix: "$ATM_CONF_PREFIX"
-  atmcache configuration file: "$ATM_PREFIX/$ATM_CONF_PATH"
-  atmcache pid file: "$ATM_PREFIX/$ATM_PID_PATH"
+  $ATM_BINARY_NAME path prefix: "$ATM_PREFIX"
+  $ATM_BINARY_NAME binary file: "$ATM_PREFIX/$ATM_SBIN_PATH"
+  $ATM_BINARY_NAME configuration prefix: "$ATM_CONF_PREFIX"
+  $ATM_BINARY_NAME configuration file: "$ATM_PREFIX/$ATM_CONF_PATH"
+  $ATM_BINARY_NAME pid file: "$ATM_PREFIX/$ATM_PID_PATH"
 END
 
 if test -n "$ATM_ERROR_LOG_PATH"; then
-    echo "  atmcache error log file: \"$ATM_PREFIX/$ATM_ERROR_LOG_PATH\""
+    echo "  $ATM_BINARY_NAME error log file: \"$ATM_PREFIX/$ATM_ERROR_LOG_PATH\""
 else
-    echo "  atmcache logs errors to stderr"
+    echo "  $ATM_BINARY_NAME logs errors to stderr"
 fi
 
 echo "$ATM_POST_CONF_MSG"

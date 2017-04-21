@@ -56,9 +56,22 @@ struct atm_T_s {
 };
 
 
-/* Specific Types */
+/* Specific Container Types */
+#define ATM_FREE_SHALLOW    0
+#define ATM_FREE_DEEP       1
+
 typedef struct atm_list_s           atm_list_t;
 typedef struct atm_dict_s           atm_dict_t;
+
+
+/* Gernal Type Support: Type list */
+/*
+ * Typical senaral: be callback by container's for void * ptr
+ * to do some standard ops, such as : free and cmp, equal,etc.
+ */
+extern atm_T_t ATM_STR_T;
+extern atm_T_t ATM_LIST_T;
+extern atm_T_t ATM_DICT_T;
 
 
 #endif /* _ATM_TYPES_H_INCLUDED_ */

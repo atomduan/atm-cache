@@ -8,8 +8,9 @@
 #include <atm_string.h>
 #include <atm_list.h>
 #include <atm_dict.h>
+#include <atm_hash.h>
 #include <atm_siphash.h>
-#include <atm_logger.h>
+#include <atm_log.h>
 #include <atm_alloc.h>
 #include <atmcache.h>
 

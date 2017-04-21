@@ -4,6 +4,9 @@
 #include <atm_core.h>
 
 
+#define ATM_MEM_ZERO    0
+
+
 void *
 atm_alloc(atm_uint_t size);
 

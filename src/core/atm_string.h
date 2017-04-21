@@ -5,6 +5,7 @@
 
 
 #define ATM_STR_TMN \0
+#define ATM_STR_FMT_MAX_LEN 1024
 
 
 /* public string type lifecycle */
@@ -27,21 +28,31 @@ atm_int_t
 atm_str_cmp(void *str1, void *str2);
 
 atm_str_t *
-atm_str_str(void *str);
+atm_str_string(void *str);
 
 void 
 atm_str_free(void *str);
 
 
 /* public funcs */
-atm_str_t *
-atm_str_fmt(char *str,...);
 
 atm_str_t *
-atm_str_ptr_tostr();
+atm_str_wrp(char *str, atm_uint_t len);
 
 atm_bool_t 
-atm_str_equal(const atm_str_t *s1, const atm_str_t *s2);
+atm_str_eq(atm_str_t *s1, atm_str_t *s2);
+
+atm_str_t *
+atm_str_fmt(char *fmt,...);
+
+atm_str_t *
+atm_str_vfmt(char *fmt, va_list args);
+
+char *
+atm_str_mtrim(char *s);
+
+atm_str_t *
+atm_str_ptr_str();
 
 
 #endif /* _ATM_STRING_H_INCLUDED_ */

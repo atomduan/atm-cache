@@ -18,6 +18,6 @@ void
 atm_log(char *fmt, ...);
 
 void 
-atm_log_routine(atm_uint_t level, char *fmt, ...);
+atm_log_rout(atm_uint_t lv, char *fmt, ...);
 
 #endif /* _ATM_LOGGER_H_INCLUDED_ */

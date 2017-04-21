@@ -13,7 +13,7 @@ typedef struct atm_list_entry_s atm_list_entry_t;
 
 
 struct atm_list_s {
-    atm_bool_t          deep_free;
+    atm_uint_t          free_type;
     atm_T_t            *v_type;
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
@@ -34,7 +34,7 @@ void
 atm_list_init();
 
 atm_list_t *
-atm_list_new(atm_T_t *v_type);
+atm_list_new(atm_T_t *v_type, atm_uint_t f_type);
 
 void *
 atm_list_spec(void *list);

@@ -55,8 +55,7 @@ atm_list_entry_new (void *val)
 {
     atm_list_entry_t *res = NULL;
 
-    res = (atm_list_entry_t *) 
-        atm_alloc(sizeof(atm_list_entry_t));
+    res = atm_alloc(sizeof(atm_list_entry_t));
 
     res->val = val;
     atm_list_entry_isol(res);
@@ -76,7 +75,7 @@ atm_list_entry_free(void *entry)
     v_type = list->v_type;
 
     atm_list_entry_isol(e);
-    if (list->deep_free) {
+    if (list->free_type == ATM_FREE_DEEP) {
         v_type->free(e->val);
     }
     atm_free(e);
@@ -161,18 +160,17 @@ atm_list_init()
 
 
 atm_list_t *
-atm_list_new(atm_T_t *v_type)
+atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
 {
     atm_list_t *res = NULL;
 
-    res = (atm_list_t *) 
-        atm_alloc(sizeof(atm_list_t));
+    res = atm_alloc(sizeof(atm_list_t));
 
     res->head = NULL;
     res->tail = NULL;
     res->size = 0;
     res->v_type = v_type;
-    res->deep_free = ATM_FALSE;
+    res->free_type = f_type;
     return res;
 }
 
@@ -205,8 +203,8 @@ atm_list_hash(void *list)
     atm_str_t *l_str;
 
     l = (atm_list_t *) list;
-    l_str = atm_str_ptr_tostr(l); 
-    res = atm_siphash(l_str->val, l_str->len);
+    l_str = atm_str_ptr_str(l); 
+    res = atm_hash(l_str->val, l_str->len);
 
     atm_str_free(l_str);
     return res;
@@ -229,8 +227,8 @@ atm_list_str(void *list)
     l = (atm_list_t *) list;
     if (l != NULL) {
         res = atm_str_fmt(
-                "deep_free[%d];size[%ld]",
-                l->deep_free,
+                "free_type[%d];size[%ld]",
+                l->free_type,
                 l->size);
     } else {
         res = atm_str_new("NULL");
@@ -265,7 +263,7 @@ atm_list_push(atm_list_t *list, void *val)
                 list->head = entry;
                 list->tail = entry;
             } else {
-                atm_log_routine(ATM_LOG_FATAL,
+                atm_log_rout(ATM_LOG_FATAL,
                     "atm_list_push: list currapt");
                 exit(ATM_ERROR);
             }

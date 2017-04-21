@@ -19,26 +19,26 @@
 
 
 static void 
-atm_signal_handler(atm_int_t signo) 
+atm_sig_hdl(atm_int_t signo) 
 {
     pid_t pid = 0;
-    atm_int_t status = 0;
+    atm_int_t stat = 0;
 
-    if (signal(SIGCLD, atm_signal_handler) == SIG_ERR) {
+    if (signal(SIGCLD, atm_sig_hdl) == SIG_ERR) {
         atm_log("signal error");
         exit(ATM_OK);
     }
-    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        atm_log("wait a sub process");
+    while ((pid = waitpid(-1, &stat, WNOHANG)) > 0) {
+        atm_log("wait for sub processes");
     }
 }
 
 
 static void
-atm_signal_register() 
+atm_sig_init() 
 {
-    if (signal(SIGCLD, atm_signal_handler) == SIG_ERR) {
-        atm_log("sgnal error in in init");
+    if (signal(SIGCLD, atm_sig_hdl) == SIG_ERR) {
+        atm_log("sgnal error in init");
         exit(ATM_OK);
     }
 }
@@ -46,20 +46,20 @@ atm_signal_register()
 
 #ifdef ATM_UNIT_TEST
 static void
-atm_unit_test_suit(int argc, char **argv) 
+atm_test_suit(int argc, char **argv) 
 { 
-    atm_log("atm_unit_test_suit entry....");
-    atm_int_t level = ATM_UNIT_TEST_LV;
-    atm_int_t status = 0;
+    atm_log("atm_test_suit entry....");
+    atm_int_t lv = ATM_UNIT_TEST_LV;
+    atm_int_t stat = 0;
     pid_t pid = 0;
 
-    if (ATM_UNIT_TEST_SKIP == level) {
-        atm_log("atm_service skip unit test....");
+    if (ATM_UNIT_TEST_SKIP == lv) {
+        atm_log("skip unit test....");
         return;
     }
-    if (ATM_UNIT_TEST_ONLY == level 
-            || ATM_UNIT_TEST_PREP == level) {
-        atm_log("atm_service unit test before all");
+    if (ATM_UNIT_TEST_ONLY == lv 
+            || ATM_UNIT_TEST_PREP == lv) {
+        atm_log("unit test before all");
         if ((pid = fork()) < 0) {
             atm_log("fork error occure....");
             exit(ATM_FATAL);
@@ -67,10 +67,10 @@ atm_unit_test_suit(int argc, char **argv)
             atm_unit_test_proc(argc, argv);
             exit(ATM_OK);
         }
-        wait(&status);
+        wait(&stat);
     }
-    if (ATM_UNIT_TEST_ONLY == level) {
-        atm_log("atm_service unit test and exit...");
+    if (ATM_UNIT_TEST_ONLY == lv) {
+        atm_log("unit test and exit...");
         exit(ATM_OK);
     }
 }
@@ -78,11 +78,12 @@ atm_unit_test_suit(int argc, char **argv)
 
 
 static void 
-atm_initialize() 
+atm_init() 
 {
-    atm_log("atm_initialize enter......");
-    atm_signal_register();
+    atm_log("atm_init enter......");
+    atm_list_init();
     atm_dict_init();
+    atm_sig_init();
 }
 
 
@@ -97,10 +98,10 @@ int
 main(int argc,  char **argv) 
 {
 #ifdef ATM_UNIT_TEST
-    atm_unit_test_suit(argc, argv);
+    atm_test_suit(argc, argv);
 #endif
     atm_log("Hello world ......");
-    atm_initialize();
+    atm_init();
     atm_service();
     return ATM_OK;
 }

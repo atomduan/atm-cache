@@ -33,6 +33,7 @@ atm_list_rpop_entry(atm_list_t *list);
 
 
 atm_T_t ATM_LIST_T = {
+    ATM_T_INDEX_LIST,
     atm_list_spec,
     atm_list_match,
     atm_list_hash,
@@ -155,7 +156,7 @@ atm_list_rpop_entry(atm_list_t *list)
 void 
 atm_list_init()
 {
-    /*TODO*/
+    /*VOID*/
 }
 
 

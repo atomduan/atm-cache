@@ -7,6 +7,9 @@
 #define ATM_DICT_INITIAL_BUCKET_SIZE 256
 
 
+extern atm_T_t ATM_DICT_T;
+
+
 /* this is a inner type 
  * so we do not define it in atm_types.h 
  * plz do not use it in other file, consciously

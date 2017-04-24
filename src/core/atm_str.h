@@ -7,6 +7,7 @@
 #define ATM_STR_TMN \0
 #define ATM_STR_FMT_MAX_LEN 1024
 
+extern atm_T_t ATM_STR_T;
 
 /* public string type lifecycle */
 void 

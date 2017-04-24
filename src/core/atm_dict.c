@@ -30,6 +30,7 @@ atm_dict_entry_free(void *entry);
 
 
 static atm_T_t ATM_DICT_ENTRY_T = {
+    ATM_T_INDEX_OBJ,
     atm_dict_entry_spec,
     atm_dict_entry_match,
     atm_dict_entry_hash,
@@ -64,6 +65,7 @@ atm_dict_entry(atm_dict_t *dict, void *key);
 
 
 atm_T_t ATM_DICT_T = {
+    ATM_T_INDEX_DICT,
     atm_dict_spec,
     atm_dict_match,
     atm_dict_hash,
@@ -293,7 +295,7 @@ atm_dict_entry(atm_dict_t *dict, void *key)
 void 
 atm_dict_init()
 {
-    /* TODO */
+    /*VOID*/
 }
 
 

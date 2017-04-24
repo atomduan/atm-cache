@@ -4,6 +4,9 @@
 #include <atm_core.h>
 
 
+extern atm_T_t ATM_LIST_T;
+
+
 /* this is a inner type 
  * so we do not define it in atm_types.h 
  * plz do not use it in other file, consciously

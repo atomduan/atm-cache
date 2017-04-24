@@ -9,26 +9,34 @@
 
 CORE_INCS="src/core"
 
-CORE_DEPS="src/core/atm_main.h \
-           src/core/atm_config.h \
-           src/core/atm_types.h \
-           src/core/atm_core.h \
+CORE_DEPS="src/core/atm_core.h \
+           src/core/atm_conn.h \
            src/core/atm_dict.h \
+           src/core/atm_event.h \
            src/core/atm_hash.h \
-           src/core/atm_siphash.h \
            src/core/atm_list.h \
            src/core/atm_log.h \
-           src/core/atm_string.h"
+           src/core/atm_main.h \
+           src/core/atm_siphash.h \
+           src/core/atm_alloc.h \
+           src/core/atm_process.h \
+           src/core/atm_sig.h"
 
 CORE_SRCS="src/core/atm_main.c \
+           src/core/atm_conn.c \
            src/core/atm_dict.c \
+           src/core/atm_event.c \
            src/core/atm_hash.c \
-           src/core/atm_siphash.c \
            src/core/atm_list.c \
            src/core/atm_log.c \
-           src/core/atm_string.c"
+           src/core/atm_siphash.c \
+           src/core/atm_str.c \
+           src/core/atm_alloc.c \
+           src/core/atm_process.c \
+           src/core/atm_sig.c"
 
 CORE_LIBS=""
+
 
 #------------------------------------------------------
 #TEST SRC Config
@@ -48,6 +56,7 @@ if [ $ATM_UNIT_TEST = YES ]; then
                src/test/core/atm_test_siphash.c \
                src/test/os/unix/atm_test_process.c"
 fi
+
 
 #------------------------------------------------------
 #CONFIG OS TYPE DIFFERENCE SOURCE, 

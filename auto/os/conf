@@ -6,6 +6,8 @@ case "$ATM_PLATFORM" in
         . auto/os/linux/conf
     ;;
     Darwin:*)
+        echo "Darwin not support yet......."
+        exit 1
         . auto/os/darwin/conf
     ;;
     *)

@@ -4,33 +4,33 @@
 #include <atm_core.h>
 
 
+#define ATM_EVENT_NOBLK         0   
+#define ATM_EVENT_SIZE          1024   
+#define ATM_EVENT_LIST_SIZE     1024   
+
+
 struct atm_event_s {
-
+    void       *data;
+    void      (*handle)(atm_event_t *ev);
+    atm_bool_t  active;
+    atm_bool_t  ready;
 };
 
 
-struct atm_event_actions_s {
-    atm_int_t  (*add)(atm_event_t *ev);
-    atm_int_t  (*del)(atm_event_t *ev);
-
-    atm_int_t  (*enable)(atm_event_t *ev);
-    atm_int_t  (*disable)(atm_event_t *ev);
-
-    atm_int_t  (*add_conn)(atm_conn_t *conn);
-    atm_int_t  (*del_conn)(atm_conn_t *conn);
-
-    atm_int_t  (*poll_events)(atm_ctx_t *ctx, atm_uint_t timer);
-
-    atm_int_t  (*init)(atm_ctx_t *ctx, atm_uint_t timer);
-    void       (*done)(atm_ctx_t *ctx);
-};
-
-
+/* public event type lifecycle */
 void
 atm_event_init();
 
+
+/* public funcs */
 void
-atm_event_rout(atm_ctx_t *atm_ctx);
+atm_event_routine();
+
+void
+atm_event_add_conn(atm_conn_t *e);
+
+void
+atm_event_del_conn(atm_conn_t *e);
 
 
 #endif /* _ATM_EVENT_H_INCLUDED_ */

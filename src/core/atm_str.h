@@ -9,6 +9,13 @@
 
 extern atm_T_t ATM_STR_T;
 
+
+struct atm_str_s {
+    char       *val;
+    atm_int_t   len;
+};
+
+
 /* public string type lifecycle */
 void 
 atm_str_init();

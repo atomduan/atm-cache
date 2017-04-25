@@ -5,7 +5,10 @@
 
 
 struct atm_conn_s {
-
+    void               *data;
+    atm_event_t        *read;
+    atm_event_t        *write;
+    int                 fd;
 };
 
 

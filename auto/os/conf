@@ -5,11 +5,6 @@ case "$ATM_PLATFORM" in
     Linux:*)
         . auto/os/linux/conf
     ;;
-    Darwin:*)
-        echo "Darwin not support yet......."
-        exit 1
-        . auto/os/darwin/conf
-    ;;
     *)
         cat << END
 $0: current PLATFORM [$ATM_PLATFORM] has not support yet
@@ -30,12 +25,10 @@ case "$ATM_MACHINE" in
     ;;
     sun4u | sun4v | sparc | sparc64)
         have=ATM_ALIGNMENT value=16 . auto/define
-        # TODO
         ATM_MACH_CACHE_LINE=64
     ;;
     ia64 )
         have=ATM_ALIGNMENT value=16 . auto/define
-        # TODO
         ATM_MACH_CACHE_LINE=64
     ;;
     *)

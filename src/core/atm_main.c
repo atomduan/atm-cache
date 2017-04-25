@@ -43,7 +43,7 @@ atm_service()
 {
     atm_log("atm_service enter......");
     for (;;) {
-        atm_event_rout(atm_ctx);
+        atm_event_routine();
     }
 }
 

@@ -48,7 +48,7 @@ void
 atm_dict_init();
 
 atm_dict_t *
-atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t f_type);
+atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t free_type);
 
 void *
 atm_dict_spec(void *dict);

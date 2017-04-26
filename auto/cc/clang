@@ -11,7 +11,8 @@ CC_TEST_FLAGS="-pipe"
 
 #ATM_CLANG_OPT="-O2"
 #ATM_CLANG_OPT="-Oz"
-ATM_CLANG_OPT="-O"
+#ATM_CLANG_OPT="-O1"
+ATM_CLANG_OPT="-O0"
 case $CPU in
     pentium)
         # optimize for Pentium

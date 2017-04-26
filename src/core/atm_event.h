@@ -10,10 +10,18 @@
 
 
 struct atm_event_s {
-    void       *data;
-    void      (*handle)(atm_event_t *ev);
+    int         fd;
+
+    /* atm_conn_t, atm_listen_t, etc */
+    void       *load;
+
     atm_bool_t  active;
-    atm_bool_t  ready;
+    atm_bool_t  rdy_read;
+    atm_bool_t  rdy_write;
+
+    /* only be called by epoll */
+    void      (*handle_read)(void  *ev);
+    void      (*handle_write)(void *ev);
 };
 
 
@@ -21,10 +29,21 @@ struct atm_event_s {
 void
 atm_event_init();
 
+/* get new event instance*/
+atm_event_t *
+atm_event_new(void *load, int fd, 
+        void (*handle_read)(void *ev),
+        void (*handle_write)(void *ev));
+
+void
+atm_event_free(void *e);
 
 /* public funcs */
 void
 atm_event_routine();
+
+void
+atm_event_add_listen(atm_listen_t *l);
 
 void
 atm_event_add_conn(atm_conn_t *e);

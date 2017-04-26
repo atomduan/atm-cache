@@ -79,6 +79,8 @@ typedef struct atm_ctx_s            atm_ctx_t;
 typedef struct atm_list_s           atm_list_t;
 typedef struct atm_dict_s           atm_dict_t;
 typedef struct atm_conn_s           atm_conn_t;
+typedef struct atm_listen_s         atm_listen_t;
+typedef struct atm_socket_s         atm_socket_t;
 typedef struct atm_event_s          atm_event_t;
 
 

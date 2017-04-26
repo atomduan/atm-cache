@@ -33,9 +33,10 @@ esac
 
 # optimizations
 
-#ATM_GCC_OPT="-O2"
 #ATM_GCC_OPT="-Os"
-ATM_GCC_OPT="-O"
+#ATM_GCC_OPT="-O2"
+#ATM_GCC_OPT="-O1"
+ATM_GCC_OPT="-O0"
 
 #CFLAGS="$CFLAGS -fomit-frame-pointer"
 

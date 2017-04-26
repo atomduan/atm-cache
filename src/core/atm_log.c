@@ -33,11 +33,11 @@ atm_log_lvstr(atm_uint_t level)
 static void 
 atm_log_rout_raw(atm_uint_t lv, atm_str_t *msg) 
 {
-    if (msg == NULL && msg->val != NULL) {
+    if (msg != NULL && msg->val != NULL) {
         printf("[%s]:%s\n", 
             atm_log_lvstr(lv), msg->val);
     } else {
-        printf("Invalid msg for logger");
+        printf("Invalid msg for logger\n");
     }
 }
 

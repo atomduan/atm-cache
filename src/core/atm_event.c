@@ -31,14 +31,14 @@ atm_event_process_ev(atm_event_t *ev,uint32_t evs)
    }
 
    if ((evs & EPOLLIN) && ev->active) {
-       ev->rdy_read = ATM_TRUE;
        if (ev->handle_read != NULL) {
+           ev->rdy_read = ATM_TRUE;
            ev->handle_read(ev);
        }
    }
    if ((evs & EPOLLOUT) && ev->active) {
-       ev->rdy_write = ATM_TRUE;
        if (ev->handle_write != NULL) {
+           ev->rdy_write = ATM_TRUE;
            ev->handle_write(ev);
        }
    }
@@ -123,19 +123,18 @@ atm_event_routine()
 void
 atm_event_add_listen(atm_listen_t *l)
 {
-    struct epoll_event ee;
+    int sfd = -1;
     atm_event_t *le = NULL;
-    int sfd = 0;
+    int events = ATM_EVENT_NONE;
 
     if (l != NULL) {
         sfd = l->ssck->fd;
-        le = atm_event_new(l,sfd,l->handle_accept,NULL); 
-
-        ee.events = EPOLLIN|EPOLLHUP;
-        ee.data.ptr = le;
-        epoll_ctl(ep, EPOLL_CTL_ADD, sfd, &ee);
-        le->active = ATM_TRUE;
+        le = atm_event_new(l,sfd,
+                l->handle_accept,NULL); 
         l->event = le;
+
+        events = EPOLLIN|EPOLLHUP;
+        atm_event_add_event(le, events);
     }
 }
 
@@ -143,38 +142,81 @@ atm_event_add_listen(atm_listen_t *l)
 void
 atm_event_add_conn(atm_conn_t *c)
 {
-    struct epoll_event ee;
+    int cfd = -1;
     atm_event_t *ce = NULL;
-    int cfd = 0;
+    int events = ATM_EVENT_NONE;
 
     if (c != NULL) {
         cfd = c->sock->fd;
         ce = atm_event_new(c, cfd, 
                 c->handle_read, 
                 c->handle_write); 
-
-        ee.events = EPOLLIN|EPOLLOUT|EPOLLHUP|EPOLLET;
-        ee.data.ptr = ce;
-        epoll_ctl(ep, EPOLL_CTL_ADD, cfd, &ee);
-        ce->active = ATM_TRUE;
         c->event = ce;
+
+        events = EPOLLIN|EPOLLHUP|EPOLLET;
+        atm_event_add_event(ce, events);
     }
 }
 
 
+/* 
+ * 1. if e not managed by epoll then add it
+ * 2. if the event and old mask then merge it
+ * 3. mask the events's fd's bits in epoll
+ * 4. activate it.
+ */
 void
-atm_event_del_conn(atm_conn_t *c)
+atm_event_add_event(atm_event_t *e, int mask)
 {
-    struct epoll_event ee;
-    atm_event_t *ce = NULL;
-    int cfd = 0;
+   int fd =-1;
+   int op = 0;
+   struct epoll_event ee;
 
-    if (c != NULL) {
-        cfd = c->sock->fd;
-        ce = c->event;
-        ee.events = 0;
-        ee.data.ptr = NULL;
-        epoll_ctl(ep, EPOLL_CTL_DEL, cfd, &ee);
-        ce->active = ATM_FALSE;
-    }
+   if (e != NULL) {
+       fd = e->fd;
+       if (e->active) {
+           op = EPOLL_CTL_MOD;
+       } else {
+           op = EPOLL_CTL_ADD;
+       }
+       e->events = e->events | mask;
+       if (e->events != ATM_EVENT_NONE) {
+           ee.events = e->events;
+           ee.data.ptr = e;
+           epoll_ctl(ep, op, fd, &ee);
+           e->active = ATM_TRUE;
+       }
+   }
+}
+
+
+/*
+ * 1. unmsk the event's fd's bits in epoll 
+ * 2. if fd's bits is empty then del it from epoll
+ *    and unactivate it.
+ */
+void
+atm_event_del_event(atm_event_t *e, int unmask)
+{
+   int fd =-1;
+   int op = 0;
+   struct epoll_event ee;
+
+   if (e != NULL) {
+       fd = e->fd;
+       e->events = e->events & (~unmask);
+       if (e->events != ATM_EVENT_NONE) {
+           op = EPOLL_CTL_MOD;
+       } else {
+           op = EPOLL_CTL_DEL;
+       }
+       if (e->active) {
+           ee.events = e->events;
+           ee.data.ptr = e;
+           epoll_ctl(ep, op, fd, &ee);
+           if (op == EPOLL_CTL_DEL) {
+               e->active = ATM_FALSE;
+           }
+       }
+   }
 }

@@ -4,7 +4,7 @@
 #include <atm_core.h>
 
 
-#define ATM_EVENT_NOBLK         0   
+#define ATM_EVENT_BLOCK        -1   
 #define ATM_EVENT_SIZE          1024   
 #define ATM_EVENT_LIST_SIZE     1024   
 

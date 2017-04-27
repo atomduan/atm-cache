@@ -3,15 +3,8 @@ ATM_BINARY_NAME="atmc"
 ATM_BINARY_SUFFIX=""
 
 ATM_DEBUG=YES
-#LV:
-#0: Do not process unit test. gen pure binary
-#1: Do unit test. before service started
-#2: Do unit test only and DO NOT start service
+#If unit test enabled, we can use "make test" to do unit test
 ATM_UNIT_TEST=YES
-ATM_UNIT_TEST_SKIP=0
-ATM_UNIT_TEST_PREP=1
-ATM_UNIT_TEST_ONLY=2
-ATM_UNIT_TEST_LV=$ATM_UNIT_TEST_ONLY
 
 ############ PLATFORM #############
 ATM_SYSTEM=`uname -s 2>/dev/null`

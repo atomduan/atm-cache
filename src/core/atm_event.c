@@ -53,7 +53,7 @@ atm_event_process_events()
     atm_event_t    *ev = NULL;
 
     events = epoll_wait(ep,event_list,
-            (int) nevents,ATM_EVENT_NOBLK);
+            (int) nevents,ATM_EVENT_BLOCK);
     
     if (events > 0) {
        for (i=0; i<events; ++i) {

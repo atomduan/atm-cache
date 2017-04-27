@@ -8,8 +8,16 @@
 #define ATM_TEST_PASS 1
 
 
+#define ATM_TEST_DICT_ON        0
 #include <atm_test_dict.h>
+
+#define ATM_TEST_EVENT_ON       1
+#include <atm_test_event.h>
+
+#define ATM_TEST_SIPHASH_ON     0
 #include <atm_test_siphash.h>
+
+#define ATM_TEST_PROCESS_ON     0
 #include <atm_test_process.h>
 
 

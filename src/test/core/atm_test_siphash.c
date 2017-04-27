@@ -113,6 +113,22 @@ atm_test_siphash_proc()
 
 
 atm_uint_t 
+atm_test_siphash_suit() 
+{
+    if (!ATM_TEST_SIPHASH_ON) {
+        atm_log("SKIP atm_test_siphash_suit");
+        return ATM_TEST_PASS;
+    }
+
+    atm_siphash_init();
+    if (!atm_test_siphash()) {
+        return ATM_TEST_FAIL;
+    }
+    return ATM_TEST_PASS;
+}
+
+
+atm_uint_t 
 atm_test_siphash() 
 {
     atm_uint_t res = 0;
@@ -120,15 +136,4 @@ atm_test_siphash()
     res = atm_test_siphash_proc();
     atm_test_report("atm_test_siphash", res);
     return res;
-}
-
-
-atm_uint_t 
-atm_test_siphash_suit() 
-{
-    atm_siphash_init();
-    if (!atm_test_siphash()) {
-        return ATM_TEST_FAIL;
-    }
-    return ATM_TEST_PASS;
 }

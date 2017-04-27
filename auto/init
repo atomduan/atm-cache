@@ -8,6 +8,10 @@ if [ $ATM_DEBUG = YES ]; then
     have=ATM_DEBUG . auto/have
 fi
 
+if [ $ATM_UNIT_TEST = YES ]; then
+    have=ATM_UNIT_TEST . auto/have
+fi
+
 if [ ".$ATM_BINARY_NAME" = "." ]; then
     echo "ATM_BINARY_NAME can not be empty"
     exit 1
@@ -27,13 +31,15 @@ default:	build
 clean:
 	rm -rf Makefile $ATM_BUILD
 rmobj:
-	rm build/$ATM_BINARY_NAME
+	rm build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}
 	find build/src -type f -name '*.o' -delete
 .PHONY:build
 build:
 	\$(MAKE) -f $ATM_MAKEFILE
 install:
 	\$(MAKE) -f $ATM_MAKEFILE install
+test:	build
+	build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX} test
 END
 
 if [ -z "$ATM_GROUP" ]; then
@@ -58,14 +64,6 @@ if [ -z "$ATM_GROUP" ]; then
 fi
 
 #------------------------------------------------------------------
-
-if [ $ATM_UNIT_TEST = YES ]; then
-    have=ATM_UNIT_TEST . auto/have
-    have=ATM_UNIT_TEST_SKIP value=$ATM_UNIT_TEST_SKIP . auto/define
-    have=ATM_UNIT_TEST_PREP value=$ATM_UNIT_TEST_PREP . auto/define
-    have=ATM_UNIT_TEST_ONLY value=$ATM_UNIT_TEST_ONLY . auto/define
-    have=ATM_UNIT_TEST_LV value=$ATM_UNIT_TEST_LV . auto/define
-fi
 
 have=ATM_USER value="\"$ATM_USER\"" . auto/define
 have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define

@@ -68,14 +68,12 @@ CORE_INCS="$CORE_INCS \
 CORE_DEPS="$CORE_DEPS \
             src/os/unix/linux/atm_linux_config.h \
             src/os/unix/atm_alloc.h \
-            src/os/unix/atm_epoll.h \
             src/os/unix/atm_process.h \
             src/os/unix/atm_sig.h \
-            src/os/unix/atm_socket.h"
+            src/os/unix/atm_net.h"
 
 CORE_SRCS="$CORE_SRCS \
             src/os/unix/atm_alloc.c \
-            src/os/unix/atm_epoll.c \
             src/os/unix/atm_process.c \
             src/os/unix/atm_sig.c \
-            src/os/unix/atm_socket.c"
+            src/os/unix/atm_net.c"

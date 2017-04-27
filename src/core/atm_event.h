@@ -7,8 +7,12 @@
 #define ATM_EVENT_BLOCK        -1   
 #define ATM_EVENT_NONE          0
 #define ATM_EVENT_ALL          -1
+
 #define ATM_EVENT_SIZE          1024   
 #define ATM_EVENT_LIST_SIZE     1024   
+
+#define ATM_EVENT_READ          EPOLLIN   
+#define ATM_EVENT_WRITE         EPOLLOUT 
 
 
 struct atm_event_s {
@@ -23,8 +27,8 @@ struct atm_event_s {
     atm_bool_t  rdy_write;
 
     /* only be called by epoll */
-    void      (*handle_read)(void  *ev);
-    void      (*handle_write)(void *ev);
+    void (*handle_read)(atm_event_t  *ev);
+    void (*handle_write)(atm_event_t *ev);
 };
 
 
@@ -35,8 +39,8 @@ atm_event_init();
 /* get new event instance*/
 atm_event_t *
 atm_event_new(void *load, int fd, 
-        void (*handle_read)(void *ev),
-        void (*handle_write)(void *ev));
+        void (*handle_read)(atm_event_t *ev),
+        void (*handle_write)(atm_event_t *ev));
 
 void
 atm_event_free(void *e);
@@ -46,7 +50,7 @@ void
 atm_event_routine();
 
 void
-atm_event_add_listen(atm_listen_t *l);
+atm_event_add_listen(atm_conn_listen_t *l);
 
 void
 atm_event_add_conn(atm_conn_t *e);

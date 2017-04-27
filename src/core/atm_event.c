@@ -89,8 +89,8 @@ atm_event_init()
 /* get new event instance*/
 atm_event_t *
 atm_event_new(void *load, int fd, 
-        void (*handle_read)(void *ev),
-        void (*handle_write)(void *ev))
+        void (*handle_read)(atm_event_t *ev),
+        void (*handle_write)(atm_event_t *ev))
 {
     atm_event_t *res = NULL;
     res = atm_alloc(sizeof(atm_event_t));
@@ -121,7 +121,7 @@ atm_event_routine()
 
 
 void
-atm_event_add_listen(atm_listen_t *l)
+atm_event_add_listen(atm_conn_listen_t *l)
 {
     int sfd = -1;
     atm_event_t *le = NULL;
@@ -129,10 +129,12 @@ atm_event_add_listen(atm_listen_t *l)
 
     if (l != NULL) {
         sfd = l->ssck->fd;
-        le = atm_event_new(l,sfd,
+        le = l->event;
+        if (le == NULL) {
+            le = atm_event_new(l,sfd,
                 l->handle_accept,NULL); 
-        l->event = le;
-
+            l->event = le;
+        }
         events = EPOLLIN|EPOLLHUP;
         atm_event_add_event(le, events);
     }

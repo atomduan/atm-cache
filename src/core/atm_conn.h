@@ -4,6 +4,9 @@
 #include <atm_core.h>
 
 
+#define ATM_CONN_PERCALL_ACCEPTS    1000
+
+
 struct atm_conn_listen_s {
     atm_socket_t       *ssck;
     atm_event_t        *event;

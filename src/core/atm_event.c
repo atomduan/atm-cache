@@ -95,8 +95,9 @@ atm_event_new(void *load, int fd,
     atm_event_t *res = NULL;
     res = atm_alloc(sizeof(atm_event_t));
     res->fd = fd;
-    res->active = ATM_FALSE;
+    res->events = ATM_EVENT_NONE;
     res->load = load;
+    res->active = ATM_FALSE;
     res->rdy_read = ATM_FALSE;
     res->rdy_write = ATM_FALSE;
     res->handle_read = handle_read;

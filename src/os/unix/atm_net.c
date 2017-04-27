@@ -4,8 +4,12 @@
 /*
  * Private
  * */
+static int
+atm_net_accept_raw(atm_socket_t *ssock, 
+        atm_socket_t *csock);
+
 static atm_socket_t *
-atm_net_socket_new(); 
+atm_net_socket_new(int fd); 
 
 static int
 atm_net_set_reuse_addr(int sockfd);
@@ -24,12 +28,55 @@ atm_net_listen_tcp_raw(int port,
 /*
  * Private
  * */
+static int
+atm_net_accept_raw(atm_socket_t *ssock, 
+        atm_socket_t *csock)
+{
+    int fd;
+    struct sockaddr_in *s;
+    struct sockaddr_storage sa;
+    socklen_t salen = sizeof(sa);
+    int port;
+    int ss;
+   
+    ss = ssock->fd;
+    char ip[ATM_NET_IP_STR_LEN];
+    atm_uint_t ip_len = sizeof(ip);
+
+    while(ATM_TRUE) {
+        fd = accept(ss, (struct sockaddr*)&sa, &salen);
+        if (fd == ATM_NET_ERR_FD) {
+            if (errno == EINTR) continue;
+            else {
+                atm_log_rout(ATM_LOG_ERROR,
+                    "accept: %s",strerror(errno));
+                break;
+            }
+        }
+        break;
+    }
+
+    if (fd == ATM_NET_ERR_FD)
+        return ATM_ERROR;
+    if (sa.ss_family == AF_INET) {
+        s = (struct sockaddr_in *)&sa;
+        inet_ntop(AF_INET,(void *)&(s->sin_addr),ip,ip_len);
+        port = ntohs(s->sin_port); 
+        atm_log("Accept: %s:%d", ip, port);
+        csock->src_ip = atm_str_new(ip);
+        csock->src_port = port;
+    }
+    csock->fd = fd;
+    return ATM_OK;
+}
+
+
 static atm_socket_t *
-atm_net_socket_new()
+atm_net_socket_new(int fd)
 {
     atm_socket_t *res = NULL;
     res = atm_alloc(sizeof(atm_socket_t));
-    res->fd = -1;
+    res->fd = fd;
     return res;
 }
 
@@ -136,6 +183,16 @@ end:
 /*
  * Public
  * */
+
+void
+atm_net_socket_free(void *sock)
+{
+    atm_socket_t *s = sock;
+    atm_str_free(s->src_ip);
+    atm_free(s);
+}
+
+
 atm_socket_t *
 atm_net_listen_tcp(int port, 
         char *bindaddr, int backlog)
@@ -144,7 +201,7 @@ atm_net_listen_tcp(int port,
     int s = ATM_NET_ERR_FD;
     s = atm_net_listen_tcp_raw(port, bindaddr, backlog);
     if (s != ATM_NET_ERR_FD) {
-       res = atm_net_socket_new(); 
+       res = atm_net_socket_new(s); 
        res->fd = s;
     }
     return res;
@@ -182,4 +239,19 @@ atm_net_nonblock(atm_socket_t *s,
         return ATM_ERROR;
     }
     return ATM_OK;
+}
+
+
+atm_socket_t *
+atm_net_accept(atm_socket_t *ss)
+{
+    int ret = -1;
+    atm_socket_t * res = NULL;
+    res = atm_net_socket_new(ATM_NET_ERR_FD);
+    ret = atm_net_accept_raw(ss, res);
+    if (ret != ATM_OK) {
+        atm_free(res);
+        res = NULL;
+    }
+    return res;
 }

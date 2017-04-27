@@ -45,26 +45,26 @@ static int
 atm_conn_listen_tcp()
 {
     int ret = -1;
-    atm_socket_t *so = NULL;
+    atm_socket_t *ss = NULL;
     atm_int_t port = 80;
     char *bindaddr = "0.0.0.0";
     int backlog = 1024;
     atm_conn_listen_t *tcpl = NULL; 
 
-    so = atm_net_listen_tcp(port, 
+    ss = atm_net_listen_tcp(port, 
             bindaddr, backlog);
-    if (so != NULL) {
-        ret = atm_net_nonblock(so, ATM_TRUE); 
+    if (ss != NULL) {
+        ret = atm_net_nonblock(ss, ATM_TRUE); 
 
         if (ret != ATM_OK)
             goto error;
 
-        tcpl = atm_conn_listen_new(so);
+        tcpl = atm_conn_listen_new(ss);
         /* register listen fd to epoll */
         atm_event_add_listen(tcpl);
     } else {
         atm_log_rout(ATM_LOG_ERROR,
-            "atm_conn_listen_tcp, so NULL " 
+            "atm_conn_listen_tcp, ss NULL " 
             "errno: %s",strerror(errno));
         goto error;
     }
@@ -91,18 +91,18 @@ atm_conn_handle_accept(
         atm_event_t *listen_event)
 {
     atm_int_t max = ATM_CONN_PERCALL_ACCEPTS;
-    atm_socket_t *ss;
-    atm_socket_t *s;
+    atm_socket_t *ss = NULL;
+    atm_socket_t *cs = NULL;
     atm_conn_t *conn = NULL;
     atm_conn_listen_t *ls = NULL;
     
     ls = listen_event->load;
     ss = ls->ssck;  
     while (--max) {
-        s = atm_net_accept(ss);
-        if (s != NULL) {
-            atm_net_nonblock(s, ATM_TRUE); 
-            conn = atm_conn_new(s);
+        cs = atm_net_accept(ss);
+        if (cs != NULL) {
+            atm_net_nonblock(cs, ATM_TRUE); 
+            conn = atm_conn_new(cs);
             /* register conn to epoll */
             atm_event_add_conn(conn);
         }

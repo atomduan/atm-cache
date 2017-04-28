@@ -109,7 +109,10 @@ atm_event_new(void *load, int fd,
 void
 atm_event_free(void *e)
 {
-    atm_free(e);
+    if (e != NULL) {
+        atm_event_del_event(e, ATM_EVENT_ALL);
+        atm_free(e);
+    }
 }
 
 
@@ -151,10 +154,13 @@ atm_event_add_conn(atm_conn_t *c)
 
     if (c != NULL) {
         cfd = c->sock->fd;
-        ce = atm_event_new(c, cfd, 
-                c->handle_read, 
-                c->handle_write); 
-        c->event = ce;
+        ce = c->event;
+        if (ce == NULL) {
+            ce = atm_event_new(c, cfd, 
+                    c->handle_read, 
+                    c->handle_write); 
+            c->event = ce;
+        }
 
         events = EPOLLIN|EPOLLHUP|EPOLLET;
         atm_event_add_event(ce, events);

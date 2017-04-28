@@ -185,11 +185,15 @@ end:
  * */
 
 void
-atm_net_socket_free(void *sock)
+atm_socket_free(void *sock)
 {
-    atm_socket_t *s = sock;
-    atm_str_free(s->src_ip);
-    atm_free(s);
+    atm_socket_t *s = NULL;
+    if (sock != NULL) {
+        s = sock;
+        close(s->fd);
+        atm_str_free(s->src_ip);
+        atm_free(s);
+    }
 }
 
 
@@ -203,6 +207,21 @@ atm_net_listen_tcp(int port,
     if (s != ATM_NET_ERR_FD) {
        res = atm_net_socket_new(s); 
        res->fd = s;
+    }
+    return res;
+}
+
+
+atm_socket_t *
+atm_net_accept(atm_socket_t *ss)
+{
+    int ret = -1;
+    atm_socket_t * res = NULL;
+    res = atm_net_socket_new(ATM_NET_ERR_FD);
+    ret = atm_net_accept_raw(ss, res);
+    if (ret != ATM_OK) {
+        atm_free(res);
+        res = NULL;
     }
     return res;
 }
@@ -242,16 +261,90 @@ atm_net_nonblock(atm_socket_t *s,
 }
 
 
-atm_socket_t *
-atm_net_accept(atm_socket_t *ss)
+int       
+atm_net_nodelay(atm_socket_t *s, 
+        atm_bool_t nodelay)
 {
-    int ret = -1;
-    atm_socket_t * res = NULL;
-    res = atm_net_socket_new(ATM_NET_ERR_FD);
-    ret = atm_net_accept_raw(ss, res);
-    if (ret != ATM_OK) {
-        atm_free(res);
-        res = NULL;
+    int val = nodelay ? 1:0;
+    int sockfd = s->fd;    
+
+    int ret = setsockopt(sockfd, 
+            IPPROTO_TCP, 
+            TCP_NODELAY, 
+            &val, sizeof(val));
+
+    if (ret == -1) {
+        atm_log_rout(ATM_LOG_ERROR, 
+            "setsockopt TCP_NODELAY: %s", 
+            strerror(errno));
+        return ATM_ERROR;
     }
-    return res;
+    return ATM_OK;
+
+}
+
+
+int       
+atm_net_keepalive(atm_socket_t *s, 
+        int interval)
+{
+    int fd = s->fd;    
+    int val = 1;
+
+    if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, 
+                &val, sizeof(val)) == -1) {   
+        atm_log_rout(ATM_LOG_ERROR, 
+            "setsockopt SO_KEEPALIVE: %s", 
+            strerror(errno));
+        return ATM_ERROR;
+    }  
+
+#if (ATM_LINUX)
+    /*  Default settings are more or less garbage, 
+     *  with the keepalive time
+     *  set to 7200 by default on Linux. 
+     *  Modify settings to make the feature
+     *  actually useful. */
+
+    /*  Send first probe after interval. */
+    val = interval;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, 
+                &val, sizeof(val)) < 0) {
+        atm_log_rout(ATM_LOG_ERROR, 
+            "setsockopt TCP_KEEPIDLE: %s\n", 
+            strerror(errno));
+        return ATM_ERROR;
+    }   
+
+    /*  Send next probes after the specified interval. 
+     *  Note that we set the
+     *  delay as interval / 3, 
+     *  as we send three probes before detecting
+     *  an error (see the next setsockopt call). */
+    val = interval/3;
+    if (val == 0) val = 1;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, 
+                &val, sizeof(val)) < 0) {
+        atm_log_rout(ATM_LOG_ERROR, 
+            "setsockopt TCP_KEEPINTVL: %s\n", 
+            strerror(errno));
+        return ATM_ERROR;
+    }   
+
+    /*  Consider the socket in error state after 
+     *  three we send three ACK
+     *  probes without getting a reply. */
+    val = 3;
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, 
+                &val, sizeof(val)) < 0) {
+        atm_log_rout(ATM_LOG_ERROR, 
+            "setsockopt TCP_KEEPCNT: %s\n", 
+            strerror(errno));
+        return ATM_ERROR;
+    } 
+#else
+    /* avoid warining on nonlinux */
+    ((void) interval);
+#endif /* ATM_LINUX */
+    return ATM_OK;
 }

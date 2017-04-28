@@ -26,6 +26,12 @@ void
 atm_conn_init();
 
 void
+atm_conn_free(void *conn);
+
+void
+atm_conn_listen_free(void *listen);
+
+void
 atm_conn_handle_accept(atm_event_t *listen_event);
 
 void

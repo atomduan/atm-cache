@@ -5,6 +5,7 @@
 
 #define ATM_NET_ERR_FD -1
 #define ATM_NET_IP_STR_LEN 46
+#define ATM_NET_DEFAULT_TCP_KEEPALIVE 300
 
 struct atm_socket_s {
     int         fd;
@@ -14,18 +15,26 @@ struct atm_socket_s {
 
 
 void
-atm_net_socket_free(void *s);
+atm_socket_free(void *s);
 
 atm_socket_t *
 atm_net_listen_tcp(int port, 
         char *bindaddr, int backlog);
 
+atm_socket_t *
+atm_net_accept(atm_socket_t *ss);
+
 int       
 atm_net_nonblock(atm_socket_t *s, 
         atm_bool_t non_block); 
 
-atm_socket_t *
-atm_net_accept(atm_socket_t *ss);
+int       
+atm_net_nodelay(atm_socket_t *s, 
+        atm_bool_t nodelay); 
+
+int       
+atm_net_keepalive(atm_socket_t *s, 
+        int interval); 
 
 
 #endif /* _ATM_SOCKET_H_INCLUDED_ */

@@ -87,6 +87,32 @@ atm_conn_init()
 
 
 void
+atm_conn_free(void *conn)
+{
+    atm_conn_t *c = NULL;
+    if (conn != NULL) {
+        c = conn;
+        atm_event_free(c->event);
+        atm_socket_free(c->sock);
+        atm_free(conn);
+    }
+}
+
+
+void
+atm_conn_listen_free(void *listen)
+{
+    atm_conn_listen_t *l = NULL;
+    if (listen != NULL) {
+        l = listen;
+        atm_event_free(l->event);
+        atm_socket_free(l->ssck);
+        atm_free(listen);
+    }
+}
+
+
+void
 atm_conn_handle_accept(
         atm_event_t *listen_event)
 {
@@ -95,6 +121,7 @@ atm_conn_handle_accept(
     atm_socket_t *cs = NULL;
     atm_conn_t *conn = NULL;
     atm_conn_listen_t *ls = NULL;
+    int interval = ATM_NET_DEFAULT_TCP_KEEPALIVE;
     
     ls = listen_event->load;
     ss = ls->ssck;  
@@ -102,6 +129,8 @@ atm_conn_handle_accept(
         cs = atm_net_accept(ss);
         if (cs != NULL) {
             atm_net_nonblock(cs, ATM_TRUE); 
+            atm_net_nodelay(cs, ATM_TRUE); 
+            atm_net_keepalive(cs, interval); 
             conn = atm_conn_new(cs);
             /* register conn to epoll */
             atm_event_add_conn(conn);
@@ -114,7 +143,13 @@ void
 atm_conn_handle_read(
         atm_event_t *conn_event)
 {
+    atm_conn_t *conn = NULL;
+    atm_socket_t *cs = NULL;
 
+    conn = conn_event->load;
+    if (conn != NULL) {
+        cs = conn->sock;
+    }
 }
 
 
@@ -122,5 +157,11 @@ void
 atm_conn_handle_write(
         atm_event_t *conn_event)
 {
+    atm_conn_t *conn = NULL;
+    atm_socket_t *cs = NULL;
 
+    conn = conn_event->load;
+    if (conn != NULL) {
+        cs = conn->sock;
+    }
 }

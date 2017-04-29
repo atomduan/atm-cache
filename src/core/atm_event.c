@@ -32,13 +32,11 @@ atm_event_process_ev(atm_event_t *ev,uint32_t evs)
 
    if ((evs & EPOLLIN) && ev->active) {
        if (ev->handle_read != NULL) {
-           ev->rdy_read = ATM_TRUE;
            ev->handle_read(ev);
        }
    }
    if ((evs & EPOLLOUT) && ev->active) {
        if (ev->handle_write != NULL) {
-           ev->rdy_write = ATM_TRUE;
            ev->handle_write(ev);
        }
    }
@@ -98,8 +96,6 @@ atm_event_new(void *load, int fd,
     res->events = ATM_EVENT_NONE;
     res->load = load;
     res->active = ATM_FALSE;
-    res->rdy_read = ATM_FALSE;
-    res->rdy_write = ATM_FALSE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
     return res;

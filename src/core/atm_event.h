@@ -23,8 +23,6 @@ struct atm_event_s {
     void       *load;
     /* means be managed by epoll */
     atm_bool_t  active;
-    atm_bool_t  rdy_read;
-    atm_bool_t  rdy_write;
 
     /* only be called by epoll */
     void (*handle_read)(atm_event_t  *ev);

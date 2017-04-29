@@ -1,4 +1,11 @@
 #include <atm_core.h>
+       
+
+atm_int_t
+atm_conn_task_read(atm_task_t *self); 
+
+atm_int_t
+atm_conn_task_write(atm_task_t *self); 
 
 static atm_conn_t *
 atm_conn_new(atm_socket_t *so);
@@ -14,6 +21,70 @@ atm_conn_listen_tcp();
 /*
  * Private
  * */
+
+atm_int_t
+atm_conn_task_read(atm_task_t *self)
+{
+    atm_conn_t *conn = NULL;
+    atm_socket_t *cs = NULL;
+    atm_session_t *se = NULL;
+    atm_buf_t *rbuf = NULL;
+    atm_int_t total = 0;
+    int s = 0;
+
+    conn = self->load;
+    cs = conn->sock;
+    se = conn->session;
+
+    rbuf = se->r_buf;   
+    while (ATM_TRUE) {
+        s = read(cs->fd, rbuf->cb->head, 
+                ATM_BUF_DEFAULT_LEN);
+        if (s > 0) {
+            total += s;
+            atm_buf_flip(rbuf, s);
+            if (s == ATM_BUF_DEFAULT_LEN) {
+                continue; 
+            }
+        }
+        break;
+    }
+
+    atm_session_process(se);
+    return total;
+}
+
+
+atm_int_t
+atm_conn_task_write(atm_task_t *self)
+{
+    atm_conn_t *conn = NULL;
+    atm_session_t *se = NULL;
+    atm_socket_t *cs = NULL;
+    atm_buf_t *wbuf = NULL;
+    atm_block_t *wb = NULL;
+    atm_int_t total = 0;
+    int s = 0;
+
+    conn = self->load;
+    cs = conn->sock;
+    se = conn->session;
+
+    wbuf = se->w_buf;
+    while (ATM_TRUE) {
+        wb = atm_list_lpop(wbuf->blocks);
+        if (wb == NULL) break;
+        s = write(cs->fd, wb->head, wb->size);
+        if (s <= 0) {
+            break;
+        } else {
+            total += s;
+        }
+    }
+    return total;
+}
+
+
 static atm_conn_t *
 atm_conn_new(atm_socket_t *so)
 {
@@ -46,10 +117,12 @@ atm_conn_listen_tcp()
 {
     int ret = -1;
     atm_socket_t *ss = NULL;
+    atm_conn_listen_t *tcpl = NULL; 
+
+    /* TODO: need to fetch from config */
     atm_int_t port = 80;
     char *bindaddr = "0.0.0.0";
     int backlog = 1024;
-    atm_conn_listen_t *tcpl = NULL; 
 
     ss = atm_net_listen_tcp(port, 
             bindaddr, backlog);
@@ -121,6 +194,7 @@ atm_conn_handle_accept(
     atm_socket_t *cs = NULL;
     atm_conn_t *conn = NULL;
     atm_conn_listen_t *ls = NULL;
+    atm_session_t *se = NULL;
     int interval = ATM_NET_DEFAULT_TCP_KEEPALIVE;
     
     ls = listen_event->load;
@@ -134,6 +208,8 @@ atm_conn_handle_accept(
             conn = atm_conn_new(cs);
             /* register conn to epoll */
             atm_event_add_conn(conn);
+            se = atm_session_new(conn);
+            conn->session = se;
         }
     }
 }
@@ -144,11 +220,14 @@ atm_conn_handle_read(
         atm_event_t *conn_event)
 {
     atm_conn_t *conn = NULL;
-    atm_socket_t *cs = NULL;
+    atm_task_t *t = NULL;
 
     conn = conn_event->load;
     if (conn != NULL) {
-        cs = conn->sock;
+       t = atm_task_new(conn, 
+               atm_conn_task_read); 
+       /* Queue the read task */
+       atm_task_dispatch(t);
     }
 }
 
@@ -158,10 +237,13 @@ atm_conn_handle_write(
         atm_event_t *conn_event)
 {
     atm_conn_t *conn = NULL;
-    atm_socket_t *cs = NULL;
+    atm_task_t *t = NULL;
 
     conn = conn_event->load;
     if (conn != NULL) {
-        cs = conn->sock;
+       t = atm_task_new(conn, 
+               atm_conn_task_write); 
+       /* Do not using multi thread */
+       t->run(t);
     }
 }

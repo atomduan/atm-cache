@@ -4,21 +4,10 @@
 /*
  * Private
  * */
+
+
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
-
-
-static atm_ctx_t atm_ctx_struct = {
-
-};
-
-
-/*
- * Public
- * */
-
-
-atm_ctx_t *atm_ctx = &atm_ctx_struct;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -52,10 +41,12 @@ void
 atm_init() 
 {
     atm_log("atm_init enter......");
+    atm_config_init();
     atm_sig_init();
     atm_hash_init();
     atm_event_init();
     atm_conn_init();
+    atm_task_init();
 }
 
 

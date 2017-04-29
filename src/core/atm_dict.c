@@ -4,8 +4,6 @@
 /*
  * Private
  * */
-
-
 /* entry type lifecycle */
 static atm_dict_entry_t *
 atm_dict_entry_new(void *dict, void *key, void *val);
@@ -81,8 +79,6 @@ atm_T_t ATM_DICT_T = {
 /*
  * Private
  * */
-
-
 static atm_dict_entry_t *
 atm_dict_entry_new(void *dict, void *key, void *val) 
 {

@@ -4,8 +4,6 @@
 /*
  * Public
  * */
-
-
 atm_T_t ATM_STR_T = {
     ATM_T_INDEX_STR,
     atm_str_spec,

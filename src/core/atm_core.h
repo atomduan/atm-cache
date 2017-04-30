@@ -130,4 +130,7 @@ typedef struct atm_block_s          atm_block_t;
 #endif
 
 
+#define atm_min(val1, val2)  ((val1 > val2) ? (val2) : (val1))
+
+
 #endif /* _ATM_CORE_H_INCLUDED_ */

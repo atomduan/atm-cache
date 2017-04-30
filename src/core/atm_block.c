@@ -28,8 +28,8 @@ atm_block_new(int size)
 
     res = atm_alloc(sizeof(atm_block_t));
     res->size = size;
-    res->head = atm_alloc(size);
-    res->tail = res->head;
+    res->head = atm_alloc(sizeof(uint8_t)*size);
+    res->len = 0;
     return res;
 }
 

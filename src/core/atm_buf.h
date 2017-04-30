@@ -39,11 +39,16 @@ atm_buf_free(void *buf);
 
 
 /* public funcs */
-void
-atm_buf_flip(atm_buf_t *buf, int len);
+atm_int_t
+atm_buf_writef(atm_buf_t *buf, atm_socket_t *srcfd, 
+        atm_uint_t len);
 
 atm_int_t
 atm_buf_write(atm_buf_t *buf, uint8_t *src, 
+        atm_uint_t len);
+
+atm_int_t
+atm_buf_readf(atm_buf_t *buf, atm_socket_t *destfd, 
         atm_uint_t len);
 
 atm_int_t

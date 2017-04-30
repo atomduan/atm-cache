@@ -10,7 +10,7 @@ extern atm_T_t ATM_BLOCK_T;
 struct atm_block_s {
     atm_uint_t      size;
     uint8_t        *head;
-    uint8_t        *tail;
+    atm_uint_t      len;
 };
 
 

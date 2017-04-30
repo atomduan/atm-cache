@@ -1,10 +1,10 @@
 #include <atm_core.h>
        
 
-atm_int_t
+static atm_int_t 
 atm_conn_task_read(atm_task_t *self); 
 
-atm_int_t
+static atm_int_t
 atm_conn_task_write(atm_task_t *self); 
 
 static atm_conn_t *
@@ -22,66 +22,46 @@ atm_conn_listen_tcp();
  * Private
  * */
 
-atm_int_t
+static atm_int_t
 atm_conn_task_read(atm_task_t *self)
 {
     atm_conn_t *conn = NULL;
-    atm_socket_t *cs = NULL;
+    atm_socket_t *src = NULL;
     atm_session_t *se = NULL;
     atm_buf_t *rbuf = NULL;
-    atm_int_t total = 0;
-    int s = 0;
+
+    int len = ATM_BUF_DEFAULT_LEN;
 
     conn = self->load;
-    cs = conn->sock;
+    src = conn->sock;
     se = conn->session;
 
+
     rbuf = se->r_buf;   
-    while (ATM_TRUE) {
-        s = read(cs->fd, rbuf->cb->head, 
-                ATM_BUF_DEFAULT_LEN);
-        if (s > 0) {
-            total += s;
-            atm_buf_flip(rbuf, s);
-            if (s == ATM_BUF_DEFAULT_LEN) {
-                continue; 
-            }
-        }
-        break;
-    }
+    atm_buf_writef(rbuf, src, len);
 
     atm_session_process(se);
-    return total;
+    return 0;
 }
 
 
-atm_int_t
+static atm_int_t
 atm_conn_task_write(atm_task_t *self)
 {
     atm_conn_t *conn = NULL;
     atm_session_t *se = NULL;
-    atm_socket_t *cs = NULL;
+    atm_socket_t *dest = NULL;
     atm_buf_t *wbuf = NULL;
-    atm_block_t *wb = NULL;
-    atm_int_t total = 0;
-    int s = 0;
+
+    int len = ATM_BUF_DEFAULT_LEN;
 
     conn = self->load;
-    cs = conn->sock;
+    dest = conn->sock;
     se = conn->session;
 
     wbuf = se->w_buf;
-    while (ATM_TRUE) {
-        wb = atm_list_lpop(wbuf->blocks);
-        if (wb == NULL) break;
-        s = write(cs->fd, wb->head, wb->size);
-        if (s <= 0) {
-            break;
-        } else {
-            total += s;
-        }
-    }
-    return total;
+    atm_buf_readf(wbuf, dest, len);
+    return 0;
 }
 
 

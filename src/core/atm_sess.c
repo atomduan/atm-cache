@@ -33,8 +33,10 @@ atm_sess_write(atm_sess_t *se,
     w_buf = se->w_buf;
     atm_buf_write(w_buf, 
             (uint8_t *) s->val, s->len);
+
     conn = se->conn;
-    atm_event_add_event(conn->event, ATM_EVENT_READ);
+    atm_event_add_event(
+            conn->event, ATM_EVENT_READ);
 }
 
 
@@ -59,10 +61,9 @@ atm_sess_process(atm_sess_t *se)
 {
     atm_str_t   *line = NULL;
 
-    while (ATM_TRUE) {
-        line = atm_sess_read_line(se);
-        if (line == NULL) break;
-            atm_log("%s\n", line->val);
-            atm_sess_write(se, line);
+    line = atm_sess_read_line(se);
+    if (line != NULL) {
+        atm_log("%s\n", line->val);
+        atm_sess_write(se, line);
     }
 }

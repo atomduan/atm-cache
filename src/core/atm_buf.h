@@ -3,12 +3,11 @@
 
 #include <atm_core.h>
 
-#define ATM_BUF_DEFAULT_LEN     1024
 
 
 struct atm_buf_s {
     atm_blk_t         *cb;
-    atm_list_t      *blocks;
+    atm_list_t      *blks;
 };
 
 
@@ -21,23 +20,26 @@ atm_buf_free(void *buf);
 
 
 /* public funcs */
+/* for epoll event call back funcs */
 atm_int_t
 atm_buf_writef(atm_buf_t *buf, atm_socket_t *srcfd, 
-        atm_uint_t len);
-
-atm_int_t
-atm_buf_write(atm_buf_t *buf, uint8_t *src, 
         atm_uint_t len);
 
 atm_int_t
 atm_buf_readf(atm_buf_t *buf, atm_socket_t *destfd, 
         atm_uint_t len);
 
+
+/* for session logic calling's funcs */
+atm_str_t *
+atm_buf_read_line(atm_buf_t *buf);
+
 atm_int_t
 atm_buf_read(atm_buf_t *buf, uint8_t *dest, 
         atm_uint_t len);
 
-atm_str_t *
-atm_buf_read_line(atm_buf_t *buf);
+atm_int_t
+atm_buf_write(atm_buf_t *buf, uint8_t *src, 
+        atm_uint_t len);
 
 #endif /* _ATM_BUF_H_INCLUDED_ */

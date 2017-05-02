@@ -3,11 +3,11 @@
  * Private
  * */
 static atm_T_t ATM_BLK_TYPE = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
+    NULL,/* sepc */
+    NULL,/* match */
+    NULL,/* hash */
+    NULL,/* compare */
+    NULL,/* str */
     atm_blk_free,
 };
 
@@ -23,9 +23,10 @@ atm_T_t *ATM_BLK_T = &ATM_BLK_TYPE;
  * Public
  * */
 atm_blk_t *
-atm_blk_new(int size)
+atm_blk_new()
 {
     atm_blk_t *res = NULL;
+    int size = ATM_BLK_DFT_LEN;
 
     res = atm_alloc(sizeof(atm_blk_t));
     res->size = size;

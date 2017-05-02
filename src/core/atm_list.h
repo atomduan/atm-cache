@@ -50,14 +50,23 @@ atm_list_push(atm_list_t *list, void *val);
 void 
 atm_list_del(atm_list_t *list, void *hint);
 
-void 
-*atm_list_find(atm_list_t *list, void *hint);
+void *
+atm_list_find(atm_list_t *list, void *hint);
 
-void 
-*atm_list_lpop(atm_list_t *list);
+void *
+atm_list_lpop(atm_list_t *list);
 
-void 
-*atm_list_rpop(atm_list_t *list);
+void *
+atm_list_rpop(atm_list_t *list);
+
+void *
+atm_list_lpeek(atm_list_t *list);
+
+void *
+atm_list_rpeek(atm_list_t *list);
+
+void
+atm_list_clear(atm_list_t *list);
 
 
 #endif /* _ATM_LIST_H_INCLUDED_ */

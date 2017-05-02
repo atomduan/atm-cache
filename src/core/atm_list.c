@@ -172,12 +172,8 @@ atm_list_str(void *list)
 void 
 atm_list_free(void *list)
 {
-    atm_list_t * l = (atm_list_t *) list;
-    atm_list_entry_t *curr = NULL;
-    /* purge list elements */
-    while ((curr=atm_list_lpop_entry(l))!=NULL) {
-        atm_list_entry_free(curr);
-    }
+    atm_list_t *l = list;
+    atm_list_clear(l);
     atm_free(l);
 }
 
@@ -289,4 +285,44 @@ atm_list_rpop(atm_list_t *list)
         atm_free(entry);
     }
     return res;
+}
+
+
+void *
+atm_list_lpeek(atm_list_t *list)
+{
+    void *res = NULL;
+    atm_list_entry_t *entry = NULL;
+
+    entry = list->head;
+    if (entry != NULL) {
+        res = entry->val;
+    }
+    return res;
+}
+
+
+void *
+atm_list_rpeek(atm_list_t *list)
+{
+    void *res = NULL;
+    atm_list_entry_t *entry = NULL;
+
+    entry = list->tail;
+    if (entry != NULL) {
+        res = entry->val;
+    }
+    return res;
+}
+
+
+void
+atm_list_clear(atm_list_t *list)
+{
+    atm_list_t * l = list;
+    atm_list_entry_t *e = NULL;
+    /* purge list elements */
+    while ((e=atm_list_lpop_entry(l))!=NULL) {
+        atm_list_entry_free(e);
+    }
 }

@@ -15,7 +15,7 @@ struct atm_conn_listen_s {
 
 
 struct atm_conn_s {
-    atm_session_t      *session;
+    atm_sess_t      *session;
     atm_socket_t       *sock;
     atm_event_t        *event;
     void (*handle_read)(atm_event_t *ev);

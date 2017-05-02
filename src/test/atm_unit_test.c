@@ -1,26 +1,15 @@
 #include <atm_core.h>
-
-
 /*
  * Private
  * */
-
-
 static int 
 atm_test_suit_proc(int argc, char **argv);
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
-
-
 /*
  * Private
  * */
-
-
-/*
- * Main entry point of unit test system
- */
 static atm_int_t 
 atm_test_suit_proc(int argc, char **argv) 
 {
@@ -35,11 +24,6 @@ atm_test_suit_proc(int argc, char **argv)
 /*
  * Public
  * */
-
-
-/*
- * The entry point of unit test system
- */
 void
 atm_test_suit(int argc, char **argv) 
 { 
@@ -63,9 +47,11 @@ void
 atm_test_report(char *func_name, atm_uint_t res) 
 {
     if (ATM_TEST_PASS == res) {
-        atm_log("PASS : test func name is [%s]", func_name);
+        atm_log("PASS : test func name is [%s]",
+                func_name);
     }
     if (ATM_TEST_FAIL == res) {
-        atm_log("FAIL : test func name is [%s]", func_name);
+        atm_log("FAIL : test func name is [%s]",
+                func_name);
     }
 }

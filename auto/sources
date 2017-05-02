@@ -10,7 +10,7 @@
 CORE_INCS="src/core"
 
 CORE_DEPS="src/core/atm_core.h \
-           src/core/atm_block.h \
+           src/core/atm_blk.h \
            src/core/atm_buf.h \
            src/core/atm_config.h \
            src/core/atm_conn.h \
@@ -20,12 +20,12 @@ CORE_DEPS="src/core/atm_core.h \
            src/core/atm_list.h \
            src/core/atm_log.h \
            src/core/atm_main.h \
-           src/core/atm_session.h \
+           src/core/atm_sess.h \
            src/core/atm_siphash.h \
            src/core/atm_str.h \
            src/core/atm_task.h"
 
-CORE_SRCS="src/core/atm_block.c \
+CORE_SRCS="src/core/atm_blk.c \
            src/core/atm_buf.c \
            src/core/atm_config.c \
            src/core/atm_conn.c \
@@ -35,7 +35,7 @@ CORE_SRCS="src/core/atm_block.c \
            src/core/atm_list.c \
            src/core/atm_log.c \
            src/core/atm_main.c \
-           src/core/atm_session.c \
+           src/core/atm_sess.c \
            src/core/atm_siphash.c \
            src/core/atm_str.c \
            src/core/atm_task.c"
@@ -56,15 +56,14 @@ CORE_DEPS="$CORE_DEPS \
             src/test/atm_unit_test.h \
             src/test/core/atm_test_dict.h \
             src/test/core/atm_test_event.h \
-            src/test/core/atm_test_siphash.h \
-            src/test/os/unix/atm_test_process.h"
+            src/test/core/atm_test_siphash.h"
+            
 
 CORE_SRCS="$CORE_SRCS \
             src/test/atm_unit_test.c \
             src/test/core/atm_test_dict.c \
             src/test/core/atm_test_event.c \
-            src/test/core/atm_test_siphash.c \
-            src/test/os/unix/atm_test_process.c"
+            src/test/core/atm_test_siphash.c"
 fi
 
 
@@ -78,12 +77,10 @@ CORE_INCS="$CORE_INCS \
 CORE_DEPS="$CORE_DEPS \
             src/os/unix/linux/atm_linux_config.h \
             src/os/unix/atm_alloc.h \
-            src/os/unix/atm_process.h \
             src/os/unix/atm_sig.h \
             src/os/unix/atm_net.h"
 
 CORE_SRCS="$CORE_SRCS \
             src/os/unix/atm_alloc.c \
-            src/os/unix/atm_process.c \
             src/os/unix/atm_sig.c \
             src/os/unix/atm_net.c"

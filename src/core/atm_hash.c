@@ -1,14 +1,8 @@
 #include <atm_core.h>
-
-
+/* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Public
  * */
-
-
-/* ---------------------IMPLEMENTATIONS--------------------------- */
-
-
 void 
 atm_hash_init()
 {

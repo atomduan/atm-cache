@@ -7,9 +7,6 @@
 #define ATM_DICT_INITIAL_BUCKET_SIZE 256
 
 
-extern atm_T_t ATM_DICT_T;
-
-
 /* this is a inner type 
  * so we do not define it in atm_types.h 
  * plz do not use it in other file, consciously
@@ -49,18 +46,6 @@ atm_dict_init();
 
 atm_dict_t *
 atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t free_type);
-
-void *
-atm_dict_spec(void *dict);
-
-atm_bool_t 
-atm_dict_match(void *dict1, void *dict2); 
-
-uint64_t 
-atm_dict_hash(void *dict);
-
-atm_int_t 
-atm_dict_cmp(void *dict1, void *dict2);
 
 atm_str_t *
 atm_dict_str(void *dict);

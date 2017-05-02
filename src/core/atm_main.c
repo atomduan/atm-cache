@@ -1,23 +1,15 @@
 #include <atm_core.h>
-
-
 /*
  * Private
  * */
-
-
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
-
-
 /*
  * Private
  * */
-
-
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv)
 {
@@ -35,8 +27,6 @@ atm_test_in_test_mod(int argc, char **argv)
 /*
  * Public
  * */
-
-
 void 
 atm_init() 
 {

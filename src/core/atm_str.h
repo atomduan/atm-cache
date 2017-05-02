@@ -7,7 +7,8 @@
 #define ATM_STR_TMN \0
 #define ATM_STR_FMT_MAX_LEN 1024
 
-extern atm_T_t ATM_STR_T;
+
+extern atm_T_t *ATM_STR_T;
 
 
 struct atm_str_s {
@@ -22,9 +23,6 @@ atm_str_init();
 
 atm_str_t *
 atm_str_new(char *str);
-
-void *
-atm_str_spec(void *str);
 
 atm_bool_t 
 atm_str_match(void *str1, void *str2); 

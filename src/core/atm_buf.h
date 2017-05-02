@@ -6,11 +6,8 @@
 #define ATM_BUF_DEFAULT_LEN     1024
 
 
-extern atm_T_t ATM_BUF_T;
-
-
 struct atm_buf_s {
-    atm_block_t         *cb;
+    atm_blk_t         *cb;
     atm_list_t      *blocks;
 };
 
@@ -18,21 +15,6 @@ struct atm_buf_s {
 /* public buf type lifecycle */
 atm_buf_t *
 atm_buf_new();
-
-void *
-atm_buf_spec(void *buf);
-
-atm_bool_t 
-atm_buf_match(void *buf1, void *buf2); 
-
-uint64_t 
-atm_buf_hash(void *buf);
-
-atm_int_t 
-atm_buf_cmp(void *buf1, void *buf2);
-
-atm_str_t *
-atm_buf_str(void *buf);
 
 void
 atm_buf_free(void *buf);

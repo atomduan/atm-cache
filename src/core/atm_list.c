@@ -1,11 +1,7 @@
 #include <atm_core.h>
-
-
 /*
  * Private
  * */
-
-
 static atm_list_entry_t *
 atm_list_entry_new(void *val);
 
@@ -27,30 +23,10 @@ static atm_list_entry_t *
 atm_list_rpop_entry(atm_list_t *list);
 
 
-/*
- * Public
- * */
-
-
-atm_T_t ATM_LIST_T = {
-    ATM_T_INDEX_LIST,
-    atm_list_spec,
-    atm_list_match,
-    atm_list_hash,
-    atm_list_cmp,
-    atm_list_str,
-    atm_list_free,
-};
-
-
 /* ---------------------IMPLEMENTATIONS--------------------------- */
-
-
 /*
  * Private
  * */
-
-
 static atm_list_entry_t *
 atm_list_entry_new (void *val)
 {
@@ -151,8 +127,6 @@ atm_list_rpop_entry(atm_list_t *list)
 /*
  * Public
  * */
-
-
 void 
 atm_list_init()
 {
@@ -173,49 +147,6 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
     res->v_type = v_type;
     res->free_type = f_type;
     return res;
-}
-
-
-void *
-atm_list_spec(void *list)
-{
-    void *res = NULL;
-    return res;
-}
-
-
-atm_bool_t 
-atm_list_match(void *list1, void *list2)
-{
-    atm_bool_t res = ATM_FALSE;
-    
-    if (list1 == list2) {
-        res = ATM_TRUE;
-    }
-    return res;
-}
-
-
-uint64_t 
-atm_list_hash(void *list)
-{
-    uint64_t res;
-    atm_list_t *l; 
-    atm_str_t *l_str;
-
-    l = (atm_list_t *) list;
-    l_str = atm_str_ptr_str(l); 
-    res = atm_hash(l_str->val, l_str->len);
-
-    atm_str_free(l_str);
-    return res;
-}
-
-
-atm_int_t 
-atm_list_cmp(void *list1, void *list2)
-{
-    return ATM_CMP_EQ;
 }
 
 

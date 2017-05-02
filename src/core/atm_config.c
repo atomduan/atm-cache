@@ -1,6 +1,7 @@
 #include <atm_core.h>
-
-
+/*
+ * Private
+ * */
 static void 
 atm_config_load();
 
@@ -25,8 +26,8 @@ void
 atm_config_init()
 {
     config = atm_dict_new(
-            &ATM_STR_T, 
-            &ATM_STR_T, 
+            ATM_STR_T, 
+            ATM_STR_T, 
             ATM_FREE_DEEP);
     /* load from conf path */ 
     atm_config_load();

@@ -62,7 +62,6 @@ typedef struct atm_str_s    atm_str_t;
 /* General Type For Container New */
 typedef struct atm_T_s      atm_T_t;
 struct atm_T_s {
-    atm_uint_t         index;
     void              *spec;
     atm_bool_t      (* match)(void *v1, void *v2);
     uint64_t        (* hash)(void *v);
@@ -82,22 +81,9 @@ typedef struct atm_conn_listen_s    atm_conn_listen_t;
 typedef struct atm_socket_s         atm_socket_t;
 typedef struct atm_event_s          atm_event_t;
 typedef struct atm_task_s           atm_task_t;
-typedef struct atm_session_s        atm_session_t;
+typedef struct atm_sess_s           atm_sess_t;
 typedef struct atm_buf_s            atm_buf_t;
-typedef struct atm_block_s          atm_block_t;
-
-
-/*
- * Typical senaral: be callback by container's for void * ptr
- * to do some standard ops, such as : free and cmp, equal,etc.
- */
-#define ATM_T_INDEX_OBJ     0
-#define ATM_T_INDEX_STR     1
-#define ATM_T_INDEX_LIST    2
-#define ATM_T_INDEX_DICT    3
-#define ATM_T_INDEX_BUF     4
-#define ATM_T_INDEX_TASK    5
-#define ATM_T_INDEX_BLOCK   6
+typedef struct atm_blk_s            atm_blk_t;
 
 
 /*
@@ -105,7 +91,7 @@ typedef struct atm_block_s          atm_block_t;
  */
 
 
-#include <atm_block.h>
+#include <atm_blk.h>
 #include <atm_buf.h>
 #include <atm_config.h>
 #include <atm_conn.h>
@@ -115,13 +101,12 @@ typedef struct atm_block_s          atm_block_t;
 #include <atm_list.h>
 #include <atm_log.h>
 #include <atm_main.h>
-#include <atm_session.h>
+#include <atm_sess.h>
 #include <atm_siphash.h>
 #include <atm_str.h>
 #include <atm_task.h>
 
 #include <atm_alloc.h>
-#include <atm_process.h>
 #include <atm_sig.h>
 #include <atm_net.h>
 

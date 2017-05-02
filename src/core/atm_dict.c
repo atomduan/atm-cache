@@ -1,6 +1,4 @@
 #include <atm_core.h>
-
-
 /*
  * Private
  * */
@@ -27,8 +25,7 @@ static void
 atm_dict_entry_free(void *entry);
 
 
-static atm_T_t ATM_DICT_ENTRY_T = {
-    ATM_T_INDEX_OBJ,
+static atm_T_t ATM_DICT_ENTRY_TYPE = {
     atm_dict_entry_spec,
     atm_dict_entry_match,
     atm_dict_entry_hash,
@@ -36,6 +33,8 @@ static atm_T_t ATM_DICT_ENTRY_T = {
     atm_dict_entry_str,
     atm_dict_entry_free,
 };
+
+static atm_T_t *ATM_DICT_ENTRY_T = &ATM_DICT_ENTRY_TYPE;
 
 
 /* bucket type lifecycle */
@@ -57,25 +56,7 @@ static atm_dict_entry_t *
 atm_dict_entry(atm_dict_t *dict, void *key); 
 
 
-/*
- * Public
- * */
-
-
-atm_T_t ATM_DICT_T = {
-    ATM_T_INDEX_DICT,
-    atm_dict_spec,
-    atm_dict_match,
-    atm_dict_hash,
-    atm_dict_cmp,
-    atm_dict_str,
-    atm_dict_free,
-};
-
-
 /* ---------------------IMPLEMENTATIONS--------------------------- */
-
-
 /*
  * Private
  * */
@@ -286,8 +267,6 @@ atm_dict_entry(atm_dict_t *dict, void *key)
 /*
  * Public
  * */
-
-
 void 
 atm_dict_init()
 {
@@ -314,48 +293,6 @@ atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t f_type)
     dict->v_type = v_type;
 
     return dict;
-}
-
-
-void *
-atm_dict_spec(void *dict)
-{
-    void *res = NULL;
-    return res;
-}
-
-
-atm_bool_t
-atm_dict_match(void *dict1, void *dict2)
-{
-    atm_bool_t res = ATM_FALSE;
-    if (dict1 == dict2) {
-        res = ATM_TRUE;
-    }
-    return res;
-}
-
-
-uint64_t
-atm_dict_hash(void *dict)
-{
-    uint64_t res = 0;
-    atm_dict_t *d = NULL; 
-    atm_str_t *d_str = NULL;
-
-    d = (atm_dict_t *) dict;
-    d_str = atm_str_ptr_str(d); 
-    res = atm_hash(d_str->val,d_str->len);
-
-    atm_str_free(d_str);
-    return res;
-}
-
-
-atm_int_t
-atm_dict_cmp(void *dict1, void *dict2)
-{
-    return ATM_CMP_EQ;
 }
 
 
@@ -439,7 +376,8 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
         if (lptr == NULL) {
             /* lptr is part of data structure 
              * so need to set deep free */
-            lptr = atm_list_new(&ATM_DICT_ENTRY_T, ATM_FREE_DEEP);
+            lptr = atm_list_new(ATM_DICT_ENTRY_T, 
+                    ATM_FREE_DEEP);
             bkt->list = lptr;
         }
         new_entry = atm_dict_entry_new(dict, key, val);   

@@ -1,6 +1,4 @@
 #include <atm_core.h>
-
-
 /*
  * Private
  * */
@@ -143,7 +141,7 @@ atm_net_listen_tcp_raw(int port,
 
     if (ret != ATM_OK) {
         atm_log_rout(ATM_LOG_ERROR, 
-            "listen getaddrinfo error ret[%d]", ret);
+            "listen getaddrinfo error ret[%d]",ret);
         return ATM_NET_ERR_FD;
     }
 
@@ -183,7 +181,6 @@ end:
 /*
  * Public
  * */
-
 void
 atm_socket_free(void *sock)
 {
@@ -308,7 +305,7 @@ atm_net_keepalive(atm_socket_t *s,
 
     /*  Send first probe after interval. */
     val = interval;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, 
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE,
                 &val, sizeof(val)) < 0) {
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt TCP_KEEPIDLE: %s\n", 
@@ -323,7 +320,7 @@ atm_net_keepalive(atm_socket_t *s,
      *  an error (see the next setsockopt call). */
     val = interval/3;
     if (val == 0) val = 1;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, 
+    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL,
                 &val, sizeof(val)) < 0) {
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt TCP_KEEPINTVL: %s\n", 

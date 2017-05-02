@@ -4,20 +4,21 @@
 #include <atm_core.h>
 
 
-struct atm_session_s {
+struct atm_sess_s {
+    atm_conn_t  *conn;
     atm_buf_t   *r_buf;
     atm_buf_t   *w_buf;
 };
 
 
-atm_session_t *
-atm_session_new(atm_conn_t *conn);
+atm_sess_t *
+atm_sess_new(atm_conn_t *conn);
 
 void
-atm_session_free(void *se);
+atm_sess_free(void *se);
 
 void
-atm_session_process(atm_session_t *se);
+atm_sess_process(atm_sess_t *se);
 
 
 #endif /* _ATM_SESSION_H_INCLUDED_ */

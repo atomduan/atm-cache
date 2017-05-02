@@ -1,8 +1,7 @@
 #include <atm_core.h>
-
-
-/* 
- * force casting is not needed and error pron outside
+/* ---------------------IMPLEMENTATIONS--------------------------- */
+/*
+ * Public
  * */
 void *
 atm_alloc(atm_uint_t size) 

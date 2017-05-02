@@ -1,11 +1,7 @@
 #include <atm_core.h>
-
-
 /*
  * Private 
  * */
-
-
 static void
 atm_event_process_ev();
 

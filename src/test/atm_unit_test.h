@@ -17,9 +17,6 @@
 #define ATM_TEST_SIPHASH_ON     0
 #include <atm_test_siphash.h>
 
-#define ATM_TEST_PROCESS_ON     0
-#include <atm_test_process.h>
-
 
 /*
  * The entry point of unit test system

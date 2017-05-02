@@ -1,12 +1,9 @@
 #include <atm_core.h>
-
-
 /*
- * Public
+ * Private
  * */
-atm_T_t ATM_STR_T = {
-    ATM_T_INDEX_STR,
-    atm_str_spec,
+static atm_T_t ATM_STR_TYPE = {
+    NULL,
     atm_str_match,
     atm_str_hash,
     atm_str_cmp,
@@ -15,10 +12,17 @@ atm_T_t ATM_STR_T = {
 };
 
 
+/*
+ * Public
+ * */
+atm_T_t *ATM_STR_T = &ATM_STR_TYPE;
+
+
 /* ---------------------IMPLEMENTATIONS--------------------------- */
-
+/*
+ * Public
+ * */
 /* public string type lifecycle */
-
 void 
 atm_str_init()
 {
@@ -38,14 +42,6 @@ atm_str_new(char *str)
     memset(copy, 0, len+1);
     memcpy(copy, str, len);
     res = atm_str_wrp(copy, len);
-    return res;
-}
-
-
-void *
-atm_str_spec(void *str)
-{
-    void *res = NULL;
     return res;
 }
 

@@ -1,6 +1,7 @@
 #include <atm_core.h>
-       
-
+/*
+ * Private
+ * */
 static atm_int_t 
 atm_conn_task_read(atm_task_t *self); 
 
@@ -21,26 +22,30 @@ atm_conn_listen_tcp();
 /*
  * Private
  * */
-
 static atm_int_t
 atm_conn_task_read(atm_task_t *self)
 {
     atm_conn_t *conn = NULL;
-    atm_socket_t *src = NULL;
-    atm_session_t *se = NULL;
+    atm_socket_t *srcfd = NULL;
+    atm_sess_t *se = NULL;
     atm_buf_t *rbuf = NULL;
 
     int len = ATM_BUF_DEFAULT_LEN;
+    int s = 0;
 
     conn = self->load;
-    src = conn->sock;
+    srcfd = conn->sock;
     se = conn->session;
 
 
     rbuf = se->r_buf;   
-    atm_buf_writef(rbuf, src, len);
 
-    atm_session_process(se);
+    while (ATM_TRUE) {
+        s = atm_buf_writef(rbuf, srcfd, len);
+        if (s < len) break;
+    }
+
+    atm_sess_process(se);
     return 0;
 }
 
@@ -49,18 +54,23 @@ static atm_int_t
 atm_conn_task_write(atm_task_t *self)
 {
     atm_conn_t *conn = NULL;
-    atm_session_t *se = NULL;
+    atm_sess_t *se = NULL;
     atm_socket_t *dest = NULL;
     atm_buf_t *wbuf = NULL;
 
     int len = ATM_BUF_DEFAULT_LEN;
+    int s = 0;
 
     conn = self->load;
     dest = conn->sock;
     se = conn->session;
 
     wbuf = se->w_buf;
-    atm_buf_readf(wbuf, dest, len);
+    while (ATM_TRUE) {
+        s = atm_buf_readf(wbuf, dest, len);
+        if (s == 0) break;
+    }
+
     return 0;
 }
 
@@ -174,7 +184,7 @@ atm_conn_handle_accept(
     atm_socket_t *cs = NULL;
     atm_conn_t *conn = NULL;
     atm_conn_listen_t *ls = NULL;
-    atm_session_t *se = NULL;
+    atm_sess_t *se = NULL;
     int interval = ATM_NET_DEFAULT_TCP_KEEPALIVE;
     
     ls = listen_event->load;
@@ -188,7 +198,7 @@ atm_conn_handle_accept(
             conn = atm_conn_new(cs);
             /* register conn to epoll */
             atm_event_add_conn(conn);
-            se = atm_session_new(conn);
+            se = atm_sess_new(conn);
             conn->session = se;
         }
     }
@@ -206,7 +216,8 @@ atm_conn_handle_read(
     if (conn != NULL) {
        t = atm_task_new(conn, 
                atm_conn_task_read); 
-       /* Queue the read task */
+       /* The queue garateen that one 
+        * and only one task pre conn */
        atm_task_dispatch(t);
     }
 }

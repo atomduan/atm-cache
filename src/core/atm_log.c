@@ -1,6 +1,7 @@
 #include <atm_core.h>
-
-
+/*
+ * Private
+ * */
 static void 
 atm_log_rout_raw(atm_uint_t lv, atm_str_t *msg);
 
@@ -42,6 +43,10 @@ atm_log_rout_raw(atm_uint_t lv, atm_str_t *msg)
 }
 
 
+/* ---------------------IMPLEMENTATIONS--------------------------- */
+/*
+ * Public
+ * */
 void 
 atm_log(char *fmt, ...) 
 {

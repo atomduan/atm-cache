@@ -4,9 +4,6 @@
 #include <atm_core.h>
 
 
-extern atm_T_t ATM_LIST_T;
-
-
 /* this is a inner type 
  * so we do not define it in atm_types.h 
  * plz do not use it in other file, consciously
@@ -38,18 +35,6 @@ atm_list_init();
 
 atm_list_t *
 atm_list_new(atm_T_t *v_type, atm_uint_t f_type);
-
-void *
-atm_list_spec(void *list);
-
-atm_bool_t 
-atm_list_match(void *list1,void *list2); 
-
-uint64_t 
-atm_list_hash(void *list);
-
-atm_int_t 
-atm_list_cmp(void *list1, void *list2);
 
 atm_str_t *
 atm_list_str(void *list);

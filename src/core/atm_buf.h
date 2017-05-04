@@ -22,12 +22,12 @@ atm_buf_free(void *buf);
 /* public funcs */
 /* for epoll event call back funcs */
 atm_int_t
-atm_buf_writef(atm_buf_t *buf, atm_socket_t *srcfd, 
-        atm_uint_t len);
+atm_buf_writef(atm_buf_t *buf, 
+        atm_socket_t *srcfd);
 
 atm_int_t
-atm_buf_readf(atm_buf_t *buf, atm_socket_t *destfd, 
-        atm_uint_t len);
+atm_buf_readf(atm_buf_t *buf, 
+        atm_socket_t *destfd);
 
 
 /* for session logic calling's funcs */

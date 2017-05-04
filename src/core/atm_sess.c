@@ -36,7 +36,7 @@ atm_sess_write(atm_sess_t *se,
 
     conn = se->conn;
     atm_event_add_event(
-            conn->event, ATM_EVENT_READ);
+            conn->event, ATM_EVENT_WRITE);
 }
 
 
@@ -57,13 +57,27 @@ atm_sess_new(atm_conn_t *conn)
 
 
 void
+atm_sess_free(void *sess)
+{
+    atm_conn_t *conn = NULL;
+    atm_buf_t *rbuf = NULL;
+    atm_buf_t *wbuf = NULL;
+
+    atm_conn_free(conn);
+    atm_buf_free(rbuf);
+    atm_buf_free(wbuf);
+    atm_free(sess);
+}
+
+
+void
 atm_sess_process(atm_sess_t *se)
 {
     atm_str_t   *line = NULL;
 
     line = atm_sess_read_line(se);
     if (line != NULL) {
-        atm_log("%s\n", line->val);
-        atm_sess_write(se, line);
+        atm_log("sess_proc %s", line->val);
+        atm_sess_write(se, atm_str_cat(line,"\n"));
     }
 }

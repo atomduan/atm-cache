@@ -98,8 +98,12 @@ atm_list_lpop_entry(atm_list_t *list)
     res = list->head;
     if (res != NULL) {
         list->head = res->next;
-        if (list->head != NULL)
+        if (list->head != NULL) {
             list->head->prev = NULL;
+        }
+        if (list->tail == res) {
+            list->tail = NULL;
+        }
         list->size--;
         atm_list_entry_isol(res);
     }
@@ -115,8 +119,12 @@ atm_list_rpop_entry(atm_list_t *list)
     res = list->tail;
     if (res != NULL) {
         list->tail = res->prev;
-        if (list->tail != NULL)
+        if (list->tail != NULL) {
             list->tail->next = NULL;
+        }
+        if (list->head == res) {
+            list->head = NULL;
+        }
         list->size--;
         atm_list_entry_isol(res);
     }

@@ -181,3 +181,20 @@ atm_str_ptr_str(void *p)
 {
     return atm_str_fmt("%p",p);
 }
+
+
+atm_str_t *
+atm_str_cat(atm_str_t *dest, char *src)
+{
+    atm_str_t *res = NULL;
+    char * r = NULL;
+
+    /*
+     * TODO : too expansive...
+     */
+    r = dest->val;
+    r = strcat(r, src);
+    
+    res = atm_str_new(r);
+    return res;
+}

@@ -25,7 +25,6 @@ atm_conn_listen_tcp();
 static atm_int_t
 atm_conn_task_read(atm_task_t *self)
 {
-    int len = ATM_BLK_DFT_LEN;
     int ret = 0;
 
     atm_conn_t *conn = NULL;
@@ -38,11 +37,13 @@ atm_conn_task_read(atm_task_t *self)
     se = conn->session;
 
     rbuf = se->r_buf;   
-    while (ATM_TRUE) {
-        ret = atm_buf_writef(rbuf, srcfd, len);
-        if (ret < len) break;
+    ret = atm_buf_writef(rbuf, srcfd);
+    if (ret == -1 || ret == 0) {
+        if (errno != EAGAIN) {
+           atm_sess_free(se); 
+        }
+        return ATM_OK;
     }
-
     atm_sess_process(se);
     return ATM_OK;
 }
@@ -51,7 +52,6 @@ atm_conn_task_read(atm_task_t *self)
 static atm_int_t
 atm_conn_task_write(atm_task_t *self)
 {
-    int len = ATM_BLK_DFT_LEN;
     int ret = 0;
 
     atm_conn_t *conn = NULL;
@@ -64,11 +64,12 @@ atm_conn_task_write(atm_task_t *self)
     se = conn->session;
 
     wbuf = se->w_buf;
-    while (ATM_TRUE) {
-        ret = atm_buf_readf(wbuf, destfd, len);
-        if (ret <= 0) break;
+    ret = atm_buf_readf(wbuf, destfd);
+    if (ret == -1 || ret == 0) {
+        if (errno != EAGAIN) {
+           atm_sess_free(se); 
+        }
     }
-
     return ATM_OK;
 }
 
@@ -104,7 +105,7 @@ static int
 atm_conn_listen_tcp()
 {
     /* TODO: need to fetch from config */
-    atm_int_t port = 80;
+    atm_int_t port = 8088;
     char *bindaddr = "0.0.0.0";
     int backlog = 1024;
 
@@ -170,7 +171,7 @@ atm_conn_listen_free(void *listen)
     }
 }
 
-
+static int etag = 0;
 void
 atm_conn_handle_accept(
         atm_event_t *listen_event)
@@ -184,20 +185,22 @@ atm_conn_handle_accept(
     atm_conn_t *conn = NULL;
     atm_sess_t *se = NULL;
     
+    etag++;
     ls = listen_event->load;
     ss = ls->ssck;  
     while (--max) {
+        atm_log("conn_handle_accept entry.....etag[%d]", etag);
         cs = atm_net_accept(ss);
-        if (cs != NULL) {
-            atm_net_nonblock(cs, ATM_TRUE); 
-            atm_net_nodelay(cs, ATM_TRUE); 
-            atm_net_keepalive(cs, interval); 
-            conn = atm_conn_new(cs);
-            /* register conn to epoll */
-            atm_event_add_conn(conn);
-            se = atm_sess_new(conn);
-            conn->session = se;
-        }
+        if (cs == NULL) break;
+        /*config conn socket*/
+        atm_net_nonblock(cs, ATM_TRUE); 
+        atm_net_nodelay(cs, ATM_TRUE); 
+        atm_net_keepalive(cs, interval); 
+        conn = atm_conn_new(cs);
+        /* register conn to epoll */
+        atm_event_add_conn(conn);
+        se = atm_sess_new(conn);
+        conn->session = se;
     }
 }
 

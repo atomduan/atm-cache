@@ -60,5 +60,8 @@ atm_str_mtrim(char *s);
 atm_str_t *
 atm_str_ptr_str();
 
+atm_str_t *
+atm_str_cat(atm_str_t *dest, char *src);
+
 
 #endif /* _ATM_STRING_H_INCLUDED_ */

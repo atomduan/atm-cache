@@ -43,12 +43,10 @@ atm_net_accept_raw(atm_socket_t *ssock,
 
     while(ATM_TRUE) {
         fd = accept(ss, (struct sockaddr*)&sa, &salen);
+        atm_log("accept raw fd accept is %d", fd);
         if (fd == ATM_NET_ERR_FD) {
-            if (errno == EINTR) continue;
-            else {
-                atm_log_rout(ATM_LOG_ERROR,
-                    "accept: %s",strerror(errno));
-                break;
+            if (errno == EINTR) {
+                continue;
             }
         }
         break;

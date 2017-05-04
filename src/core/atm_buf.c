@@ -55,24 +55,24 @@ atm_buf_free(void *buf)
 /* public funcs */
 /* for epoll event call back funcs */
 atm_int_t
-atm_buf_writef(atm_buf_t *buf, atm_socket_t *src, 
-        atm_uint_t len)
+atm_buf_writef(atm_buf_t *buf, atm_socket_t *src)
 {
     atm_socket_t *cs = src;
     atm_int_t total = 0;
-    int s = 0;
+    int ret = 0;
     int size = 0;
 
     size = buf->cb->size;
     while (ATM_TRUE) {
-        s = read(cs->fd, buf->cb->head, size);
-        if (s > 0) {
-            total += s;
-            atm_buf_recb(buf, s);
-            if (s == size) {
+        ret = read(cs->fd, buf->cb->head, size);
+        if (ret > 0) {
+            total += ret;
+            atm_buf_recb(buf, ret);
+            if (ret == size) {
                 continue; 
             }
         }
+        if (ret <= 0) return ret;
         break;
     }
     return total;
@@ -80,18 +80,18 @@ atm_buf_writef(atm_buf_t *buf, atm_socket_t *src,
 
 
 atm_int_t
-atm_buf_readf(atm_buf_t *buf, atm_socket_t *dest, 
-        atm_uint_t len)
+atm_buf_readf(atm_buf_t *buf, atm_socket_t *dest)
 {
     atm_int_t total = 0;
     atm_blk_t *hb = NULL;
+    int ret = 0;
 
     hb = atm_list_lpop(buf->blks);
     if (hb != NULL) {
-        total = write(dest->fd, hb->head, hb->len);
+        ret = write(dest->fd, hb->head, hb->len);
         atm_list_clear(buf->blks);
+        if (ret <= 0) return ret;
     }
-
     return total;
 }
 
@@ -109,7 +109,7 @@ atm_buf_read_line(atm_buf_t *buf)
     hb = atm_list_lpop(buf->blks);
     for (atm_uint_t i = 0; i < hb->len; ++i) {
         uint8_t b = hb->head[i];
-        if (b != '\r') {
+        if (b != '\r' && b != '\n') {
             tmp[i] = b;     
         } else {
             break;
@@ -140,16 +140,10 @@ atm_int_t
 atm_buf_write(atm_buf_t *buf, uint8_t *src, 
         atm_uint_t len)
 {
-    atm_int_t total = 0;
+    uint8_t *h = NULL;
 
-    atm_uint_t l = 0;
-    uint8_t *b = NULL;
-
-    l = buf->cb->len;
-    b = buf->cb->head;
-    l = atm_min(l, len);
-
-    memcpy(b, src, l);
-    atm_buf_recb(buf, total);
-    return total;
+    h = buf->cb->head;
+    memcpy(h, src, len);
+    atm_buf_recb(buf, len);
+    return len;
 }

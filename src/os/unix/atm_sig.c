@@ -36,7 +36,12 @@ atm_sig_init()
 {
     if (signal(SIGCLD, atm_sig_handle) 
             == SIG_ERR) {
-        atm_log("sgnal error in init");
+        atm_log("sgnal error in init,SIGCLD");
+        exit(ATM_OK);
+    }
+    if (signal(SIGPIPE, SIG_IGN) 
+            == SIG_ERR) {
+        atm_log("sgnal error in init,SIGPIPE");
         exit(ATM_OK);
     }
 }

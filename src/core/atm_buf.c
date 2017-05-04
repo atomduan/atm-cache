@@ -65,6 +65,7 @@ atm_buf_writef(atm_buf_t *buf, atm_socket_t *src)
     size = buf->cb->size;
     while (ATM_TRUE) {
         ret = read(cs->fd, buf->cb->head, size);
+        atm_log("read ret is %d", ret);
         if (ret > 0) {
             total += ret;
             atm_buf_recb(buf, ret);
@@ -89,8 +90,10 @@ atm_buf_readf(atm_buf_t *buf, atm_socket_t *dest)
     hb = atm_list_lpop(buf->blks);
     if (hb != NULL) {
         ret = write(dest->fd, hb->head, hb->len);
+        atm_log("write ret is %d", ret);
         atm_list_clear(buf->blks);
         if (ret <= 0) return ret;
+        total += ret;
     }
     return total;
 }

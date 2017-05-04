@@ -59,14 +59,20 @@ atm_sess_new(atm_conn_t *conn)
 void
 atm_sess_free(void *sess)
 {
+    atm_sess_t *se = NULL;
     atm_conn_t *conn = NULL;
     atm_buf_t *rbuf = NULL;
     atm_buf_t *wbuf = NULL;
 
+    se = sess;
+    conn = se->conn;
+    rbuf = se->r_buf;
+    wbuf = se->w_buf;
+    
     atm_conn_free(conn);
     atm_buf_free(rbuf);
     atm_buf_free(wbuf);
-    atm_free(sess);
+    atm_free(se);
 }
 
 

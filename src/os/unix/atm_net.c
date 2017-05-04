@@ -182,10 +182,13 @@ end:
 void
 atm_socket_free(void *sock)
 {
+    int ret = 0;
     atm_socket_t *s = NULL;
     if (sock != NULL) {
         s = sock;
-        close(s->fd);
+        atm_log("free socket..%d", s->fd);
+        ret = close(s->fd);
+        atm_log("free socket ret %d",ret);
         atm_str_free(s->src_ip);
         atm_free(s);
     }

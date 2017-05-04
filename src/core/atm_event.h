@@ -17,7 +17,7 @@
 
 struct atm_event_s {
     int         fd;
-    int         events;
+    uint32_t    events;
 
     /* atm_conn_t, atm_listen_t, etc */
     void       *load;

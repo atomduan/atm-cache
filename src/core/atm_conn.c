@@ -3,7 +3,13 @@
  * Private
  * */
 static atm_int_t 
+atm_conn_task_read_raw(atm_conn_t *conn); 
+
+static atm_int_t 
 atm_conn_task_read(atm_task_t *self); 
+
+static atm_int_t
+atm_conn_task_write_raw(atm_conn_t *conn);
 
 static atm_int_t
 atm_conn_task_write(atm_task_t *self); 
@@ -23,25 +29,48 @@ atm_conn_listen_tcp();
  * Private
  * */
 static atm_int_t
-atm_conn_task_read(atm_task_t *self)
+atm_conn_task_read_raw(atm_conn_t *conn)
 {
     int ret = 0;
+    int total = 0;
 
-    atm_conn_t *conn = NULL;
     atm_socket_t *srcfd = NULL;
     atm_sess_t *se = NULL;
     atm_buf_t *rbuf = NULL;
 
-    conn = self->load;
     srcfd = conn->sock;
     se = conn->session;
 
     rbuf = se->r_buf;   
-    ret = atm_buf_writef(rbuf, srcfd);
-    if (ret == -1 || ret == 0) {
-        if (errno != EAGAIN) {
-           atm_sess_free(se); 
+    while (ATM_TRUE) {
+        ret = atm_buf_writef(rbuf, srcfd);
+        if (ret > 0) {
+            total += ret;
+            continue;
         }
+        if (ret < 0) {
+            return ret;
+        }
+        break;
+    }
+    return total;
+}
+
+
+static atm_int_t
+atm_conn_task_read(atm_task_t *self)
+{
+    int ret = 0;
+    atm_conn_t *conn = NULL;
+    atm_sess_t *se = NULL;
+
+    conn = self->load;
+    se = conn->session;
+    ret = atm_conn_task_read_raw(conn);
+    if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
+        atm_log("sess_free on read, flush write"); 
+        atm_conn_task_write_raw(conn);
+        atm_sess_free(se); 
         return ATM_OK;
     }
     atm_sess_process(se);
@@ -50,25 +79,47 @@ atm_conn_task_read(atm_task_t *self)
 
 
 static atm_int_t
-atm_conn_task_write(atm_task_t *self)
+atm_conn_task_write_raw(atm_conn_t *conn)
 {
     int ret = 0;
+    int total = 0;
 
-    atm_conn_t *conn = NULL;
     atm_socket_t *destfd = NULL;
     atm_sess_t *se = NULL;
     atm_buf_t *wbuf = NULL;
 
-    conn = self->load;
     destfd = conn->sock;
     se = conn->session;
 
     wbuf = se->w_buf;
-    ret = atm_buf_readf(wbuf, destfd);
-    if (ret == -1 || ret == 0) {
-        if (errno != EAGAIN) {
-           atm_sess_free(se); 
+    while (ATM_TRUE) {
+        ret = atm_buf_readf(wbuf, destfd);
+        if (ret > 0) {
+            total += ret;
+            continue;
+        } else 
+        if (ret < 0) {
+            return ret;
         }
+        break;
+    }
+    return total;
+}
+
+
+static atm_int_t
+atm_conn_task_write(atm_task_t *self)
+{
+    int ret = 0;
+    atm_conn_t *conn = NULL;
+    atm_sess_t *se = NULL;
+
+    conn = self->load;
+    se = conn->session;
+    ret = atm_conn_task_write_raw(conn);
+    if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
+        atm_log("sess_free on write"); 
+        atm_sess_free(se); 
     }
     return ATM_OK;
 }
@@ -154,7 +205,7 @@ atm_conn_free(void *conn)
         c = conn;
         atm_event_free(c->event);
         atm_socket_free(c->sock);
-        atm_free(conn);
+        atm_free(c);
     }
 }
 
@@ -167,7 +218,7 @@ atm_conn_listen_free(void *listen)
         l = listen;
         atm_event_free(l->event);
         atm_socket_free(l->ssck);
-        atm_free(listen);
+        atm_free(l);
     }
 }
 

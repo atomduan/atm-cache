@@ -19,22 +19,24 @@ static atm_uint_t            nevents = 0;
  * Private
  * */
 static void
-atm_event_process_ev(atm_event_t *ev,uint32_t evs)
+atm_event_process_ev(atm_event_t *ev,
+        uint32_t evs)
 {
-
    if (evs & (EPOLLERR|EPOLLHUP)) {
        evs |= (EPOLLIN | EPOLLOUT);
    }
-
-   if ((evs & EPOLLIN) && ev->active) {
+   if ((evs & EPOLLIN) && ev->r_act) {
        if (ev->handle_read != NULL) {
            ev->handle_read(ev);
        }
    }
-   if ((evs & EPOLLOUT) && ev->active) {
+   if ((evs & EPOLLOUT) && ev->w_act) {
        if (ev->handle_write != NULL) {
            ev->handle_write(ev);
        }
+   }
+   if (ev->post_proc != NULL) {
+       ev->post_proc(ev);
    }
 }
 
@@ -51,7 +53,6 @@ atm_event_process_events()
     
     if (events > 0) {
        for (i=0; i<events; ++i) {
-           /* TODO thunder herd problem solved? */
            ev = event_list[i].data.ptr;
            if (ev->fd == -1) {
                continue; 
@@ -84,16 +85,20 @@ atm_event_init()
 atm_event_t *
 atm_event_new(void *load, int fd, 
         void (*handle_read)(atm_event_t *ev),
-        void (*handle_write)(atm_event_t *ev))
+        void (*handle_write)(atm_event_t *ev),
+        void (*post_proc)(atm_event_t *ev))
 {
     atm_event_t *res = NULL;
     res = atm_alloc(sizeof(atm_event_t));
     res->fd = fd;
     res->events = ATM_EVENT_NONE;
     res->load = load;
-    res->active = ATM_FALSE;
+    res->ep_rg = ATM_FALSE;
+    res->r_act = ATM_TRUE;
+    res->w_act = ATM_TRUE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
+    res->post_proc = post_proc;
     return res;
 }
 
@@ -128,7 +133,9 @@ atm_event_add_listen(atm_conn_listen_t *l)
         le = l->event;
         if (le == NULL) {
             le = atm_event_new(l,sfd,
-                l->handle_accept,NULL); 
+                l->handle_accept,
+                NULL, 
+                l->post_proc); 
             l->event = le;
         }
         events = EPOLLIN|EPOLLHUP;
@@ -150,7 +157,8 @@ atm_event_add_conn(atm_conn_t *c)
         if (ce == NULL) {
             ce = atm_event_new(c, cfd, 
                     c->handle_read, 
-                    c->handle_write); 
+                    c->handle_write, 
+                    c->post_proc); 
             c->event = ce;
         }
 
@@ -175,17 +183,17 @@ atm_event_add_event(atm_event_t *e, int mask)
 
    if (e != NULL) {
        fd = e->fd;
-       if (e->active) {
-           op = EPOLL_CTL_MOD;
-       } else {
-           op = EPOLL_CTL_ADD;
-       }
        e->events = e->events | mask;
        if (e->events != ATM_EVENT_NONE) {
+           if (e->ep_rg) {
+               op = EPOLL_CTL_MOD;
+           } else {
+               op = EPOLL_CTL_ADD;
+           }
            ee.events = e->events;
            ee.data.ptr = e;
            epoll_ctl(ep, op, fd, &ee);
-           e->active = ATM_TRUE;
+           e->ep_rg = ATM_TRUE;
        }
    }
 }
@@ -206,17 +214,17 @@ atm_event_del_event(atm_event_t *e, int unmask)
    if (e != NULL) {
        fd = e->fd;
        e->events = e->events & (~unmask);
-       if (e->events != ATM_EVENT_NONE) {
-           op = EPOLL_CTL_MOD;
-       } else {
-           op = EPOLL_CTL_DEL;
-       }
-       if (e->active) {
+       if (e->ep_rg) {
+           if (e->events != ATM_EVENT_NONE) {
+               op = EPOLL_CTL_MOD;
+           } else {
+               op = EPOLL_CTL_DEL;
+           }
            ee.events = e->events;
            ee.data.ptr = e;
            epoll_ctl(ep, op, fd, &ee);
            if (op == EPOLL_CTL_DEL) {
-               e->active = ATM_FALSE;
+               e->ep_rg = ATM_FALSE;
            }
        }
    }

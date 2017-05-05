@@ -2,6 +2,13 @@
 /*
  * Private
  * */
+
+static void 
+atm_init(); 
+
+static void 
+atm_service(); 
+
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
 

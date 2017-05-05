@@ -5,7 +5,7 @@
 static atm_str_t *
 atm_sess_read_line(atm_sess_t *se);
 
-void
+static void
 atm_sess_write(atm_sess_t *se, 
         atm_str_t *s);
 
@@ -23,7 +23,7 @@ atm_sess_read_line(atm_sess_t *se)
 }
 
 
-void
+static void
 atm_sess_write(atm_sess_t *se,
         atm_str_t *s)
 {

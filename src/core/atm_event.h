@@ -21,12 +21,19 @@ struct atm_event_s {
 
     /* atm_conn_t, atm_listen_t, etc */
     void       *load;
-    /* means be managed by epoll */
-    atm_bool_t  active;
+
+    /* wether register in epoll*/
+    atm_bool_t  ep_rg;
+
+    /* read active */
+    atm_bool_t  r_act;
+    /* write active */
+    atm_bool_t  w_act;
 
     /* only be called by epoll */
     void (*handle_read)(atm_event_t  *ev);
     void (*handle_write)(atm_event_t *ev);
+    void (*post_proc)(atm_event_t *ev);
 };
 
 
@@ -38,7 +45,8 @@ atm_event_init();
 atm_event_t *
 atm_event_new(void *load, int fd, 
         void (*handle_read)(atm_event_t *ev),
-        void (*handle_write)(atm_event_t *ev));
+        void (*handle_write)(atm_event_t *ev),
+        void (*post_proc)(atm_event_t *ev));
 
 void
 atm_event_free(void *e);

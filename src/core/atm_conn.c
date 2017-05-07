@@ -331,3 +331,12 @@ atm_conn_free(void *conn)
         atm_free(c);
     }
 }
+
+
+void
+atm_conn_wnotify(void *conn)
+{
+    atm_conn_t *c = conn;
+    atm_event_add_event(c->event, 
+            ATM_EVENT_WRITE);
+}

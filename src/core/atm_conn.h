@@ -33,5 +33,8 @@ atm_conn_init();
 void
 atm_conn_free(void *conn);
 
+void
+atm_conn_wnotify(void *conn);
+
 
 #endif /* _ATM_CONN_H_INCLUDED_ */

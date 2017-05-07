@@ -173,8 +173,12 @@ atm_dict_entry_free(void *entry)
         dict = e->dict; 
         if (dict != NULL) {
             if (dict->free_type == ATM_FREE_DEEP) {
-                dict->k_type->free(e->key);
-                dict->v_type->free(e->val);
+                if (e->key) {
+                    dict->k_type->free(e->key);
+                }
+                if (e->val) {
+                    dict->v_type->free(e->val);
+                }
             }
         }
         atm_free(e);
@@ -363,6 +367,7 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
     atm_list_t *lptr = NULL; 
     atm_dict_entry_t *new_entry = NULL;
     atm_dict_entry_t *entry = NULL;
+    atm_uint_t hash_key = 0;
     
     entry = atm_dict_entry(dict, key);
     if (entry != NULL) {
@@ -371,6 +376,8 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
         bkt = atm_dict_bucket(dict, key);
         if (bkt == NULL) {
             bkt = atm_dict_bucket_new(dict);
+            hash_key = atm_dict_hkey(dict, key);
+            dict->bktab[hash_key] = bkt;
         }
         lptr = bkt->list;
         if (lptr == NULL) {

@@ -84,6 +84,7 @@ typedef struct atm_task_s           atm_task_t;
 typedef struct atm_sess_s           atm_sess_t;
 typedef struct atm_buf_s            atm_buf_t;
 typedef struct atm_blk_s            atm_blk_t;
+typedef struct atm_ctx_s            atm_ctx_t;
 
 
 /*

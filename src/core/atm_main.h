@@ -3,4 +3,10 @@
 
 #include <atm_core.h>
 
+extern atm_ctx_t *atm_ctx;
+
+struct atm_ctx_s {
+    atm_dict_t      *dt; 
+};
+
 #endif /* _ATM_MAIN_H_INCLUDED_ */

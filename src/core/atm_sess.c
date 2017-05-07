@@ -2,6 +2,9 @@
 /*
  * Private
  * */
+static void
+atm_sess_reset(atm_sess_t *se);
+
 static atm_str_t *
 atm_sess_read_line(atm_sess_t *se);
 
@@ -14,6 +17,21 @@ atm_sess_write(atm_sess_t *se,
 /*
  * Private
  * */
+static void
+atm_sess_reset(atm_sess_t *se)
+{
+    int i = 0;
+    atm_str_t *v = NULL;
+
+    for (;i<se->argc;++i) {
+        v = &se->argv[i];
+        atm_str_free(v);
+    }
+    se->argc = 0;
+    se->argv = NULL;
+}
+
+
 static atm_str_t *
 atm_sess_read_line(atm_sess_t *se)
 {
@@ -28,15 +46,12 @@ atm_sess_write(atm_sess_t *se,
         atm_str_t *s)
 {
     atm_buf_t   *w_buf = NULL;
-    atm_conn_t   *conn = NULL;
 
     w_buf = se->w_buf;
     atm_buf_write(w_buf, 
-            (uint8_t *) s->val, s->len);
+        (uint8_t *) s->val, s->len);
 
-    conn = se->conn;
-    atm_event_add_event(
-            conn->event, ATM_EVENT_WRITE);
+    atm_conn_wnotify(se->conn);
 }
 
 
@@ -59,16 +74,11 @@ atm_sess_new(atm_conn_t *conn)
 void
 atm_sess_free(void *sess)
 {
-    atm_sess_t *se = NULL;
-    atm_conn_t *conn = NULL;
-    atm_buf_t *rbuf = NULL;
-    atm_buf_t *wbuf = NULL;
+    atm_sess_t *se = sess;
+    atm_conn_t *conn = se->conn;
+    atm_buf_t *rbuf = se->r_buf;
+    atm_buf_t *wbuf = se->w_buf;
 
-    se = sess;
-    conn = se->conn;
-    rbuf = se->r_buf;
-    wbuf = se->w_buf;
-    
     atm_conn_free(conn);
     atm_buf_free(rbuf);
     atm_buf_free(wbuf);
@@ -80,10 +90,15 @@ void
 atm_sess_process(atm_sess_t *se)
 {
     atm_str_t   *line = NULL;
+    atm_str_t   *r = NULL;
 
     line = atm_sess_read_line(se);
     if (line != NULL) {
         atm_log("sess_proc %s", line->val);
-        atm_sess_write(se, atm_str_cat(line,"\n"));
+        atm_dict_set(atm_ctx->dt, atm_str_new("foo"), line);
+        r = atm_dict_get(atm_ctx->dt, atm_str_new("foo"));
+        //r = line;
+        atm_sess_write(se, atm_str_cat(r,"\n"));
+        atm_sess_reset(se);
     }
 }

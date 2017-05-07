@@ -36,7 +36,8 @@ atm_svctx_init()
             ATM_STR_T, 
             ATM_STR_T, 
             ATM_FREE_DEEP);
-    atm_dict_set(atm_ctx->dt, atm_str_new("foo"), NULL);
+    atm_dict_set(atm_ctx->dt, 
+            atm_str_new("foo"), NULL);
 }
 
 

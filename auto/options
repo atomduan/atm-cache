@@ -4,8 +4,8 @@ ATM_BINARY_SUFFIX=""
 
 ATM_DEBUG=YES
 #If unit test enabled, we can use "make test" to do unit test
-ATM_UNIT_TEST=YES
-#ATM_UNIT_TEST=NO
+#ATM_UNIT_TEST=YES
+ATM_UNIT_TEST=NO
 
 ############ PLATFORM #############
 ATM_SYSTEM=`uname -s 2>/dev/null`

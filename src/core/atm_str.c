@@ -121,7 +121,7 @@ atm_bool_t
 atm_str_eq(atm_str_t *s1, atm_str_t *s2) 
 {
     atm_bool_t res = ATM_FALSE;
-    res = atm_str_cmp(s1->val,s2->val);
+    res = atm_str_cmp(s1, s2);
     return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
 }
 

@@ -4,7 +4,7 @@ curr=$(cd `dirname $(which $0)`; pwd)
 
 cd $curr
 
-./clean
+make clean
 
 if ! [ -d "../../../build" ]; then
     (cd ../../../; ./configure)

@@ -1,0 +1,25 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+./clean
+
+if ! [ -d "../../../build" ]; then
+    (cd ../../../; ./configure)
+fi
+
+make
+
+if [ -x misc.bin ]; then
+
+cat << EOF 
+
+
+---------------MISC RUN-----------------
+
+
+EOF
+    ./misc.bin
+fi

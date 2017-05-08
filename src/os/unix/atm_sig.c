@@ -21,8 +21,7 @@ atm_sig_handle(atm_int_t signo)
         atm_log("signal error");
         exit(ATM_OK);
     }
-    while ((pid = waitpid(-1, &stat, WNOHANG)) 
-            > 0) {
+    while ((pid = waitpid(-1, &stat, WNOHANG)) > 0) {
         atm_log("wait for sub processes");
     }
 }

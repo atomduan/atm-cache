@@ -1,5 +1,5 @@
-#ifndef _ATM_BLOCK_H_INCLUDED_
-#define _ATM_BLOCK_H_INCLUDED_
+#ifndef _ATM_BLK_H_INCLUDED_
+#define _ATM_BLK_H_INCLUDED_
 
 #include <atm_core.h>
 
@@ -22,4 +22,4 @@ void
 atm_blk_free(void *block);
 
 
-#endif /* _ATM_BLOCK_H_INCLUDED_ */
+#endif /* _ATM_BLK_H_INCLUDED_ */

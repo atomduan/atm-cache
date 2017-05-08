@@ -17,6 +17,7 @@ atm_test_suit_proc(int argc, char **argv)
     atm_test_siphash_suit();
     atm_test_dict_suit();
     atm_test_event_suit();
+    atm_test_str_suit();
     return ATM_OK;
 }
 

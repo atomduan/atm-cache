@@ -17,6 +17,9 @@
 #define ATM_TEST_EVENT_ON       0
 #include <atm_test_event.h>
 
+#define ATM_TEST_STR_ON         1
+#include <atm_test_str.h>
+
 
 /*
  * The entry point of unit test system

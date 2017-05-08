@@ -39,7 +39,6 @@ atm_str_new(char *str)
 
     len = strlen(str);
     copy = atm_alloc(len+1);
-    memset(copy, 0, len+1);
     memcpy(copy, str, len);
     res = atm_str_wrp(copy, len);
     return res;
@@ -126,6 +125,17 @@ atm_str_eq(atm_str_t *s1, atm_str_t *s2)
 }
 
 
+atm_bool_t 
+atm_str_eqs(atm_str_t *s1, char *s) 
+{
+    atm_bool_t res = ATM_FALSE;
+    atm_str_t *t = atm_str_new(s);
+    res = atm_str_cmp(s1, t);
+    atm_free(t);
+    return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
+}
+
+
 atm_str_t *
 atm_str_fmt(char *fmt,...)
 {
@@ -192,9 +202,115 @@ atm_str_cat(atm_str_t *dest, char *src)
     /*
      * TODO : too expansive...
      */
-    r = dest->val;
-    r = strcat(r, src);
+    if (dest != NULL) {
+        r = dest->val;
+        r = strcat(r, src);
+    } else {
+        r = src;
+    }
     
     res = atm_str_new(r);
+    return res;
+}
+
+
+atm_str_t **
+atm_str_split(char *s, int len)
+{
+    atm_str_t **res = NULL;
+    char *p = s;
+
+    atm_int_t sli = 0;
+    char **sl = atm_alloc(sizeof(char *)*len); 
+
+    char qty = 0; /* quote type: 1->', 2->" */
+    int inq = 0; /* in the quote */
+    int trb = 0; /* in space trim mode */
+
+    atm_int_t i = 0;
+    atm_int_t ti = 0;
+    char *t = atm_alloc(len+1); 
+    while (i < len) {
+        if (*p) {
+            if (inq > 0) {
+                if (*p == '"') {
+                    if (qty == '"') {
+                        inq--;
+                        if (inq > 0) {
+                            qty = '\'';
+                        } else {
+                            qty = 0;
+                        }
+                    } else
+                    if (qty == '\'') {
+                        inq++;     
+                        qty = '"';
+                    }
+                } else
+                if (*p == '\'') {
+                    if (qty == '"') {
+                        inq++;
+                        qty = '\'';
+                    } else
+                    if (qty == '\'') {
+                        inq--;     
+                        if (inq > 0) {
+                            qty = '"';
+                        } else {
+                            qty = 0;
+                        }
+                    }
+                }
+                t[ti++] = *p;
+            } else
+            if (inq == 0) {
+                int skip = 0;
+                if (*p == '"' || *p == '\'') {
+                    qty = *p;
+                    inq++;
+                }
+                if (isspace(*p)) {
+                    if (trb == 0) {
+                        /* reload a new t */
+                        if (strlen(t)>0) {
+                            sl[sli++] = t;       
+                            t = atm_alloc(len+1);
+                            ti = 0;
+                        }
+                    }
+                    skip = 1; trb = 1;
+                } else {
+                    trb = 0;
+                }
+                if (!skip) 
+                    t[ti++] = *p;
+            }
+        }
+        p++; i++;
+    }
+
+    /* add the final one */
+    if (strlen(t)>0) {
+        if (sli > 0 && sl[sli-1]!=t) {
+            sl[sli++] = t;       
+        } else 
+        if (sli == 0) {
+            sl[sli++] = t;       
+        }
+    }
+
+    /* the last one is sentinal */
+    if (sli > 0) {
+        res = atm_alloc(sizeof(atm_str_t *)*(sli+1));
+        for (i=0; i<sli; ++i) {
+            res[i] = atm_str_new(atm_str_mtrim(sl[i]));
+            atm_free(sl[i]);
+        }
+    } else {
+        atm_free(t);
+    }
+
+    atm_free(sl);
+
     return res;
 }

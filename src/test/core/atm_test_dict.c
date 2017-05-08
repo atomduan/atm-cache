@@ -52,33 +52,23 @@ atm_test_dict_suit()
 atm_uint_t
 atm_test_dict_contains()
 {
-    atm_log("atm_test_dict_contains......");
+    atm_log("atm_test_dict_contains");
     atm_uint_t res = ATM_TEST_PASS;
 
-    atm_log("1");
     atm_str_t *k = atm_str_new("foo");
     atm_str_t *v = atm_str_new("foo--value");
     atm_str_t *k2 = atm_str_new("bar");
-    atm_log("2");
 
     atm_dict_set(dt, k, v);
-    atm_log("3");
     
     if (atm_dict_contains(dt, k2)) {
-        atm_log("a");
         res = ATM_TEST_FAIL; goto fin;
     }
 
-    atm_log("4");
     if (!atm_dict_contains(dt, k)) {
-        atm_log("b");
         res = ATM_TEST_FAIL; goto fin;
     }
-    atm_log("5");
-    atm_log("dssssssss");
 fin:
-    atm_log("6");
-    atm_log("c");
     atm_test_report("atm_test_dict_contains",res);
     return res;
 }

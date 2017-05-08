@@ -48,6 +48,9 @@ atm_str_wrp(char *str, atm_uint_t len);
 atm_bool_t 
 atm_str_eq(atm_str_t *s1, atm_str_t *s2);
 
+atm_bool_t 
+atm_str_eqs(atm_str_t *s1, char *s);
+
 atm_str_t *
 atm_str_fmt(char *fmt,...);
 
@@ -62,6 +65,9 @@ atm_str_ptr_str();
 
 atm_str_t *
 atm_str_cat(atm_str_t *dest, char *src);
+
+atm_str_t **
+atm_str_split(char *s, int len);
 
 
 #endif /* _ATM_STRING_H_INCLUDED_ */

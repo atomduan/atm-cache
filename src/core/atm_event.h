@@ -23,12 +23,7 @@ struct atm_event_s {
     void       *load;
 
     /* wether register in epoll*/
-    atm_bool_t  ep_rg;
-
-    /* read active */
-    atm_bool_t  r_act;
-    /* write active */
-    atm_bool_t  w_act;
+    atm_bool_t  active;
 
     /* only be called by epoll */
     void (*handle_read)(atm_event_t  *ev);

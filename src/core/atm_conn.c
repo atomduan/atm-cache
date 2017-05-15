@@ -58,7 +58,7 @@ atm_conn_post_proc(
 
     e = conn_event;
     c = e->load;
-    if (!e->r_act || !e->w_act) {
+    if (!e->active) {
         se = c->session;
         atm_sess_free(se); 
     }
@@ -74,7 +74,7 @@ atm_conn_listen_post_proc(
 
     e = listen_event;
     l = e->load;
-    if (!e->r_act) {
+    if (!e->active) {
         atm_conn_listen_free(l);        
     }
 }
@@ -121,7 +121,7 @@ atm_conn_task_read(atm_conn_t *conn)
 
     ret = atm_conn_task_read_raw(conn);
     if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
-        e->r_act = ATM_FALSE;
+        e->active = ATM_FALSE;
         return ATM_OK;
     }
     atm_sess_process(se);
@@ -170,7 +170,7 @@ atm_conn_task_write(atm_conn_t *conn)
 
     ret = atm_conn_task_write_raw(conn);
     if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
-        e->w_act = ATM_FALSE;
+        e->active = ATM_FALSE;
     }
     return ATM_OK;
 }
@@ -302,6 +302,7 @@ atm_conn_handle_write(
         atm_event_t *conn_event)
 {
     atm_conn_t *conn = NULL;
+    atm_log("handle write trigered");
 
     conn = conn_event->load;
     if (conn != NULL) {
@@ -337,6 +338,5 @@ void
 atm_conn_wnotify(void *conn)
 {
     atm_conn_t *c = conn;
-    atm_event_add_event(c->event, 
-            ATM_EVENT_WRITE);
+    atm_event_add_event(c->event,ATM_EVENT_WRITE);
 }

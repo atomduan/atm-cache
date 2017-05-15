@@ -25,12 +25,12 @@ atm_event_process_ev(atm_event_t *ev,
    if (evs & (EPOLLERR|EPOLLHUP)) {
        evs |= (EPOLLIN | EPOLLOUT);
    }
-   if ((evs & EPOLLIN) && ev->r_act) {
+   if ((evs & EPOLLIN) && ev->active) {
        if (ev->handle_read != NULL) {
            ev->handle_read(ev);
        }
    }
-   if ((evs & EPOLLOUT) && ev->w_act) {
+   if ((evs & EPOLLOUT) && ev->active) {
        if (ev->handle_write != NULL) {
            ev->handle_write(ev);
        }
@@ -93,9 +93,7 @@ atm_event_new(void *load, int fd,
     res->fd = fd;
     res->events = ATM_EVENT_NONE;
     res->load = load;
-    res->ep_rg = ATM_FALSE;
-    res->r_act = ATM_TRUE;
-    res->w_act = ATM_TRUE;
+    res->active = ATM_FALSE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
     res->post_proc = post_proc;
@@ -163,6 +161,7 @@ atm_event_add_conn(atm_conn_t *c)
         }
 
         events = EPOLLIN|EPOLLHUP|EPOLLET;
+        atm_log("conn initial events mask %u", events);
         atm_event_add_event(ce, events);
     }
 }
@@ -179,21 +178,25 @@ atm_event_add_event(atm_event_t *e, int mask)
 {
    int fd =-1;
    int op = 0;
+   int ret = 0;
    struct epoll_event ee;
 
    if (e != NULL) {
        fd = e->fd;
        e->events = e->events | mask;
        if (e->events != ATM_EVENT_NONE) {
-           if (e->ep_rg) {
+           if (e->active) {
                op = EPOLL_CTL_MOD;
+               atm_log("add event op is mod");
            } else {
                op = EPOLL_CTL_ADD;
+               atm_log("add event op is add");
            }
            ee.events = e->events;
            ee.data.ptr = e;
-           epoll_ctl(ep, op, fd, &ee);
-           e->ep_rg = ATM_TRUE;
+           ret = epoll_ctl(ep, op, fd, &ee);
+           atm_log("epoll_ctl ret is %s", strerror(errno));
+           e->active = ATM_TRUE;
        }
    }
 }
@@ -214,7 +217,7 @@ atm_event_del_event(atm_event_t *e, int unmask)
    if (e != NULL) {
        fd = e->fd;
        e->events = e->events & (~unmask);
-       if (e->ep_rg) {
+       if (e->active) {
            if (e->events != ATM_EVENT_NONE) {
                op = EPOLL_CTL_MOD;
            } else {
@@ -224,7 +227,7 @@ atm_event_del_event(atm_event_t *e, int unmask)
            ee.data.ptr = e;
            epoll_ctl(ep, op, fd, &ee);
            if (op == EPOLL_CTL_DEL) {
-               e->ep_rg = ATM_FALSE;
+               e->active = ATM_FALSE;
            }
        }
    }

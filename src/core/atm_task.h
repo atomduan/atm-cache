@@ -5,7 +5,6 @@
 
 
 struct atm_task_s {
-    atm_int_t    tid;
     void        *load;
     atm_int_t  (*run)(atm_task_t *self);
 };
@@ -16,7 +15,6 @@ atm_task_init();
 
 atm_task_t * 
 atm_task_new(
-        atm_int_t tid,
         void *load, 
         atm_int_t (*run)(atm_task_t *self));
 

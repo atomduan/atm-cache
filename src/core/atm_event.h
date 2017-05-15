@@ -26,7 +26,7 @@ struct atm_event_s {
     atm_bool_t  active;
 
     /* only be called by epoll */
-    void (*handle_read)(atm_event_t  *ev);
+    void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
     void (*post_proc)(atm_event_t *ev);
 };

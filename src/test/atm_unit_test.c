@@ -2,6 +2,9 @@
 /*
  * Private
  * */
+static void
+atm_test_chd_exit_eval(int stat);
+
 static int 
 atm_test_suit_proc(int argc, char **argv);
 
@@ -10,6 +13,21 @@ atm_test_suit_proc(int argc, char **argv);
 /*
  * Private
  * */
+static void
+atm_test_chd_exit_eval(int stat)
+{
+    if (WIFEXITED(stat)) {
+        atm_log("test chd exit normally with code %d", 
+                WEXITSTATUS(stat));
+    }
+    if (WIFSIGNALED(stat)) {
+        int sig = WTERMSIG(stat);
+        atm_log("test chd terminate by signal %s",
+                strsignal(sig));
+    }
+}
+
+
 static atm_int_t 
 atm_test_suit_proc(int argc, char **argv) 
 {
@@ -28,19 +46,26 @@ atm_test_suit_proc(int argc, char **argv)
 void
 atm_test_suit(int argc, char **argv) 
 { 
-    atm_int_t stat = 0;
-    pid_t pid = 0;
+    int stat = 0;
+    pid_t pid = 0, wpid;
 
-    atm_log("atm_test_suit entry....");
+    atm_log("atm_test_suit entry");
     if ((pid = fork()) < 0) {
-        atm_log("fork error occure....");
+        atm_log("fork error occure");
         exit(ATM_FATAL);
     } else if (pid == 0) {
         atm_test_suit_proc(argc, argv);
         exit(ATM_OK);
     }
-    wait(&stat);
-    atm_log("test complete, exit....");
+
+    wpid = wait(&stat);
+    if(wpid == -1) {
+        atm_log("test wait chd error");
+        exit(1);
+    }
+    atm_test_chd_exit_eval(stat);
+
+    atm_log("test main complete");
 }
 
 

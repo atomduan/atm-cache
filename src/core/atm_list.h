@@ -18,6 +18,7 @@ struct atm_list_s {
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
+    atm_list_entry_t   *round;
 };
 
 
@@ -67,6 +68,9 @@ atm_list_rpeek(atm_list_t *list);
 
 void
 atm_list_clear(atm_list_t *list);
+
+void *
+atm_list_round(atm_list_t *list);
 
 
 #endif /* _ATM_LIST_H_INCLUDED_ */

@@ -154,6 +154,7 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
     res->size = 0;
     res->v_type = v_type;
     res->free_type = f_type;
+    res->round = NULL;
     return res;
 }
 
@@ -333,4 +334,29 @@ atm_list_clear(atm_list_t *list)
     while ((e=atm_list_lpop_entry(l))!=NULL) {
         atm_list_entry_free(e);
     }
+}
+
+
+void *
+atm_list_round(atm_list_t *list)
+{
+    /* TODO this impl may result in darling pointer */
+    void *res = NULL;
+    atm_list_t * l = list;
+    atm_list_entry_t *r = NULL;
+
+    r = l->round;
+    if (r == NULL) {
+        r = l->head;
+    } else {
+        r = r->next;
+        if (r == NULL) {
+            r = l->head;
+        }
+    }
+    list->round = r;
+    if (list->round != NULL) {
+        res = list->round->val;
+    }
+    return res;
 }

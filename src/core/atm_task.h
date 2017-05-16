@@ -3,7 +3,7 @@
 
 #include <atm_core.h>
 
-#define ATM_TASK_WORKER_BLOCKING_INTVAL 500
+#define ATM_TASK_WORKER_BLOCKING_INTVAL 1
 
 
 struct atm_task_s {
@@ -15,6 +15,8 @@ struct atm_task_worker_s {
     atm_list_t *wtasks;
     atm_bool_t  active;
     pthread_t   tid;
+    pthread_cond_t qready;
+    pthread_mutex_t qlock;
 };
 
 void 

@@ -984,9 +984,9 @@ atm_feature_test='struct addrinfo *res;
 #TODO. need checking?
 if [ $USE_THREADS = YES ]; then
     have=ATM_THREADS . auto/have
-    CORE_DEPS="$CORE_DEPS $THREAD_POOL_DEPS"
-    CORE_SRCS="$CORE_SRCS $THREAD_POOL_SRCS"
-    CORE_LIBS="$CORE_LIBS -lpthread"
+    if ! echo $CORE_LIBS | grep '\-lpthread' > /dev/null; then
+        CORE_LIBS="$CORE_LIBS -lpthread"
+    fi
 fi
 
 #--------------------------------------------

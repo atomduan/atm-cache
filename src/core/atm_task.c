@@ -10,7 +10,7 @@ atm_task_worker_func(void *arg);
 
 static atm_task_t *
 atm_task_worker_blocking_wait(
-        atm_list_t *wtasks, atm_uint_t timeout);
+        atm_task_worker_t *worker, atm_uint_t timeout);
 
 static void
 atm_task_worker_init(int nworker);
@@ -67,9 +67,6 @@ static atm_T_t ATM_TASK_WORKER_TYPE = {
 };
 static atm_T_t *ATM_TASK_WORKER_T = &ATM_TASK_WORKER_TYPE;
 
-static atm_list_entry_t *curr_worker_entry;
-static pthread_mutex_t curr_worker_entry_lock = PTHREAD_MUTEX_INITIALIZER;
-
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
@@ -81,21 +78,18 @@ atm_task_worker_dispatch(atm_task_t *t)
     atm_list_t  *wts = NULL;
     atm_task_worker_t *curr_worker = NULL;
 
-    curr_worker = curr_worker_entry->val;
+    curr_worker = atm_list_round(workers);
     if (curr_worker == NULL) {
         atm_log_rout(ATM_LOG_FATAL, 
-                "curr_worker currapted");
+                "can not get curr_worker");
         exit(1);
     }
+
+    pthread_mutex_lock(&curr_worker->qlock);
     wts = curr_worker->wtasks;
     atm_list_push(wts, t);
-
-    pthread_mutex_lock(&curr_worker_entry_lock);
-    curr_worker_entry = curr_worker_entry->next;
-    if (curr_worker_entry == NULL) {
-        curr_worker_entry = curr_worker_entry->list->head;
-    }
-    pthread_mutex_unlock(&curr_worker_entry_lock);
+    pthread_mutex_unlock(&curr_worker->qlock);
+    pthread_cond_signal(&curr_worker->qready);
 }
 
 
@@ -110,7 +104,7 @@ atm_task_worker_func(void *arg)
     worker = arg;
     wtasks = worker->wtasks;
     while (worker->active) {
-        t = atm_task_worker_blocking_wait(wtasks, 
+        t = atm_task_worker_blocking_wait(worker, 
                 ATM_TASK_WORKER_BLOCKING_INTVAL);
         if (t != NULL) {
             t->run(t);
@@ -121,11 +115,29 @@ atm_task_worker_func(void *arg)
 }
 
 
+/* The time out metric is second */
 static atm_task_t *
 atm_task_worker_blocking_wait(
-        atm_list_t *wtasks, atm_uint_t timeout)
+        atm_task_worker_t *worker, atm_uint_t timeout)
 {
     atm_task_t *res = NULL;
+    atm_list_t *wtasks = NULL;
+
+    struct timespec ts;
+    struct timeval now;
+
+    gettimeofday(&now, NULL);
+    ts.tv_sec = now.tv_sec;
+    ts.tv_sec += timeout;
+
+    wtasks = worker->wtasks;
+    pthread_mutex_lock(&worker->qlock);
+    while (wtasks->size == 0) {
+        pthread_cond_timedwait(&worker->qready, 
+                &worker->qlock,&ts);
+    }
+    res = atm_list_lpop(wtasks);
+    pthread_mutex_unlock(&worker->qlock);
 
     return res;
 }
@@ -144,7 +156,6 @@ atm_task_worker_init(int nworker)
             atm_list_push(workers, w);
         }
     }
-    curr_worker_entry = workers->head;
 }
 
 
@@ -165,6 +176,8 @@ atm_task_worker_new()
     res->wtasks = wtasks;
     res->active = ATM_TRUE;
     res->tid = 0;
+    pthread_cond_init(&res->qready, NULL);
+    pthread_mutex_init(&res->qlock, NULL);
 
     pthread_attr_init(&attr);
     ret = pthread_create(
@@ -178,8 +191,14 @@ atm_task_worker_new()
     return res;
 
 init_error:
-    if (wtasks) atm_free(wtasks);
-    if (res) atm_free(res);
+    if (wtasks != NULL) {
+        atm_free(wtasks);
+    }
+    if (res != NULL) {
+        pthread_cond_destroy(&res->qready);
+        pthread_mutex_destroy(&res->qlock);
+        atm_free(res);
+    }
     return NULL;
 }
 
@@ -193,6 +212,8 @@ atm_task_worker_free(void *worker)
         pthread_join(w->tid, NULL);
     }
     atm_list_free(w->wtasks);
+    pthread_cond_destroy(&w->qready);
+    pthread_mutex_destroy(&w->qlock);
     atm_free(w);
 }
 

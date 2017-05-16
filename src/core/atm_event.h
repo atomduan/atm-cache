@@ -29,6 +29,13 @@ struct atm_event_s {
     void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
     void (*post_proc)(atm_event_t *ev);
+
+    /* job controll */
+    pthread_mutex_t event_lk;
+    atm_bool_t on_read;
+    atm_uint_t read_ev_count;
+    atm_bool_t on_write;
+    atm_uint_t write_ev_count;
 };
 
 
@@ -72,6 +79,14 @@ atm_event_add_event(atm_event_t *e, int mask);
  */
 void
 atm_event_del_event(atm_event_t *e, int unmask);
+
+atm_bool_t
+atm_event_yield_read(
+        atm_event_t *e, atm_uint_t old_read_count);
+
+atm_bool_t
+atm_event_yield_write(
+        atm_event_t *e, atm_uint_t old_write_count);
 
 
 #endif /* _ATM_EVENT_H_INCLUDED_ */

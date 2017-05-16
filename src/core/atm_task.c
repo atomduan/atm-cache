@@ -68,6 +68,9 @@ static atm_T_t ATM_TASK_WORKER_TYPE = {
 static atm_T_t *ATM_TASK_WORKER_T = &ATM_TASK_WORKER_TYPE;
 
 
+static pthread_mutex_t workers_lk = PTHREAD_MUTEX_INITIALIZER;
+
+
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
@@ -78,7 +81,10 @@ atm_task_worker_dispatch(atm_task_t *t)
     atm_list_t  *wts = NULL;
     atm_task_worker_t *curr_worker = NULL;
 
+    pthread_mutex_lock(&workers_lk);
     curr_worker = atm_list_round(workers);
+    pthread_mutex_unlock(&workers_lk);
+
     if (curr_worker == NULL) {
         atm_log_rout(ATM_LOG_FATAL, 
                 "can not get curr_worker");
@@ -107,8 +113,13 @@ atm_task_worker_func(void *arg)
         t = atm_task_worker_blocking_wait(worker, 
                 ATM_TASK_WORKER_BLOCKING_INTVAL);
         if (t != NULL) {
+            t->retry = ATM_FALSE;
             t->run(t);
-            atm_task_free(t);
+            if (t->retry == ATM_TRUE) {
+                atm_task_worker_dispatch(t);
+            } else {
+                atm_task_free(t);
+            }
         }
     }
     return res;
@@ -348,6 +359,7 @@ atm_task_new(void *load,
     t = atm_alloc(sizeof(atm_task_t));
     t->load = load;
     t->run = run;
+    t->retry = ATM_FALSE;
     return t;
 }
 

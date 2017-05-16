@@ -9,6 +9,7 @@
 struct atm_task_s {
     void        *load;
     atm_int_t  (*run)(atm_task_t *self);
+    atm_bool_t   retry;
 };
 
 struct atm_task_worker_s {

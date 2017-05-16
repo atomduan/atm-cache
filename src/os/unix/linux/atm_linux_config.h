@@ -53,6 +53,11 @@
 #include <atm_auto_config.h>
 
 
+#if (ATM_THREADS)
+#include <pthread.h>
+#endif
+
+
 #if (ATM_HAVE_POSIX_SEM)
 #include <semaphore.h>
 #endif

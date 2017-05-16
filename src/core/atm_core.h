@@ -81,6 +81,7 @@ typedef struct atm_conn_listen_s    atm_conn_listen_t;
 typedef struct atm_socket_s         atm_socket_t;
 typedef struct atm_event_s          atm_event_t;
 typedef struct atm_task_s           atm_task_t;
+typedef struct atm_task_worker_s    atm_task_worker_t;
 typedef struct atm_sess_s           atm_sess_t;
 typedef struct atm_buf_s            atm_buf_t;
 typedef struct atm_blk_s            atm_blk_t;

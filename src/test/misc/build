@@ -9,13 +9,41 @@ name=${name:-misc.c}
 name=$(echo $name | sed 's/\.c//g')
 name=$(echo $name | sed 's/\.//g')
 
+rm Makefile
+
+cat <<END > Makefile
+CC = clang
+CFLAGS = -pipe -O0 -Wall -Wextra -Wpointer-arith -Wconditional-uninitialized -Wno-unused-parameter -Werror -g 
+
+LINK = \$(CC)
+
+CORE_DEPS =
+
+CORE_INCS = -I ../../../src/core \\
+	-I ../../../src/os \\
+	-I ../../../src/os/unix \\
+	-I ../../../src/os/unix/linux \\
+	-I ../../../build
+
+
+${name}:	${name}.o
+	\$(LINK) -o ${name}.bin ${name}.o -ldl -lpthread -Wl,-E
+${name}.o:	\$(CORE_DEPS)
+	\$(CC) -c \$(CFLAGS) \$(CORE_INCS) -o ${name}.o ${name}.c
+
+
+.PHONY:clean
+clean:
+	rm -rf *.o *.bin
+END
+
 make clean
 
 if ! [ -d "../../../build" ]; then
     (cd ../../../; ./configure)
 fi
 
-make ${name}
+make
 
 if [ -x ${name}.bin ]; then
 

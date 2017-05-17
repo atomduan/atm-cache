@@ -95,6 +95,7 @@ atm_task_worker_dispatch(atm_task_t *t)
     wts = curr_worker->wtasks;
     atm_list_push(wts, t);
     pthread_mutex_unlock(&curr_worker->qlock);
+    /* TODO how dose qlock work? */
     pthread_cond_signal(&curr_worker->qready);
 }
 
@@ -144,6 +145,7 @@ atm_task_worker_blocking_wait(
     wtasks = worker->wtasks;
     pthread_mutex_lock(&worker->qlock);
     while (wtasks->size == 0) {
+        /* TODO how does qlock work with it? */
         pthread_cond_timedwait(&worker->qready, 
                 &worker->qlock,&ts);
     }

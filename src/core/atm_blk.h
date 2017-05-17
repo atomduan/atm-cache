@@ -11,7 +11,8 @@ extern atm_T_t *ATM_BLK_T;
 struct atm_blk_s {
     atm_uint_t      size;
     uint8_t        *head;
-    atm_uint_t      len;
+    atm_uint_t      ridx;
+    atm_uint_t      widx;
 };
 
 

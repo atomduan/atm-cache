@@ -31,11 +31,11 @@ struct atm_event_s {
     void (*post_proc)(atm_event_t *ev);
 
     /* job controll */
-    pthread_mutex_t event_lk;
-    atm_bool_t on_read;
-    atm_uint_t read_ev_count;
-    atm_bool_t on_write;
-    atm_uint_t write_ev_count;
+    pthread_mutex_t     mutex;
+    atm_bool_t          on_read;
+    atm_uint_t          read_event_count;
+    atm_bool_t          on_write;
+    atm_uint_t          write_event_count;
 };
 
 
@@ -63,30 +63,19 @@ atm_event_add_listen(atm_conn_listen_t *l);
 void
 atm_event_add_conn(atm_conn_t *e);
 
-/* 
- * 1. if e not managed by epoll then add it
- * 2. if the event and old mask then merge it
- * 3. mask the events's fd's bits in epoll
- * 4. activate it.
- */
 void
 atm_event_add_event(atm_event_t *e, int mask);
 
-/*
- * 1. unmsk the event's fd's bits in epoll 
- * 2. if fd's bits is empty then del it from epoll
- *    and unactivate it.
- */
 void
 atm_event_del_event(atm_event_t *e, int unmask);
 
 atm_bool_t
 atm_event_yield_read(
-        atm_event_t *e, atm_uint_t old_read_count);
+        atm_event_t *e, atm_uint_t last_count);
 
 atm_bool_t
 atm_event_yield_write(
-        atm_event_t *e, atm_uint_t old_write_count);
+        atm_event_t *e, atm_uint_t last_count);
 
 
 #endif /* _ATM_EVENT_H_INCLUDED_ */

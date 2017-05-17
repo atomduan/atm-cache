@@ -18,7 +18,6 @@ struct atm_list_s {
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
-    atm_list_entry_t   *round;
 };
 
 
@@ -27,6 +26,12 @@ struct atm_list_entry_s {
     void               *val;
     atm_list_entry_t   *prev;
     atm_list_entry_t   *next;
+};
+
+
+struct atm_list_iter_s {
+    atm_list_t         *list;
+    atm_list_entry_t   *curr;
 };
 
 
@@ -71,6 +76,18 @@ atm_list_clear(atm_list_t *list);
 
 void *
 atm_list_round(atm_list_t *list);
+
+atm_list_iter_t *
+atm_list_iter_new(atm_list_t *list);
+
+void
+atm_list_iter_free(void *iter);
+
+void *
+atm_list_next(atm_list_iter_t *iter);
+
+void
+atm_list_iter_reset(atm_list_iter_t *iter);
 
 
 #endif /* _ATM_LIST_H_INCLUDED_ */

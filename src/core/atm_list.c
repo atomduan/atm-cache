@@ -154,7 +154,6 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
     res->size = 0;
     res->v_type = v_type;
     res->free_type = f_type;
-    res->round = NULL;
     return res;
 }
 
@@ -342,21 +341,59 @@ atm_list_round(atm_list_t *list)
 {
     /* TODO this impl may result in darling pointer */
     void *res = NULL;
-    atm_list_t * l = list;
-    atm_list_entry_t *r = NULL;
+    atm_list_iter_t *it = NULL;
 
-    r = l->round;
-    if (r == NULL) {
-        r = l->head;
-    } else {
-        r = r->next;
-        if (r == NULL) {
-            r = l->head;
+    it = atm_list_iter_new(list);
+    res = atm_list_next(it);
+    if (res == NULL) {
+        atm_list_iter_reset(it);
+        res = atm_list_next(it);
+    }
+    atm_list_iter_free(it);
+    return res;
+}
+
+
+atm_list_iter_t *
+atm_list_iter_new(atm_list_t *list)
+{
+    atm_list_iter_t *res = NULL;
+    res = atm_alloc(sizeof(atm_list_iter_t));
+    res->list = list;
+    res->curr = list->head;
+    return res;
+}
+
+
+void
+atm_list_iter_free(void *iter)
+{
+    atm_list_iter_t *it = iter;
+    if (iter != NULL) {
+        atm_free(it);
+    }
+}
+
+
+void *
+atm_list_next(atm_list_iter_t *iter)
+{
+    void *res = NULL;
+    atm_list_entry_t *curr = NULL;
+    atm_list_iter_t *it = iter;
+    if (it != NULL) {
+        curr = it->curr;
+        if (curr != NULL) {
+            res = curr->val;
+            it->curr = curr->next;
         }
     }
-    list->round = r;
-    if (list->round != NULL) {
-        res = list->round->val;
-    }
     return res;
+}
+
+
+void
+atm_list_iter_reset(atm_list_iter_t *iter)
+{
+    iter->curr = iter->list->head;
 }

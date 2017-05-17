@@ -6,8 +6,8 @@
 
 
 struct atm_buf_s {
-    atm_blk_t         *cb;
-    atm_list_t      *blks;
+    pthread_mutex_t     mutex; 
+    atm_list_t         *blks;
 };
 
 
@@ -22,12 +22,12 @@ atm_buf_free(void *buf);
 /* public funcs */
 /* for epoll event call back funcs */
 atm_int_t
-atm_buf_writef(atm_buf_t *buf, 
-        atm_socket_t *srcfd);
+atm_buf_read_sock(atm_buf_t *buf, 
+        atm_socket_t *srcsock);
 
 atm_int_t
-atm_buf_readf(atm_buf_t *buf, 
-        atm_socket_t *destfd);
+atm_buf_write_sock(atm_buf_t *buf, 
+        atm_socket_t *destsock);
 
 
 /* for session logic calling's funcs */

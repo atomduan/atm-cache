@@ -31,7 +31,8 @@ atm_blk_new()
     res = atm_alloc(sizeof(atm_blk_t));
     res->size = size;
     res->head = atm_alloc(sizeof(uint8_t)*size);
-    res->len = 0;
+    res->ridx = 0;
+    res->widx = 0;
     return res;
 }
 

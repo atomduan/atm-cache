@@ -27,24 +27,24 @@ atm_event_process_ev(atm_event_t *ev,
    }
    if ((evs & EPOLLIN) && ev->active) {
        if (ev->handle_read != NULL) {
-           pthread_mutex_lock(&ev->event_lk);
-           ev->read_ev_count += 1;
+           pthread_mutex_lock(&ev->mutex);
+           ev->read_event_count += 1;
            if (ATM_FALSE == ev->on_read) {
                ev->handle_read(ev);
                ev->on_read = ATM_TRUE;
            }
-           pthread_mutex_unlock(&ev->event_lk);
+           pthread_mutex_unlock(&ev->mutex);
        }
    }
    if ((evs & EPOLLOUT) && ev->active) {
        if (ev->handle_write != NULL) {
-           pthread_mutex_lock(&ev->event_lk);
-           ev->write_ev_count += 1;
+           pthread_mutex_lock(&ev->mutex);
+           ev->write_event_count += 1;
            if (ATM_FALSE == ev->on_write) {
                ev->handle_write(ev);
                ev->on_write = ATM_TRUE;
            }
-           pthread_mutex_unlock(&ev->event_lk);
+           pthread_mutex_unlock(&ev->mutex);
        }
    }
    if (ev->post_proc != NULL) {
@@ -110,11 +110,11 @@ atm_event_new(void *load, int fd,
     res->handle_write = handle_write;
     res->post_proc = post_proc;
 
-    pthread_mutex_init(&res->event_lk, NULL);
+    pthread_mutex_init(&res->mutex, NULL);
     res->on_read = ATM_FALSE;
-    res->read_ev_count = 0;
+    res->read_event_count = 0;
     res->on_write = ATM_FALSE;
-    res->write_ev_count = 0;
+    res->write_event_count = 0;
     return res;
 }
 
@@ -125,7 +125,7 @@ atm_event_free(void *ev)
     atm_event_t *e = ev;
     if (e != NULL) {
         atm_event_del_event(e, ATM_EVENT_ALL);
-        pthread_mutex_destroy(&e->event_lk);
+        pthread_mutex_destroy(&e->mutex);
         atm_free(e);
     }
 }
@@ -256,29 +256,29 @@ atm_event_del_event(atm_event_t *e, int unmask)
 
 atm_bool_t
 atm_event_yield_read(
-        atm_event_t *e, atm_uint_t old_read_count)
+        atm_event_t *e, atm_uint_t last_count)
 {
     atm_bool_t res = ATM_FALSE;
-    pthread_mutex_lock(&e->event_lk);
-    if(e->read_ev_count == old_read_count) {
+    pthread_mutex_lock(&e->mutex);
+    if(e->read_event_count == last_count) {
         e->on_read = ATM_FALSE;
         res = ATM_TRUE;
     }
-    pthread_mutex_unlock(&e->event_lk);
+    pthread_mutex_unlock(&e->mutex);
     return res;
 }
 
 
 atm_bool_t
 atm_event_yield_write(
-        atm_event_t *e, atm_uint_t old_write_count)
+        atm_event_t *e, atm_uint_t last_count)
 {
     atm_bool_t res = ATM_FALSE;
-    pthread_mutex_lock(&e->event_lk);
-    if(e->write_ev_count == old_write_count) {
+    pthread_mutex_lock(&e->mutex);
+    if(e->write_event_count == last_count) {
         e->on_write = ATM_FALSE;
         res = ATM_TRUE;
     }
-    pthread_mutex_unlock(&e->event_lk);
+    pthread_mutex_unlock(&e->mutex);
     return res;
 }

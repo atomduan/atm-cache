@@ -84,28 +84,16 @@ static atm_int_t
 atm_conn_task_read_raw(atm_conn_t *conn)
 {
     int ret = 0;
-    int total = 0;
-
-    atm_socket_t *srcfd = NULL;
+    atm_socket_t *srcsock = NULL;
     atm_sess_t *se = NULL;
-    atm_buf_t *rbuf = NULL;
+    atm_buf_t *r_buf = NULL;
 
-    srcfd = conn->sock;
+    srcsock = conn->sock;
     se = conn->session;
+    r_buf = se->r_buf;   
 
-    rbuf = se->r_buf;   
-    while (ATM_TRUE) {
-        ret = atm_buf_writef(rbuf, srcfd);
-        if (ret > 0) {
-            total += ret;
-            continue;
-        }
-        if (ret < 0) {
-            return ret;
-        }
-        break;
-    }
-    return total;
+    ret = atm_buf_read_sock(r_buf, srcsock);
+    return ret;
 }
 
 
@@ -116,21 +104,21 @@ atm_conn_task_read(atm_task_t *t)
     atm_conn_t *conn;
     atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
-    atm_uint_t read_ev_count = 0;
+    atm_uint_t last_count = 0;
 
     conn = t->load;
     se = conn->session;
     e = conn->event;
-    read_ev_count = e->read_ev_count;
 
     while (ATM_TRUE) {
+        last_count = e->read_event_count;
         ret = atm_conn_task_read_raw(conn);
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
             e->active = ATM_FALSE;
             return ATM_OK;
         }
         atm_sess_process(se);
-        if (atm_event_yield_read(e,read_ev_count))
+        if (atm_event_yield_read(e,last_count))
             break;
     }
     return ATM_OK;
@@ -141,28 +129,16 @@ static atm_int_t
 atm_conn_task_write_raw(atm_conn_t *conn)
 {
     int ret = 0;
-    int total = 0;
-
-    atm_socket_t *destfd = NULL;
+    atm_socket_t *destsock = NULL;
     atm_sess_t *se = NULL;
-    atm_buf_t *wbuf = NULL;
+    atm_buf_t *w_buf = NULL;
 
-    destfd = conn->sock;
+    destsock = conn->sock;
     se = conn->session;
+    w_buf = se->w_buf;
 
-    wbuf = se->w_buf;
-    while (ATM_TRUE) {
-        ret = atm_buf_readf(wbuf, destfd);
-        if (ret > 0) {
-            total += ret;
-            continue;
-        } else 
-        if (ret < 0) {
-            return ret;
-        }
-        break;
-    }
-    return total;
+    ret = atm_buf_write_sock(w_buf, destsock);
+    return ret;
 }
 
 
@@ -173,20 +149,20 @@ atm_conn_task_write(atm_task_t *t)
     atm_conn_t *conn = NULL;
     atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
-    atm_uint_t write_ev_count = 0;
+    atm_uint_t last_count = 0;
 
     conn = t->load;
     se = conn->session;
     e = conn->event;
-    write_ev_count = e->write_ev_count;
 
     while (ATM_TRUE) {
+        last_count = e->write_event_count;
         ret = atm_conn_task_write_raw(conn);
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
             e->active = ATM_FALSE;
             return ATM_OK;
         }
-        if (atm_event_yield_write(e,write_ev_count))
+        if (atm_event_yield_write(e,last_count))
             break;
     }
     return ATM_OK;
@@ -197,9 +173,9 @@ static atm_conn_t *
 atm_conn_new(atm_socket_t *cs)
 {
     atm_conn_t * res = NULL;
+
     res = atm_alloc(sizeof(atm_conn_t));
     res->sock = cs;
-    /* should be prop by event module */
     res->event = NULL;
     res->handle_read = atm_conn_handle_read;
     res->handle_write = atm_conn_handle_write;
@@ -212,9 +188,9 @@ static atm_conn_listen_t *
 atm_conn_listen_new(atm_socket_t *ss)
 {
     atm_conn_listen_t * res = NULL;
+
     res = atm_alloc(sizeof(atm_conn_listen_t));
     res->ssck = ss;
-    /* should be prop by event module */
     res->event = NULL;
     res->handle_accept = atm_conn_handle_accept;
     res->post_proc = atm_conn_listen_post_proc;

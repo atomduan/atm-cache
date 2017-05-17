@@ -135,13 +135,6 @@ atm_list_rpop_entry(atm_list_t *list)
 /*
  * Public
  * */
-void 
-atm_list_init()
-{
-    /*VOID*/
-}
-
-
 atm_list_t *
 atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
 {

@@ -13,7 +13,6 @@ static atm_dict_t *dt;
 static void
 atm_test_dict_init()
 {
-    atm_dict_init();
     dt = atm_dict_new(
             ATM_STR_T, 
             ATM_STR_T, 

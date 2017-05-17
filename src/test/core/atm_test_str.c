@@ -14,8 +14,6 @@ atm_test_str_suit()
         atm_log("BEGIN atm_test_str_suit");
     }
 
-    atm_str_init();
-
     if (!atm_test_str_split()) {
         return ATM_TEST_FAIL;
     }

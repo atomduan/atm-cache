@@ -23,13 +23,6 @@ atm_T_t *ATM_STR_T = &ATM_STR_TYPE;
  * Public
  * */
 /* public string type lifecycle */
-void 
-atm_str_init()
-{
-    /* TODO */
-}
-
-
 atm_str_t *
 atm_str_new(char *str)
 {

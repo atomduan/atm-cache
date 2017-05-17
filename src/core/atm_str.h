@@ -18,9 +18,6 @@ struct atm_str_s {
 
 
 /* public string type lifecycle */
-void 
-atm_str_init();
-
 atm_str_t *
 atm_str_new(char *str);
 

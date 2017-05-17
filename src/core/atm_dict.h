@@ -41,9 +41,6 @@ struct atm_dict_entry_s {
 
 
 /* public dict type lifecycle */
-void 
-atm_dict_init();
-
 atm_dict_t *
 atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t free_type);
 

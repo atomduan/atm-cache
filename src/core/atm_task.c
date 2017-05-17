@@ -340,7 +340,7 @@ atm_task_pipe_init()
 void 
 atm_task_init()
 {
-    int nworker = 5;
+    int nworker = 1;
     /* Yes we actrally need a thread pool */
     tasks = atm_list_new(
             ATM_TASK_T, 

@@ -36,9 +36,6 @@ struct atm_list_iter_s {
 
 
 /* public list type lifecycle */
-void
-atm_list_init();
-
 atm_list_t *
 atm_list_new(atm_T_t *v_type, atm_uint_t f_type);
 

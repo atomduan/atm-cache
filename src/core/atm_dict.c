@@ -271,13 +271,6 @@ atm_dict_entry(atm_dict_t *dict, void *key)
 /*
  * Public
  * */
-void 
-atm_dict_init()
-{
-    /*VOID*/
-}
-
-
 atm_dict_t *
 atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t f_type)
 {

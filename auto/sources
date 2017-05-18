@@ -24,7 +24,8 @@ CORE_DEPS="src/core/atm_core.h \
            src/core/atm_sess.h \
            src/core/atm_siphash.h \
            src/core/atm_str.h \
-           src/core/atm_task.h"
+           src/core/atm_task.h \
+           src/core/atm_time.h"
 
 CORE_SRCS="src/core/atm_arr.c \
            src/core/atm_blk.c \
@@ -40,7 +41,8 @@ CORE_SRCS="src/core/atm_arr.c \
            src/core/atm_sess.c \
            src/core/atm_siphash.c \
            src/core/atm_str.c \
-           src/core/atm_task.c"
+           src/core/atm_task.c \
+           src/core/atm_time.c"
 
 CORE_LIBS=""
 
@@ -59,7 +61,8 @@ CORE_DEPS="$CORE_DEPS \
             src/test/core/atm_test_dict.h \
             src/test/core/atm_test_event.h \
             src/test/core/atm_test_siphash.h \
-            src/test/core/atm_test_str.h"
+            src/test/core/atm_test_str.h \
+            src/test/core/atm_test_time.h"
             
 
 CORE_SRCS="$CORE_SRCS \
@@ -67,7 +70,8 @@ CORE_SRCS="$CORE_SRCS \
             src/test/core/atm_test_dict.c \
             src/test/core/atm_test_event.c \
             src/test/core/atm_test_siphash.c \
-            src/test/core/atm_test_str.c"
+            src/test/core/atm_test_str.c \
+            src/test/core/atm_test_time.c"
 fi
 
 

@@ -11,14 +11,17 @@
 #define ATM_TEST_SIPHASH_ON     0
 #include <atm_test_siphash.h>
 
-#define ATM_TEST_DICT_ON        1
+#define ATM_TEST_DICT_ON        0
 #include <atm_test_dict.h>
 
 #define ATM_TEST_EVENT_ON       0
 #include <atm_test_event.h>
 
-#define ATM_TEST_STR_ON         1
+#define ATM_TEST_STR_ON         0
 #include <atm_test_str.h>
+
+#define ATM_TEST_TIME_ON         1
+#include <atm_test_time.h>
 
 
 /*

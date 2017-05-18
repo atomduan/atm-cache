@@ -88,6 +88,8 @@ typedef struct atm_buf_s            atm_buf_t;
 typedef struct atm_blk_s            atm_blk_t;
 typedef struct atm_ctx_s            atm_ctx_t;
 typedef struct atm_arr_s            atm_arr_t;
+typedef struct timespec             atm_time_spec_t;
+typedef struct atm_time_pair_s      atm_time_pair_t;
 
 
 /*
@@ -110,6 +112,7 @@ typedef struct atm_arr_s            atm_arr_t;
 #include <atm_siphash.h>
 #include <atm_str.h>
 #include <atm_task.h>
+#include <atm_time.h>
 
 #include <atm_alloc.h>
 #include <atm_sig.h>

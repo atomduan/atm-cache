@@ -20,9 +20,6 @@ LINK = \$(CC)
 CORE_DEPS = misc_utils.h
 
 CORE_INCS = -I ./ \\
-	-I ../../../src/core \\
-	-I ../../../src/os \\
-	-I ../../../src/os/unix \\
 	-I ../../../src/os/unix/linux \\
 	-I ../../../build
 

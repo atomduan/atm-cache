@@ -327,7 +327,6 @@ atm_task_pipe_init()
             NULL,
             pipe_recv_fd,
             atm_task_notify_recv,
-            NULL, 
             NULL); 
 
     events = EPOLLIN|EPOLLHUP|EPOLLET;

@@ -3,7 +3,7 @@
 
 #include <atm_core.h>
 
-#define ATM_BLK_DFT_LEN     1024*4
+#define ATM_BLK_DFT_LEN     4096
 
 extern atm_T_t *ATM_BLK_T;
 

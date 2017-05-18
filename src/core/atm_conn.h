@@ -34,6 +34,9 @@ void
 atm_conn_free(void *conn);
 
 void
+atm_conn_listen_free(void *listen);
+
+void
 atm_conn_wnotify(void *conn);
 
 

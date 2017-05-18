@@ -28,14 +28,11 @@ struct atm_event_s {
     /* only be called by epoll */
     void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
-    void (*post_proc)(atm_event_t *ev);
 
     /* job controll */
     pthread_mutex_t     mutex;
-    atm_bool_t          on_read;
-    atm_uint_t          read_event_count;
     atm_bool_t          on_write;
-    atm_uint_t          write_event_count;
+    atm_uint_t          write_reqs;
 };
 
 
@@ -47,8 +44,7 @@ atm_event_init();
 atm_event_t *
 atm_event_new(void *load, int fd, 
         void (*handle_read)(atm_event_t *ev),
-        void (*handle_write)(atm_event_t *ev),
-        void (*post_proc)(atm_event_t *ev));
+        void (*handle_write)(atm_event_t *ev));
 
 void
 atm_event_free(void *e);
@@ -67,15 +63,27 @@ void
 atm_event_add_event(atm_event_t *e, int mask);
 
 void
+atm_event_add_event_safe(atm_event_t *e, int mask);
+
+void
 atm_event_del_event(atm_event_t *e, int unmask);
 
-atm_bool_t
-atm_event_yield_read(
-        atm_event_t *e, atm_uint_t last_count);
+void
+atm_event_del_event_safe(atm_event_t *e, int unmask);
+
+void
+atm_event_inter_write(
+        atm_event_t *e, atm_uint_t wreqs);
 
 atm_bool_t
 atm_event_yield_write(
-        atm_event_t *e, atm_uint_t last_count);
+        atm_event_t *e, atm_uint_t wreqs);
+
+void
+atm_event_notify_write(atm_event_t *e);
+
+void
+atm_event_inactive(atm_event_t *e);
 
 
 #endif /* _ATM_EVENT_H_INCLUDED_ */

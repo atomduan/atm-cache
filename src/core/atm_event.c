@@ -22,34 +22,32 @@ static void
 atm_event_process_ev(atm_event_t *ev,
         uint32_t evs)
 {
-   if (evs & (EPOLLERR|EPOLLHUP)) {
-       evs |= (EPOLLIN | EPOLLOUT);
-   }
-   if ((evs & EPOLLIN) && ev->active) {
-       if (ev->handle_read != NULL) {
-           pthread_mutex_lock(&ev->mutex);
-           ev->read_event_count += 1;
-           if (ATM_FALSE == ev->on_read) {
-               ev->handle_read(ev);
-               ev->on_read = ATM_TRUE;
-           }
-           pthread_mutex_unlock(&ev->mutex);
-       }
-   }
-   if ((evs & EPOLLOUT) && ev->active) {
-       if (ev->handle_write != NULL) {
-           pthread_mutex_lock(&ev->mutex);
-           ev->write_event_count += 1;
-           if (ATM_FALSE == ev->on_write) {
-               ev->handle_write(ev);
-               ev->on_write = ATM_TRUE;
-           }
-           pthread_mutex_unlock(&ev->mutex);
-       }
-   }
-   if (ev->post_proc != NULL) {
-       ev->post_proc(ev);
-   }
+    if (evs & (EPOLLERR|EPOLLHUP)) {
+        evs |= (EPOLLIN | EPOLLOUT);
+    }
+    if (evs & EPOLLIN) {
+        if (ev->handle_read != NULL) {
+            /* SAFE_FREE_TAG */
+            pthread_mutex_lock(&ev->mutex);
+            if (ev->active) {
+                atm_event_del_event(ev, ATM_EVENT_READ);
+                ev->handle_read(ev);
+            }
+            pthread_mutex_unlock(&ev->mutex);
+        }
+    }
+    if ((evs & EPOLLOUT) && ev->active) {
+        if (ev->handle_write != NULL) {
+            /* SAFE_FREE_TAG */
+            pthread_mutex_lock(&ev->mutex);
+            if (ev->active) {
+                atm_event_del_event(ev, ATM_EVENT_WRITE);
+                ev->handle_write(ev);
+                ev->on_write = ATM_TRUE;
+            }
+            pthread_mutex_unlock(&ev->mutex);
+        }
+    }
 }
 
 
@@ -97,8 +95,7 @@ atm_event_init()
 atm_event_t *
 atm_event_new(void *load, int fd, 
         void (*handle_read)(atm_event_t *ev),
-        void (*handle_write)(atm_event_t *ev),
-        void (*post_proc)(atm_event_t *ev))
+        void (*handle_write)(atm_event_t *ev))
 {
     atm_event_t *res = NULL;
     res = atm_alloc(sizeof(atm_event_t));
@@ -108,13 +105,11 @@ atm_event_new(void *load, int fd,
     res->active = ATM_FALSE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
-    res->post_proc = post_proc;
 
     pthread_mutex_init(&res->mutex, NULL);
-    res->on_read = ATM_FALSE;
-    res->read_event_count = 0;
     res->on_write = ATM_FALSE;
-    res->write_event_count = 0;
+    res->write_reqs = 0;
+
     return res;
 }
 
@@ -152,8 +147,7 @@ atm_event_add_listen(atm_conn_listen_t *l)
         if (le == NULL) {
             le = atm_event_new(l,sfd,
                 l->handle_accept,
-                NULL, 
-                l->post_proc); 
+                NULL); 
             l->event = le;
         }
         events = EPOLLIN|EPOLLHUP;
@@ -175,8 +169,7 @@ atm_event_add_conn(atm_conn_t *c)
         if (ce == NULL) {
             ce = atm_event_new(c, cfd, 
                     c->handle_read, 
-                    c->handle_write, 
-                    c->post_proc); 
+                    c->handle_write); 
             c->event = ce;
         }
 
@@ -222,6 +215,18 @@ atm_event_add_event(atm_event_t *e, int mask)
 }
 
 
+void
+atm_event_add_event_safe(
+        atm_event_t *e, int mask)
+{
+    if (e != NULL) {
+        pthread_mutex_lock(&e->mutex);
+        atm_event_add_event(e,mask);
+        pthread_mutex_unlock(&e->mutex);
+    }
+}
+
+
 /*
  * 1. unmsk the event's fd's bits in epoll 
  * 2. if fd's bits is empty then del it from epoll
@@ -254,14 +259,41 @@ atm_event_del_event(atm_event_t *e, int unmask)
 }
 
 
+void
+atm_event_del_event_safe(
+        atm_event_t *e, int unmask)
+{
+    if (e != NULL) {
+        pthread_mutex_lock(&e->mutex);
+        atm_event_del_event(e,unmask);
+        pthread_mutex_unlock(&e->mutex);
+    }
+}
+
+
+void
+atm_event_inter_write(
+        atm_event_t *e, atm_uint_t wreqs)
+{
+    pthread_mutex_lock(&e->mutex);
+    e->on_write = ATM_FALSE;
+    if(e->write_reqs > wreqs) {
+        if (e->active) {
+            atm_event_add_event(e, ATM_EVENT_WRITE);
+        }
+    }
+    pthread_mutex_unlock(&e->mutex);
+}
+
+
 atm_bool_t
-atm_event_yield_read(
-        atm_event_t *e, atm_uint_t last_count)
+atm_event_yield_write(
+        atm_event_t *e, atm_uint_t wreqs)
 {
     atm_bool_t res = ATM_FALSE;
     pthread_mutex_lock(&e->mutex);
-    if(e->read_event_count == last_count) {
-        e->on_read = ATM_FALSE;
+    if(e->write_reqs == wreqs || !e->active) {
+        e->on_write = ATM_FALSE;
         res = ATM_TRUE;
     }
     pthread_mutex_unlock(&e->mutex);
@@ -269,16 +301,24 @@ atm_event_yield_read(
 }
 
 
-atm_bool_t
-atm_event_yield_write(
-        atm_event_t *e, atm_uint_t last_count)
+void
+atm_event_notify_write(atm_event_t *e)
 {
-    atm_bool_t res = ATM_FALSE;
     pthread_mutex_lock(&e->mutex);
-    if(e->write_event_count == last_count) {
-        e->on_write = ATM_FALSE;
-        res = ATM_TRUE;
+    if (e->active) {
+        e->write_reqs += 1;
+        if (e->on_write == ATM_FALSE) {
+            atm_event_add_event(e, ATM_EVENT_WRITE); 
+        }
     }
     pthread_mutex_unlock(&e->mutex);
-    return res;
+}
+
+
+void
+atm_event_inactive(atm_event_t *e)
+{
+    pthread_mutex_lock(&e->mutex);
+    e->active = ATM_FALSE;
+    pthread_mutex_unlock(&e->mutex);
 }

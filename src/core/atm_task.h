@@ -7,6 +7,7 @@
 
 
 struct atm_task_s {
+    atm_bool_t          active;
     void               *load;
     atm_int_t         (*run)(atm_task_t *self);
     atm_bool_t          retry;

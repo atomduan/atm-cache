@@ -2,14 +2,6 @@
 /*
  * Private
  * */
-static void 
-atm_conn_post_proc(
-        atm_event_t *conn_event);
-
-static void
-atm_conn_listen_post_proc(
-        atm_event_t *listen_event);
-
 static atm_int_t 
 atm_conn_task_read_raw(atm_conn_t *conn); 
 
@@ -32,9 +24,6 @@ static int
 atm_conn_listen_tcp();
 
 static void
-atm_conn_listen_free(void *listen);
-
-static void
 atm_conn_handle_accept(atm_event_t *listen_event);
 
 static void
@@ -48,38 +37,6 @@ atm_conn_handle_write(atm_event_t *conn_event);
 /*
  * Private
  * */
-static void
-atm_conn_post_proc(
-        atm_event_t *conn_event)
-{
-    atm_event_t *e = NULL;
-    atm_conn_t *c = NULL;
-    atm_sess_t *se = NULL;
-
-    e = conn_event;
-    c = e->load;
-    if (!e->active) {
-        se = c->session;
-        atm_sess_free(se); 
-    }
-}
-
-
-static void
-atm_conn_listen_post_proc(
-        atm_event_t *listen_event)
-{
-    atm_event_t *e = NULL;
-    atm_conn_listen_t *l = NULL;
-
-    e = listen_event;
-    l = e->load;
-    if (!e->active) {
-        atm_conn_listen_free(l);        
-    }
-}
-
-
 static atm_int_t
 atm_conn_task_read_raw(atm_conn_t *conn)
 {
@@ -104,22 +61,32 @@ atm_conn_task_read(atm_task_t *t)
     atm_conn_t *conn;
     atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
-    atm_uint_t last_count = 0;
 
     conn = t->load;
     se = conn->session;
     e = conn->event;
 
-    while (ATM_TRUE) {
-        last_count = e->read_event_count;
+    if (ATM_FALSE != e->active) {
         ret = atm_conn_task_read_raw(conn);
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
-            e->active = ATM_FALSE;
-            return ATM_OK;
+            /* SAFE_FREE_TAG */
+            atm_event_inactive(e);
+            /* must return SAFE_FREE_TAG*/
+            return ATM_ERROR;
+        } else {
+            atm_sess_process(se);
         }
-        atm_sess_process(se);
-        if (atm_event_yield_read(e,last_count))
-            break;
+    }
+
+    /* restore read event */
+    if (ATM_TRUE == e->active){
+        atm_event_add_event_safe(e,ATM_EVENT_READ);
+    } else {
+        /* is safe to free here by corp with 
+         * atm_event_process_ev and 
+         * atm_event_inactive direct return
+         * SAFE_FREE_TAG*/
+        atm_sess_free(se);
     }
     return ATM_OK;
 }
@@ -149,21 +116,35 @@ atm_conn_task_write(atm_task_t *t)
     atm_conn_t *conn = NULL;
     atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
-    atm_uint_t last_count = 0;
+    atm_uint_t wreqs = 0;
 
     conn = t->load;
     se = conn->session;
     e = conn->event;
 
-    while (ATM_TRUE) {
-        last_count = e->write_event_count;
+    while (ATM_FALSE != e->active) {
+        wreqs = e->write_reqs;
         ret = atm_conn_task_write_raw(conn);
-        if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
-            e->active = ATM_FALSE;
-            return ATM_OK;
-        }
-        if (atm_event_yield_write(e,last_count))
+        if (ret ==-1 && errno!=EAGAIN) {
+            /* SAFE_FREE_TAG */
+            atm_event_inactive(e);
+            /* must return SAFE_FREE_TAG*/
+            return ATM_ERROR;
+        } else if (ret == 0) {
+            /* need to have a rest */
+            atm_event_inter_write(e,wreqs);
             break;
+        }
+        /* to check if more work came in */
+        if (atm_event_yield_write(e,wreqs)) break;
+    }
+
+    if (ATM_FALSE == e->active){
+        /* is safe to free here by corp with 
+         * atm_event_process_ev and 
+         * atm_event_inactive direct return
+         * SAFE_FREE_TAG*/
+        atm_sess_free(se);
     }
     return ATM_OK;
 }
@@ -179,7 +160,6 @@ atm_conn_new(atm_socket_t *cs)
     res->event = NULL;
     res->handle_read = atm_conn_handle_read;
     res->handle_write = atm_conn_handle_write;
-    res->post_proc = atm_conn_post_proc;
     return res; 
 }
 
@@ -193,7 +173,6 @@ atm_conn_listen_new(atm_socket_t *ss)
     res->ssck = ss;
     res->event = NULL;
     res->handle_accept = atm_conn_handle_accept;
-    res->post_proc = atm_conn_listen_post_proc;
     return res; 
 }
 
@@ -230,19 +209,6 @@ error:
         "atm_conn_listen_tcp, " 
         "errno: %s",strerror(errno));
     return ATM_ERROR;
-}
-
-
-static void
-atm_conn_listen_free(void *listen)
-{
-    atm_conn_listen_t *l = NULL;
-    if (listen != NULL) {
-        l = listen;
-        atm_event_free(l->event);
-        atm_socket_free(l->ssck);
-        atm_free(l);
-    }
 }
 
 
@@ -331,8 +297,21 @@ atm_conn_free(void *conn)
 
 
 void
+atm_conn_listen_free(void *listen)
+{
+    atm_conn_listen_t *l = NULL;
+    if (listen != NULL) {
+        l = listen;
+        atm_event_free(l->event);
+        atm_socket_free(l->ssck);
+        atm_free(l);
+    }
+}
+
+
+void
 atm_conn_wnotify(void *conn)
 {
     atm_conn_t *c = conn;
-    atm_event_add_event(c->event,ATM_EVENT_WRITE);
+    atm_event_notify_write(c->event);
 }

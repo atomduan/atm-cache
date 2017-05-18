@@ -29,7 +29,8 @@ atm_sess_reply(atm_sess_t *se, char *m)
 {
     atm_str_t *msg = NULL;
     msg = atm_str_new(m);
-    atm_sess_write(se, atm_str_cat(msg,"\n"));
+    msg = atm_str_cat(msg, "\n");
+    atm_sess_write(se, msg);
     atm_free(msg);
 }
 

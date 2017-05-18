@@ -17,21 +17,45 @@ CFLAGS = -pipe -O0 -Wall -Wextra -Wpointer-arith -Wconditional-uninitialized -Wn
 
 LINK = \$(CC)
 
-CORE_DEPS =
+CORE_DEPS = misc_utils.h
 
-CORE_INCS = -I ../../../src/core \\
+CORE_INCS = -I ./ \\
+	-I ../../../src/core \\
 	-I ../../../src/os \\
 	-I ../../../src/os/unix \\
 	-I ../../../src/os/unix/linux \\
 	-I ../../../build
 
 
-${name}:	${name}.o
-	\$(LINK) -o ${name}.bin ${name}.o -ldl -lpthread -Wl,-E
+END
+
+if [ ${name} != "misc_utils" ]; then
+cat <<END >> Makefile
+${name}:	${name}.o \\
+	misc_utils.o
+
+	\$(LINK) -o ${name}.bin ${name}.o \\
+	misc_utils.o \\
+	-ldl -lpthread -Wl,-E
+
+
 ${name}.o:	\$(CORE_DEPS)
 	\$(CC) -c \$(CFLAGS) \$(CORE_INCS) -o ${name}.o ${name}.c
 
 
+END
+fi
+
+
+cat <<END >> Makefile
+misc_utils.o:	\$(CORE_DEPS)
+	\$(CC) -c \$(CFLAGS) \$(CORE_INCS) -o misc_utils.o misc_utils.c
+
+
+END
+
+
+cat <<END >> Makefile
 .PHONY:clean
 clean:
 	rm -rf *.o *.bin
@@ -54,7 +78,7 @@ cat << EOF
 
 
 EOF
-    time ./${name}.bin
+    ./${name}.bin
 cat << EOF 
 
 

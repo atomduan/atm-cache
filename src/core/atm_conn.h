@@ -24,6 +24,9 @@ struct atm_conn_s {
     void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
     void (*post_proc)(atm_event_t *ev);
+
+    atm_buf_t   *r_buf;
+    atm_buf_t   *w_buf;
 };
 
 
@@ -36,8 +39,15 @@ atm_conn_free(void *conn);
 void
 atm_conn_listen_free(void *listen);
 
+atm_str_t *
+atm_conn_read_line(atm_conn_t *c);
+
 void
-atm_conn_wnotify(void *conn);
+atm_conn_write(atm_conn_t *c, 
+        void *src, atm_uint_t nbyte);
+
+void
+atm_conn_write_str(atm_conn_t *c, atm_str_t *s);
 
 
 #endif /* _ATM_CONN_H_INCLUDED_ */

@@ -6,8 +6,6 @@
 
 struct atm_sess_s {
     atm_conn_t  *conn;
-    atm_buf_t   *r_buf;
-    atm_buf_t   *w_buf;
     atm_int_t    argc;
     atm_str_t   *argv;
 };

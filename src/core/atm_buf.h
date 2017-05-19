@@ -31,15 +31,15 @@ atm_buf_write_sock(atm_buf_t *buf,
 
 
 /* for session logic calling's funcs */
-atm_str_t *
+char *
 atm_buf_read_line(atm_buf_t *buf);
 
 atm_int_t
-atm_buf_read(atm_buf_t *buf, uint8_t *dest, 
-        atm_uint_t len);
+atm_buf_read(atm_buf_t *buf, void *dest, 
+        atm_uint_t nbyte);
 
 atm_int_t
-atm_buf_write(atm_buf_t *buf, uint8_t *src, 
-        atm_uint_t len);
+atm_buf_write(atm_buf_t *buf, void *src, 
+        atm_uint_t nbyte);
 
 #endif /* _ATM_BUF_H_INCLUDED_ */

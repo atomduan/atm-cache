@@ -47,7 +47,7 @@ atm_conn_task_read_raw(atm_conn_t *conn)
 
     srcsock = conn->sock;
     se = conn->session;
-    r_buf = se->r_buf;   
+    r_buf = conn->r_buf;   
 
     ret = atm_buf_read_sock(r_buf, srcsock);
     return ret;
@@ -97,12 +97,10 @@ atm_conn_task_write_raw(atm_conn_t *conn)
 {
     int ret = 0;
     atm_socket_t *destsock = NULL;
-    atm_sess_t *se = NULL;
     atm_buf_t *w_buf = NULL;
 
     destsock = conn->sock;
-    se = conn->session;
-    w_buf = se->w_buf;
+    w_buf = conn->w_buf;
 
     ret = atm_buf_write_sock(w_buf, destsock);
     return ret;
@@ -160,6 +158,8 @@ atm_conn_new(atm_socket_t *cs)
     res->event = NULL;
     res->handle_read = atm_conn_handle_read;
     res->handle_write = atm_conn_handle_write;
+    res->r_buf = atm_buf_new();
+    res->w_buf = atm_buf_new();
     return res; 
 }
 
@@ -287,10 +287,17 @@ void
 atm_conn_free(void *conn)
 {
     atm_conn_t *c = NULL;
+    atm_buf_t *rbuf = NULL;
+    atm_buf_t *wbuf = NULL;
     if (conn != NULL) {
         c = conn;
+        rbuf = c->r_buf;
+        wbuf = c->w_buf;
+
         atm_event_free(c->event);
         atm_socket_free(c->sock);
+        atm_buf_free(rbuf);
+        atm_buf_free(wbuf);
         atm_free(c);
     }
 }
@@ -309,9 +316,36 @@ atm_conn_listen_free(void *listen)
 }
 
 
-void
-atm_conn_wnotify(void *conn)
+atm_str_t *
+atm_conn_read_line(atm_conn_t *c)
 {
-    atm_conn_t *c = conn;
-    atm_event_notify_write(c->event);
+    atm_str_t *res = NULL;
+    atm_buf_t *r_buf = c->r_buf;
+    char *s = atm_buf_read_line(r_buf);
+    if (s != NULL) {
+        res = atm_str_wrp(s);
+    }
+    return res; 
+}
+
+
+void
+atm_conn_write(atm_conn_t *c, 
+        void *src, atm_uint_t nbyte)
+{
+    atm_buf_t *w_buf = NULL; 
+    if (c != NULL) {
+        w_buf = c->w_buf;
+        atm_buf_write(w_buf,src,nbyte); 
+        atm_event_notify_write(c->event);
+    }
+}
+
+
+void
+atm_conn_write_str(atm_conn_t *c, atm_str_t *s)
+{
+    if (c != NULL) {
+        atm_conn_write(c,s->val,s->len);
+    }
 }

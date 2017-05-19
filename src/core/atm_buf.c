@@ -25,7 +25,10 @@ atm_buf_get_rblk(atm_buf_t *buf)
         /* refresh rblk */
         if (bk->ridx == bk->widx 
                 && bk->widx == bk->size) {
-            atm_list_lpop(buf->blks);
+            /* recycle the readed blk */
+            bk = atm_list_lpop(buf->blks);
+            atm_blk_new(bk);
+            /* peek the new one */
             bk = atm_list_lpeek(buf->blks);
         }
         /* check wether have new data to read */
@@ -146,14 +149,13 @@ atm_buf_write_sock(atm_buf_t *buf,
 
 
 /* for session logic calling's funcs */
-atm_str_t *
+char *
 atm_buf_read_line(atm_buf_t *buf)
 {
-    atm_str_t *res = NULL;
+    char *res = NULL;
     atm_list_iter_t *it = NULL;
     atm_blk_t *bk = NULL;
     atm_uint_t len = 0;
-    uint8_t *tmp = NULL;
     
     it = atm_list_iter_new(buf->blks);
     while ((bk=atm_list_next(it)) != NULL) {
@@ -169,20 +171,20 @@ atm_buf_read_line(atm_buf_t *buf)
 
 start_build:
     atm_list_iter_free(it);
-    tmp = atm_alloc(len); 
-    atm_buf_read(buf, tmp, len);
-    res = atm_str_new((char *)tmp);
-    atm_free(tmp);
+    if (len > 0) {
+        res = atm_alloc(len); 
+        atm_buf_read(buf,res,len);
+    }
     return res;
 }
 
 
 atm_int_t
-atm_buf_read(atm_buf_t *buf, uint8_t *dest, 
-        atm_uint_t len)
+atm_buf_read(atm_buf_t *buf, void *dest, 
+        atm_uint_t nbyte)
 {
-    uint8_t *dptr = dest;
-    atm_int_t rmn = len;
+    uint8_t *dptr = (uint8_t *)dest;
+    atm_int_t rmn = nbyte;
     atm_int_t total = 0;
     atm_blk_t *bk = NULL;
 
@@ -208,11 +210,11 @@ atm_buf_read(atm_buf_t *buf, uint8_t *dest,
 
 
 atm_int_t
-atm_buf_write(atm_buf_t *buf, uint8_t *src, 
-        atm_uint_t len)
+atm_buf_write(atm_buf_t *buf, void *src, 
+        atm_uint_t nbyte)
 {
-    uint8_t *sptr = src;
-    atm_int_t rmn = len;
+    uint8_t *sptr = (uint8_t *)src;
+    atm_int_t rmn = nbyte;
     atm_int_t total = 0;
     atm_blk_t *bk = NULL;
 

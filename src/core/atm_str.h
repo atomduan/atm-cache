@@ -40,7 +40,7 @@ atm_str_free(void *str);
 /* public funcs */
 
 atm_str_t *
-atm_str_wrp(char *str, atm_uint_t len);
+atm_str_wrp(char *str);
 
 atm_bool_t 
 atm_str_eq(atm_str_t *s1, atm_str_t *s2);

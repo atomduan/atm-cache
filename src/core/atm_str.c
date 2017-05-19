@@ -33,7 +33,7 @@ atm_str_new(char *str)
     len = strlen(str);
     copy = atm_alloc(len+1);
     memcpy(copy, str, len);
-    res = atm_str_wrp(copy, len);
+    res = atm_str_wrp(copy);
     return res;
 }
 
@@ -99,12 +99,15 @@ atm_str_free(void *str)
 
 
 atm_str_t *
-atm_str_wrp(char *str, atm_uint_t len)
+atm_str_wrp(char *str)
 {
     atm_str_t *res = NULL;
-    res = atm_alloc(sizeof(atm_str_t));
-    res->val = str;
-    res->len = len;
+    if (str != NULL) {
+        atm_uint_t len = strlen(str);
+        res = atm_alloc(sizeof(atm_str_t));
+        res->val = str;
+        res->len = len;
+    }
     return res;
 }
 
@@ -123,7 +126,7 @@ atm_str_eqs(atm_str_t *s1, char *s)
 {
     atm_bool_t res = ATM_FALSE;
     atm_str_t *t = atm_str_new(s);
-    res = atm_str_cmp(s1, t);
+    res = atm_str_cmp(s1,t);
     atm_free(t);
     return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
 }
@@ -146,7 +149,6 @@ atm_str_vfmt(char *fmt, va_list args)
 {
     atm_str_t *res = NULL;
     atm_uint_t size = 0;
-    atm_uint_t len = 0;
     char *temp = NULL;
     char *dest = NULL;
 
@@ -156,8 +158,7 @@ atm_str_vfmt(char *fmt, va_list args)
         vsnprintf(temp, size, fmt, args);
         dest = atm_str_mtrim(temp);
         if (dest != NULL)
-            len = strlen(dest);
-            res = atm_str_wrp(dest, len);
+            res = atm_str_wrp(dest);
     }
     atm_free(temp);
     return res;
@@ -193,7 +194,8 @@ atm_str_cat(atm_str_t *dest, char *src)
     char * r = NULL;
 
     /*
-     * TODO : too expansive...
+     * TODO : too expansive... 
+     * TODO : this impl mey mem leak!!!!
      */
     if (dest != NULL) {
         r = dest->val;

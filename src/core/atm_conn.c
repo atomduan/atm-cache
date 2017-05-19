@@ -142,7 +142,8 @@ atm_conn_task_write(atm_task_t *t)
         } else if (ret == 0) {
             atm_log("atm_conn_task_write inter");
             /* need to have a rest */
-            atm_event_inter_write(e,wreqs);
+            int wrmn = conn->w_buf->aval;
+            atm_event_inter_write(e,wreqs,wrmn);
             break;
         }
         /* to check if more work came in */

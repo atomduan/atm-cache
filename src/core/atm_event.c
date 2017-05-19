@@ -437,11 +437,14 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
 
 
 void
-atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs)
+atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs, int wrmn)
 {
     pthread_mutex_lock(&e->mutex);
     e->on_write = ATM_FALSE;
-    if(e->write_reqs > wreqs) {
+    /*
+     * wrmn > 0 means buf still have byte aval to write
+     */
+    if(e->write_reqs > wreqs || wrmn > 0) {
         if (e->active) {
             atm_event_add_notify(e, ATM_EVENT_WRITE);
         }

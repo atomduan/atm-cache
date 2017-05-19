@@ -85,6 +85,7 @@ CORE_INCS="$CORE_INCS \
 CORE_DEPS="$CORE_DEPS \
             src/os/unix/linux/atm_linux_config.h \
             src/os/unix/atm_alloc.h \
+            src/os/unix/atm_atomic.h \
             src/os/unix/atm_sig.h \
             src/os/unix/atm_net.h"
 

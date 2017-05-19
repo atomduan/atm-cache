@@ -67,6 +67,7 @@ atm_buf_new()
     atm_buf_t *res = NULL;
 
     res = atm_alloc(sizeof(atm_buf_t));
+    res->aval = 0;
     res->blks = atm_list_new(
             ATM_BLK_T, 
             ATM_FREE_DEEP);
@@ -108,11 +109,14 @@ atm_buf_read_sock(atm_buf_t *buf,
         if (ret > 0) {
             bk->widx += ret;
             total += ret;
+            /* account buf bytes */
+            atm_atomic_fetch_add(&buf->aval, ret);
             continue;
         }
         result = total>0 ? total:ret;
         break;
     }
+    atm_log("atm_buf_read_sock r_buf aval[%lu]", buf->aval);
     return result;
 }
 
@@ -137,6 +141,9 @@ atm_buf_write_sock(atm_buf_t *buf,
                 if (ret > 0) {
                     bk->ridx += ret;
                     total += ret;
+                    /* account buf bytes */
+                    int av = -1*ret;
+                    atm_atomic_fetch_add(&buf->aval, av);
                     continue;
                 }
             }
@@ -144,6 +151,7 @@ atm_buf_write_sock(atm_buf_t *buf,
         result = total>0 ? total:ret;
         break;
     }
+    atm_log("atm_buf_write_sock w_buf aval[%lu]", buf->aval);
     return result;
 }
 
@@ -208,11 +216,15 @@ atm_buf_read(atm_buf_t *buf, void *dest,
                 bk->ridx += l;
                 total += l;
                 rmn -= l;
+                /* account byte num */
+                int av = -1*l;
+                atm_atomic_fetch_add(&buf->aval, av);
                 if (rmn > 0) continue;
             }
         }
         break;
     }
+    atm_log("atm_buf_read r_buf aval[%lu]", buf->aval);
     return total;
 }
 
@@ -237,9 +249,12 @@ atm_buf_write(atm_buf_t *buf, void *src,
             bk->widx += l;
             total += l;
             rmn -= l;
+            /* account byte num */
+            atm_atomic_fetch_add(&buf->aval, l);
             if (rmn > 0) continue;
         }
         break;
     }
+    atm_log("atm_buf_write w_buf aval[%lu]", buf->aval);
     return total;
 }

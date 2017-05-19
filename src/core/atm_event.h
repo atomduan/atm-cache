@@ -72,7 +72,7 @@ void
 atm_event_del_event(atm_event_t *e, uint32_t unmask);
 
 void
-atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs);
+atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs, int wrmn);
 
 atm_bool_t
 atm_event_yield_write(atm_event_t *e, atm_uint_t wreqs);

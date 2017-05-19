@@ -44,6 +44,7 @@ typedef int32_t             atm_int_t;
 typedef uint32_t            atm_uint_t;
 typedef int64_t             atm_long_t;
 typedef uint64_t            atm_ulong_t;
+
 /* 
  * Byte oriented data type define:
  *      we recommand to use unint*_t 
@@ -95,7 +96,10 @@ typedef struct atm_time_pair_s      atm_time_pair_t;
 /*
  * -------------- Dep headers --------------
  */
-
+#include <atm_alloc.h>
+#include <atm_atomic.h>
+#include <atm_sig.h>
+#include <atm_net.h>
 
 #include <atm_arr.h>
 #include <atm_blk.h>
@@ -113,10 +117,6 @@ typedef struct atm_time_pair_s      atm_time_pair_t;
 #include <atm_str.h>
 #include <atm_task.h>
 #include <atm_time.h>
-
-#include <atm_alloc.h>
-#include <atm_sig.h>
-#include <atm_net.h>
 
 #ifdef ATM_UNIT_TEST
 #include <atm_unit_test.h>

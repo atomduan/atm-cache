@@ -156,15 +156,23 @@ atm_buf_read_line(atm_buf_t *buf)
     atm_list_iter_t *it = NULL;
     atm_blk_t *bk = NULL;
     atm_uint_t len = 0;
+    int find_end = 0;
     
     it = atm_list_iter_new(buf->blks);
     while ((bk=atm_list_next(it)) != NULL) {
         for (atm_uint_t i=bk->ridx; i<bk->widx; ++i) {
             uint8_t b = bk->head[i];
-            if (b != '\r' && b != '\n') {
-                len++; 
+            if (!find_end) {
+                if (b == '\r' || b == '\n') {
+                    find_end = 1;
+                }
+                len++;
             } else {
-                goto start_build;
+                if (b == '\r' || b == '\n') {
+                    len++;
+                } else {
+                    goto start_build;
+                }
             }
         }
     }
@@ -172,7 +180,7 @@ atm_buf_read_line(atm_buf_t *buf)
 start_build:
     atm_list_iter_free(it);
     if (len > 0) {
-        res = atm_alloc(len); 
+        res = atm_alloc(len+1); 
         atm_buf_read(buf,res,len);
     }
     return res;

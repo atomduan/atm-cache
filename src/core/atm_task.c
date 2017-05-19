@@ -57,6 +57,7 @@ static atm_T_t *ATM_TASK_T = &ATM_TASK_TYPE;
 
 /* worker define */
 static atm_list_t *workers;
+static pthread_mutex_t workers_lk = PTHREAD_MUTEX_INITIALIZER;
 static atm_T_t ATM_TASK_WORKER_TYPE = {
     NULL,
     NULL,
@@ -66,9 +67,6 @@ static atm_T_t ATM_TASK_WORKER_TYPE = {
     atm_task_worker_free,
 };
 static atm_T_t *ATM_TASK_WORKER_T = &ATM_TASK_WORKER_TYPE;
-
-
-static pthread_mutex_t workers_lk = PTHREAD_MUTEX_INITIALIZER;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -92,10 +90,11 @@ atm_task_worker_dispatch(atm_task_t *t)
     }
 
     pthread_mutex_lock(&curr_worker->qlock);
+    atm_log("dispatch one task to worker...");
     wts = curr_worker->wtasks;
     atm_list_push(wts, t);
     pthread_mutex_unlock(&curr_worker->qlock);
-    /* TODO how dose qlock work? */
+    atm_log("signal worker wake from blking...");
     pthread_cond_signal(&curr_worker->qready);
 }
 
@@ -139,16 +138,17 @@ atm_task_worker_blocking_wait(
     struct timeval now;
 
     gettimeofday(&now, NULL);
-    ts.tv_sec = now.tv_sec;
-    ts.tv_sec += timeout;
+    ts.tv_sec = now.tv_sec + timeout;
+    ts.tv_nsec = now.tv_usec * 1000;
 
     wtasks = worker->wtasks;
     pthread_mutex_lock(&worker->qlock);
     while (wtasks->size == 0) {
-        /* TODO how does qlock work with it? */
-        pthread_cond_timedwait(&worker->qready, 
-                &worker->qlock,&ts);
+        atm_log("worker blk waiting....");
+        //pthread_cond_timedwait(&worker->qready,&worker->qlock,&ts);
+        pthread_cond_wait(&worker->qready,&worker->qlock);
     }
+    atm_log("worker get one task....");
     res = atm_list_lpop(wtasks);
     pthread_mutex_unlock(&worker->qlock);
 
@@ -262,15 +262,15 @@ atm_task_process_tasks(char *notify)
 
 
 static void 
-atm_task_notify_recv(atm_event_t *ev)
+atm_task_notify_recv(atm_event_t *e)
 {
     int processed = 0;
     int ret = 0;
     char buf[1];
-    int fd = pipe_recv_fd;
+    int pipe_rfd = e->fd;
 
     while (ATM_TRUE) {
-        ret = read(fd, buf, 1);
+        ret = read(pipe_rfd, buf, 1);
         if (ret > 0) {
             if (!processed) {
                 atm_task_process_tasks(buf);             
@@ -341,7 +341,7 @@ atm_task_pipe_init()
 void 
 atm_task_init()
 {
-    int nworker = 1;
+    int nworker = 10;
     /* Yes we actrally need a thread pool */
     tasks = atm_list_new(
             ATM_TASK_T, 

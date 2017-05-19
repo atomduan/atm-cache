@@ -42,11 +42,9 @@ atm_conn_task_read_raw(atm_conn_t *conn)
 {
     int ret = 0;
     atm_socket_t *srcsock = NULL;
-    atm_sess_t *se = NULL;
     atm_buf_t *r_buf = NULL;
 
     srcsock = conn->sock;
-    se = conn->session;
     r_buf = conn->r_buf;   
 
     ret = atm_buf_read_sock(r_buf, srcsock);
@@ -69,6 +67,7 @@ atm_conn_task_read(atm_task_t *t)
     if (ATM_FALSE != e->active) {
         ret = atm_conn_task_read_raw(conn);
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
+            atm_log("conn_task_read->ev inact");
             /* SAFE_FREE_TAG */
             atm_event_inactive(e);
             /* must return SAFE_FREE_TAG*/
@@ -80,12 +79,14 @@ atm_conn_task_read(atm_task_t *t)
 
     /* restore read event */
     if (ATM_TRUE == e->active){
-        atm_event_add_event_safe(e,ATM_EVENT_READ);
+        atm_log("conn_task_read->restore read");
+        atm_event_add_notify(e,ATM_EVENT_READ);
     } else {
         /* is safe to free here by corp with 
          * atm_event_process_ev and 
          * atm_event_inactive direct return
          * SAFE_FREE_TAG*/
+        atm_log("conn_task_read->free sess");
         atm_sess_free(se);
     }
     return ATM_OK;
@@ -120,21 +121,27 @@ atm_conn_task_write(atm_task_t *t)
     se = conn->session;
     e = conn->event;
 
+    atm_log("atm_conn_task_write enter");
     while (ATM_FALSE != e->active) {
         wreqs = e->write_reqs;
         ret = atm_conn_task_write_raw(conn);
         if (ret ==-1 && errno!=EAGAIN) {
+            atm_log("atm_conn_task_write inact");
             /* SAFE_FREE_TAG */
             atm_event_inactive(e);
             /* must return SAFE_FREE_TAG*/
             return ATM_ERROR;
         } else if (ret == 0) {
+            atm_log("atm_conn_task_write inter");
             /* need to have a rest */
             atm_event_inter_write(e,wreqs);
             break;
         }
         /* to check if more work came in */
-        if (atm_event_yield_write(e,wreqs)) break;
+        if (atm_event_yield_write(e,wreqs)) {
+            atm_log("atm_conn_task_write yield");
+            break;
+        }
     }
 
     if (ATM_FALSE == e->active){
@@ -142,6 +149,7 @@ atm_conn_task_write(atm_task_t *t)
          * atm_event_process_ev and 
          * atm_event_inactive direct return
          * SAFE_FREE_TAG*/
+        atm_log("atm_conn_task_write free sess");
         atm_sess_free(se);
     }
     return ATM_OK;
@@ -249,12 +257,18 @@ atm_conn_handle_read(atm_event_t *conn_event)
     atm_conn_t *conn = NULL;
     atm_task_t *task = NULL;
 
-    conn = conn_event->load;
-    if (conn != NULL) {
-        task = atm_task_new(
-                conn, atm_conn_task_read);
-        atm_task_dispatch(task);
+    /* SAFE_FREE_TAG */
+    pthread_mutex_lock(&conn_event->mutex);
+    if (conn_event->active) {
+        atm_event_del_event(conn_event, ATM_EVENT_READ);
+        conn = conn_event->load;
+        if (conn != NULL) {
+            task = atm_task_new(
+                    conn, atm_conn_task_read);
+            atm_task_dispatch(task);
+        }
     }
+    pthread_mutex_unlock(&conn_event->mutex);
 }
 
 
@@ -264,12 +278,19 @@ atm_conn_handle_write(atm_event_t *conn_event)
     atm_conn_t *conn = NULL;
     atm_task_t *task = NULL;
 
-    conn = conn_event->load;
-    if (conn != NULL) {
-        task = atm_task_new(
-                conn, atm_conn_task_write);
-        atm_task_dispatch(task);
+    /* SAFE_FREE_TAG */
+    pthread_mutex_lock(&conn_event->mutex);
+    if (conn_event->active) {
+        atm_event_del_event(conn_event, ATM_EVENT_WRITE);
+        conn = conn_event->load;
+        if (conn != NULL) {
+            task = atm_task_new(
+                    conn, atm_conn_task_write);
+            atm_task_dispatch(task);
+        }
+        conn_event->on_write = ATM_TRUE;
     }
+    pthread_mutex_unlock(&conn_event->mutex);
 }
 
 
@@ -335,9 +356,10 @@ atm_conn_write(atm_conn_t *c,
 {
     atm_buf_t *w_buf = NULL; 
     if (c != NULL) {
+        atm_log("atm_conn_write enter");
         w_buf = c->w_buf;
         atm_buf_write(w_buf,src,nbyte); 
-        atm_event_notify_write(c->event);
+        atm_event_write_notify(c->event);
     }
 }
 

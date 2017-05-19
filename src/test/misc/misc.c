@@ -11,6 +11,7 @@ atm_sys_profile()
 
 int main(int argc, char **argv)
 {
+    char * p = NULL;
     atm_sys_profile();
     return 0;
 }

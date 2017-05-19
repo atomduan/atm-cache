@@ -22,7 +22,10 @@ struct atm_event_s {
     /* atm_conn_t, atm_listen_t, etc */
     void       *load;
 
-    /* wether register in epoll*/
+    /* whether register in epoll*/
+    atm_bool_t  registed;
+
+    /* whether the event relevant is valid */
     atm_bool_t  active;
 
     /* only be called by epoll */
@@ -63,13 +66,10 @@ void
 atm_event_add_event(atm_event_t *e, int mask);
 
 void
-atm_event_add_event_safe(atm_event_t *e, int mask);
+atm_event_add_notify(atm_event_t *e, int mask);
 
 void
 atm_event_del_event(atm_event_t *e, int unmask);
-
-void
-atm_event_del_event_safe(atm_event_t *e, int unmask);
 
 void
 atm_event_inter_write(
@@ -80,7 +80,7 @@ atm_event_yield_write(
         atm_event_t *e, atm_uint_t wreqs);
 
 void
-atm_event_notify_write(atm_event_t *e);
+atm_event_write_notify(atm_event_t *e);
 
 void
 atm_event_inactive(atm_event_t *e);

@@ -4,7 +4,6 @@
 #include <atm_core.h>
 
 
-
 struct atm_buf_s {
     pthread_mutex_t     mutex; 
     atm_list_t         *blks;
@@ -41,5 +40,6 @@ atm_buf_read(atm_buf_t *buf, void *dest,
 atm_int_t
 atm_buf_write(atm_buf_t *buf, void *src, 
         atm_uint_t nbyte);
+
 
 #endif /* _ATM_BUF_H_INCLUDED_ */

@@ -20,6 +20,7 @@ atm_sess_process_cmd(atm_conn_t *c,
 static void
 atm_sess_reply(atm_conn_t *c, char *m)
 {
+    atm_log("atm_sess_reply enter %s", m);
     atm_str_t *msg = NULL;
     msg = atm_str_new(m);
     msg = atm_str_cat(msg, "\n");
@@ -52,6 +53,7 @@ atm_sess_process_cmd(atm_conn_t *c,
     atm_str_t *r = NULL;
     atm_str_t *cmd = NULL;
 
+    atm_log("sess_process_cmd");
     cmd = argv[0];
     if (atm_str_eqs(cmd, "set")) {
         if (argc == 3) {

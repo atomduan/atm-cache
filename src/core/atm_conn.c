@@ -87,9 +87,17 @@ atm_conn_task_read(atm_task_t *t)
          * atm_event_inactive direct return
          * SAFE_FREE_TAG*/
         atm_log("conn_task_read->free sess");
-        atm_sess_free(se);
+        /*
+         * to garentee the release happens
+         * at the end of this function
+         */
+        goto bottom_release;
     }
     return ATM_OK;
+
+bottom_release:
+    atm_sess_free(se);
+    return ATM_ERROR;
 }
 
 
@@ -150,9 +158,17 @@ atm_conn_task_write(atm_task_t *t)
          * atm_event_inactive direct return
          * SAFE_FREE_TAG*/
         atm_log("atm_conn_task_write free sess");
-        atm_sess_free(se);
+        /*
+         * to garentee the release happens
+         * at the end of this function
+         */
+        goto bottom_release;
     }
     return ATM_OK;
+
+bottom_release:
+    atm_sess_free(se);
+    return ATM_ERROR;
 }
 
 

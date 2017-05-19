@@ -146,7 +146,7 @@ atm_event_pipe_init()
 {
     int fds[2];
     atm_event_t *pe = NULL;
-    int events = ATM_EVENT_NONE;
+    uint32_t events = ATM_EVENT_NONE;
 
     if (pipe(fds)) {
         atm_log_rout(ATM_LOG_FATAL, 
@@ -172,8 +172,7 @@ atm_event_pipe_init()
 
 
 static void
-atm_event_process_ev(atm_event_t *ev,
-        uint32_t evs)
+atm_event_process_ev(atm_event_t *ev, uint32_t evs)
 {
     if (evs & (EPOLLERR|EPOLLHUP)) {
         evs |= (EPOLLIN | EPOLLOUT);
@@ -198,15 +197,15 @@ atm_event_process_ev(atm_event_t *ev,
 static void
 atm_event_process_events()
 {
-    int             events,i = 0;
+    int             ecnt,i = 0;
     uint32_t        evs = 0; 
     atm_event_t    *ev = NULL;
 
-    events = epoll_wait(ep,event_list,
+    ecnt = epoll_wait(ep,event_list,
             (int) nevents,ATM_EVENT_BLOCK);
     
-    if (events > 0) {
-       for (i=0; i<events; ++i) {
+    if (ecnt > 0) {
+       for (i=0; i<ecnt; ++i) {
            ev = event_list[i].data.ptr;
            if (ev->fd == -1) {
                continue; 
@@ -289,7 +288,7 @@ atm_event_add_listen(atm_conn_listen_t *l)
 {
     int sfd = -1;
     atm_event_t *le = NULL;
-    int events = ATM_EVENT_NONE;
+    uint32_t events = ATM_EVENT_NONE;
 
     if (l != NULL) {
         sfd = l->ssck->fd;
@@ -311,7 +310,7 @@ atm_event_add_conn(atm_conn_t *c)
 {
     int cfd = -1;
     atm_event_t *ce = NULL;
-    int events = ATM_EVENT_NONE;
+    uint32_t events = ATM_EVENT_NONE;
 
     if (c != NULL) {
         cfd = c->sock->fd;
@@ -337,7 +336,7 @@ atm_event_add_conn(atm_conn_t *c)
  * 4. activate it.
  */
 void
-atm_event_add_event(atm_event_t *e, int mask)
+atm_event_add_event(atm_event_t *e, uint32_t mask)
 {
     int fd =-1;
     int op = 0;
@@ -373,7 +372,7 @@ atm_event_add_event(atm_event_t *e, int mask)
 
 
 void
-atm_event_add_notify(atm_event_t *e, int mask)
+atm_event_add_notify(atm_event_t *e, uint32_t mask)
 {
     atm_event_msg_t *m = NULL;
     char buf[1];
@@ -398,14 +397,14 @@ atm_event_add_notify(atm_event_t *e, int mask)
  *    and unactivate it.
  */
 void
-atm_event_del_event(atm_event_t *e, int unmask)
+atm_event_del_event(atm_event_t *e, uint32_t unmask)
 {
     int fd =-1;
     int op = 0;
     int ret = -1;
     struct epoll_event ee;
 
-    atm_log("del event unmask is %d",unmask);
+    atm_log("del event unmask is %u",unmask);
     if (e != NULL) {
         fd = e->fd;
         e->events = e->events & (~unmask);
@@ -438,8 +437,7 @@ atm_event_del_event(atm_event_t *e, int unmask)
 
 
 void
-atm_event_inter_write(
-        atm_event_t *e, atm_uint_t wreqs)
+atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs)
 {
     pthread_mutex_lock(&e->mutex);
     e->on_write = ATM_FALSE;
@@ -453,8 +451,7 @@ atm_event_inter_write(
 
 
 atm_bool_t
-atm_event_yield_write(
-        atm_event_t *e, atm_uint_t wreqs)
+atm_event_yield_write(atm_event_t *e, atm_uint_t wreqs)
 {
     atm_bool_t res = ATM_FALSE;
     pthread_mutex_lock(&e->mutex);

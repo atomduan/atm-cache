@@ -43,7 +43,6 @@ atm_net_accept_raw(atm_socket_t *ssock,
 
     while(ATM_TRUE) {
         fd = accept(ss, (struct sockaddr*)&sa, &salen);
-        atm_log("accept raw fd accept is %d", fd);
         if (fd == ATM_NET_ERR_FD) {
             if (errno == EINTR) {
                 continue;
@@ -52,8 +51,10 @@ atm_net_accept_raw(atm_socket_t *ssock,
         break;
     }
 
-    if (fd == ATM_NET_ERR_FD)
+    if (fd == ATM_NET_ERR_FD) 
         return ATM_ERROR;
+
+    atm_log("accept raw fd accept is %d", fd);
     if (sa.ss_family == AF_INET) {
         s = (struct sockaddr_in *)&sa;
         inet_ntop(AF_INET,(void *)&(s->sin_addr),ip,ip_len);

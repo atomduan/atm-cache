@@ -14,6 +14,9 @@
 #define ATM_EVENT_READ          EPOLLIN   
 #define ATM_EVENT_WRITE         EPOLLOUT 
 
+#define ATM_EVENT_OP_ADD        1
+#define ATM_EVENT_OP_DEL        2
+
 
 struct atm_event_s {
     int         fd;
@@ -37,6 +40,12 @@ struct atm_event_s {
     atm_bool_t          on_write;
     atm_uint_t          write_reqs;
 };
+
+typedef struct {
+    atm_event_t    *e; 
+    uint32_t        mask;
+    atm_uint_t      op_type;
+} atm_event_op_t;
 
 
 /* public event type lifecycle */

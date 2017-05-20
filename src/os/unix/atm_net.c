@@ -230,33 +230,8 @@ int
 atm_net_nonblock(atm_socket_t *s,
         atm_bool_t non_block)
 {
-    int flags;
     int fd = s->fd;    
-
-    /* Set the socket blocking 
-     * (if non_block is zero) or non-blocking.
-     * Note that fcntl(2) for F_GETFL 
-     * and F_SETFL can't be
-     * interrupted by a signal. */
-    if ((flags=fcntl(fd, F_GETFL))==-1) {
-        atm_log_rout(ATM_LOG_ERROR,
-            "fcntl(F_GETFL): %s", 
-            strerror(errno));
-        return ATM_ERROR;
-    }
-
-    if (non_block)
-        flags |= O_NONBLOCK;
-    else
-        flags &= ~O_NONBLOCK;
-
-    if (fcntl(fd,F_SETFL,flags)==-1) {
-        atm_log_rout(ATM_LOG_ERROR,
-            "fcntl(F_SETFL,O_NONBLOCK): %s", 
-            strerror(errno));
-        return ATM_ERROR;
-    }
-    return ATM_OK;
+    return atm_file_nonblock(fd, non_block);
 }
 
 

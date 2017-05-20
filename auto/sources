@@ -25,7 +25,8 @@ CORE_DEPS="src/core/atm_core.h \
            src/core/atm_siphash.h \
            src/core/atm_str.h \
            src/core/atm_task.h \
-           src/core/atm_time.h"
+           src/core/atm_time.h \
+           src/core/atm_util.h"
 
 CORE_SRCS="src/core/atm_arr.c \
            src/core/atm_blk.c \
@@ -86,10 +87,12 @@ CORE_DEPS="$CORE_DEPS \
             src/os/unix/linux/atm_linux_config.h \
             src/os/unix/atm_alloc.h \
             src/os/unix/atm_atomic.h \
-            src/os/unix/atm_sig.h \
-            src/os/unix/atm_net.h"
+            src/os/unix/atm_file.h \
+            src/os/unix/atm_net.h \
+            src/os/unix/atm_sig.h"
 
 CORE_SRCS="$CORE_SRCS \
             src/os/unix/atm_alloc.c \
-            src/os/unix/atm_sig.c \
-            src/os/unix/atm_net.c"
+            src/os/unix/atm_file.c \
+            src/os/unix/atm_net.c \
+            src/os/unix/atm_sig.c"

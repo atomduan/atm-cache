@@ -13,13 +13,13 @@ struct atm_task_s {
     atm_bool_t          retry;
 };
 
-struct atm_task_worker_s {
+typedef struct {
     atm_list_t         *wtasks;
     atm_bool_t          active;
     pthread_t           tid;
     pthread_cond_t      qready;
     pthread_mutex_t     qlock;
-};
+} atm_task_worker_t;
 
 void 
 atm_task_init();

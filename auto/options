@@ -27,7 +27,7 @@ EVENT_POLL=NO
 ATM_CPU_CACHE_LINE=
 
 ############ LIB CONFIGURE #############
-ATM_LIBATOMIC=YES
+ATM_LIBATOMIC=NO
 
 ############ CONFIGURE  #############
 ATM_MAKEFILE=$ATM_BUILD/Makefile

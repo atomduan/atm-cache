@@ -79,11 +79,9 @@ typedef struct atm_list_s           atm_list_t;
 typedef struct atm_list_iter_s      atm_list_iter_t;
 typedef struct atm_dict_s           atm_dict_t;
 typedef struct atm_conn_s           atm_conn_t;
-typedef struct atm_conn_listen_s    atm_conn_listen_t;
 typedef struct atm_socket_s         atm_socket_t;
 typedef struct atm_event_s          atm_event_t;
 typedef struct atm_task_s           atm_task_t;
-typedef struct atm_task_worker_s    atm_task_worker_t;
 typedef struct atm_sess_s           atm_sess_t;
 typedef struct atm_buf_s            atm_buf_t;
 typedef struct atm_blk_s            atm_blk_t;
@@ -91,15 +89,19 @@ typedef struct atm_ctx_s            atm_ctx_t;
 typedef struct atm_arr_s            atm_arr_t;
 typedef struct timespec             atm_time_spec_t;
 typedef struct atm_time_pair_s      atm_time_pair_t;
+typedef struct atm_pipe_s           atm_pipe_t;
 
 
 /*
  * -------------- Dep headers --------------
  */
+#include <atm_util.h>
+
 #include <atm_alloc.h>
 #include <atm_atomic.h>
-#include <atm_sig.h>
+#include <atm_file.h>
 #include <atm_net.h>
+#include <atm_sig.h>
 
 #include <atm_arr.h>
 #include <atm_blk.h>
@@ -123,7 +125,6 @@ typedef struct atm_time_pair_s      atm_time_pair_t;
 #endif
 
 
-#define atm_min(val1, val2)  ((val1 > val2) ? (val2) : (val1))
 
 
 #endif /* _ATM_CORE_H_INCLUDED_ */

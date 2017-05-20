@@ -2,14 +2,15 @@
 /*
  * Private 
  * */
-static void 
-atm_event_notify_recv(atm_event_t *ev);
+static void
+atm_event_notify_handle(void *eop);
+
+static atm_event_op_t *
+atm_event_op_new(atm_event_t *e, 
+        uint32_t mask, atm_uint_t op_type);
 
 static void
-atm_event_nonblock_fd(int fd);
-
-static void
-atm_event_pipe_init();
+atm_event_op_free(void *eop);
 
 static void
 atm_event_process_ev();
@@ -24,150 +25,49 @@ static atm_uint_t            nevents = 0;
 
 
 /* pipe define */
-static int pipe_recv_fd = -1;
-static int pipe_sent_fd = -1;
-
-
-typedef struct {
-    atm_event_t *e;
-    int          mask;
-} atm_event_msg_t;
-
-static atm_event_msg_t *
-atm_event_msg_new(atm_event_t *e, int mask);
-
-static void
-atm_event_msg_free(void *e);
-
-
-static atm_list_t *event_msgs;
-static pthread_mutex_t event_msgs_lk = PTHREAD_MUTEX_INITIALIZER;
-static atm_T_t ATM_EVENT_MSG_TYPE = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    atm_event_msg_free,
-};
-static atm_T_t *ATM_EVENT_MSG_T = &ATM_EVENT_MSG_TYPE;
+static atm_pipe_t *notify_pipe;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
  * */
-static atm_event_msg_t *
-atm_event_msg_new(atm_event_t *e, int mask)
+static void
+atm_event_notify_handle(void *eop)
 {
-    atm_event_msg_t *res = NULL;
-    res = atm_alloc(sizeof(atm_event_msg_t));
+    atm_event_op_t *op = eop;
+    if (op != NULL) {
+        if (op->op_type == ATM_EVENT_OP_ADD) {
+            atm_event_add_event(op->e, op->mask);
+        } else
+        if (op->op_type == ATM_EVENT_OP_DEL) {
+            atm_event_del_event(op->e, op->mask);
+        }
+    }
+    atm_event_op_free(op);
+}
+
+
+static atm_event_op_t *
+atm_event_op_new(atm_event_t *e, 
+        uint32_t mask, atm_uint_t op_type)
+{
+    atm_event_op_t *res = NULL;
+    res = atm_alloc(sizeof(atm_event_op_t));
     res->e = e;
     res->mask = mask;
+    res->op_type = op_type;
     return res;
 }
 
 
 static void
-atm_event_msg_free(void *e)
+atm_event_op_free(void *eop)
 {
-    if (e != NULL) {
-        atm_free(e);
+    atm_event_op_t *op = eop;
+    if (op != NULL) {
+        atm_free(op);
     }
-}
-
-
-static void 
-atm_event_process_tasks(char *notify)
-{
-    atm_event_msg_t *m = NULL;
-    switch (notify[0]) {
-        case 'A':
-            /* this is a single thread impl */
-            while (ATM_TRUE) {
-                m=atm_list_lpop(event_msgs);
-                if (m == NULL) break;
-                atm_log("add event from notify");
-                atm_event_add_event(m->e, m->mask);
-            }
-        break;
-    }
-}
-
-
-static void 
-atm_event_notify_recv(atm_event_t *e)
-{
-    int processed = 0;
-    int ret = 0;
-    char buf[1];
-    int pipe_rfd = e->fd;
-
-    atm_log("atm_event_notify_recv enter");
-    pthread_mutex_lock(&event_msgs_lk);
-    while (ATM_TRUE) {
-        ret = read(pipe_rfd, buf, 1);
-        if (ret > 0) {
-            if (!processed) {
-                atm_event_process_tasks(buf);             
-                processed++;
-            }
-            continue;
-        } else {
-            break;
-        }
-    }
-    pthread_mutex_unlock(&event_msgs_lk);
-}
-
-
-static void
-atm_event_nonblock_fd(int fd)
-{
-    int flags;
-    if ((flags=fcntl(fd, F_GETFL))==-1) {
-        atm_log_rout(ATM_LOG_FATAL,
-            "fcntl(F_GETFL): %s", 
-            strerror(errno));
-        exit(1);
-    }
-    flags |= O_NONBLOCK;
-    if (fcntl(fd,F_SETFL,flags)==-1) {
-        atm_log_rout(ATM_LOG_FATAL,
-            "fcntl(F_SETFL,O_NONBLOCK): %s", 
-            strerror(errno));
-        exit(1);
-    }
-}
-
-
-static void
-atm_event_pipe_init()
-{
-    int fds[2];
-    atm_event_t *pe = NULL;
-    uint32_t events = ATM_EVENT_NONE;
-
-    if (pipe(fds)) {
-        atm_log_rout(ATM_LOG_FATAL, 
-            "can not create event notify pipe");
-        exit(1);
-    }
-
-    pipe_recv_fd = fds[0];
-    atm_event_nonblock_fd(pipe_recv_fd);
-    pipe_sent_fd = fds[1];
-    atm_event_nonblock_fd(pipe_sent_fd);
-
-    pe = atm_event_new(
-            NULL,
-            pipe_recv_fd,
-            atm_event_notify_recv,
-            NULL); 
-
-    events = EPOLLIN|EPOLLHUP|EPOLLET;
-    atm_log("event initial events mask %u", events);
-    atm_event_add_event(pe, events);
 }
 
 
@@ -197,15 +97,15 @@ atm_event_process_ev(atm_event_t *ev, uint32_t evs)
 static void
 atm_event_process_events()
 {
-    int             ecnt,i = 0;
+    int             ev_count,i = 0;
     uint32_t        evs = 0; 
     atm_event_t    *ev = NULL;
 
-    ecnt = epoll_wait(ep,event_list,
+    ev_count = epoll_wait(ep,event_list,
             (int) nevents,ATM_EVENT_BLOCK);
     
-    if (ecnt > 0) {
-       for (i=0; i<ecnt; ++i) {
+    if (ev_count > 0) {
+       for (i=0; i<ev_count; ++i) {
            ev = event_list[i].data.ptr;
            if (ev->fd == -1) {
                continue; 
@@ -232,10 +132,10 @@ atm_event_init()
     event_list = atm_alloc(
         sizeof(struct epoll_event) * nevents);
 
-    event_msgs = atm_list_new(
-            ATM_EVENT_MSG_T,
-            ATM_FREE_DEEP);
-    atm_event_pipe_init();
+    /* dispatch pipe init*/
+    notify_pipe = atm_pipe_new();
+    /* trust pipe event manage to epoll */
+    atm_pipe_event_init(notify_pipe);
 }
 
 
@@ -374,20 +274,13 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
 void
 atm_event_add_notify(atm_event_t *e, uint32_t mask)
 {
-    atm_event_msg_t *m = NULL;
-    char buf[1];
+    atm_uint_t type = ATM_EVENT_OP_ADD; 
+    atm_event_op_t *eop = atm_event_op_new(e,mask,type);
 
-    buf[0] = 'A';
-    if (e != NULL) {
-        pthread_mutex_lock(&event_msgs_lk);
-        m = atm_event_msg_new(e, mask);
-        atm_list_push(event_msgs, m);
-        if (write(pipe_sent_fd,buf,1)!=1) {
-            atm_log_rout(ATM_LOG_ERROR, 
-                "event notify to pipe fail");
-        }
-        pthread_mutex_unlock(&event_msgs_lk);
-    }
+    atm_pipe_notify(
+            notify_pipe,
+            eop,
+            atm_event_notify_handle);
 }
 
 

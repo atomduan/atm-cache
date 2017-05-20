@@ -124,10 +124,12 @@ atm_conn_task_write(atm_task_t *t)
     atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
     atm_uint_t wreqs = 0;
+    atm_buf_t *w_buf = NULL;
 
     conn = t->load;
     se = conn->session;
     e = conn->event;
+    w_buf = conn->w_buf;
 
     atm_log("atm_conn_task_write enter");
     while (ATM_FALSE != e->active) {
@@ -140,9 +142,11 @@ atm_conn_task_write(atm_task_t *t)
             /* must return SAFE_FREE_TAG*/
             return ATM_ERROR;
         } else if (ret == 0) {
+            /* write is not aval, 
+             * need wait another event */
             atm_log("atm_conn_task_write inter");
             /* need to have a rest */
-            int wrmn = conn->w_buf->aval;
+            int wrmn = w_buf->aval;
             atm_event_inter_write(e,wreqs,wrmn);
             break;
         }

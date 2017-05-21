@@ -243,7 +243,7 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
     int ret = 0;
     struct epoll_event ee;
 
-    atm_log("add event mask is %d",mask);
+    atm_log("add event mask is %u",mask);
     if (e != NULL) {
         fd = e->fd;
         e->events = e->events | mask;

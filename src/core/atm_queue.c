@@ -6,7 +6,7 @@ static void
 atm_queue_nonempty_wait(atm_queue_t *queue);
 
 /* resolution is millisecond(ms) */
-static atm_int_t loop_timeout = 1000;
+static atm_int_t loop_timeout = 5;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -28,18 +28,14 @@ atm_queue_nonempty_wait(atm_queue_t *queue)
         btyp = q->blk_type;
 
         if (btyp == ATM_QUEUE_BLOCK) {
-            gettimeofday(&now, NULL);
-            ts.tv_sec = now.tv_sec + timeout;
-            ts.tv_nsec = now.tv_usec * 1000;
 
             pthread_mutex_lock(&q->qlock);
             while (atm_queue_size(q) == 0) {
-                atm_log("enter cond wait q addr is %p", q);
-                atm_log("blking queue wait...");
-                //pthread_cond_timedwait(&q->qready,&q->qlock,&ts);
-                pthread_cond_wait(&q->qready,&q->qlock);
+                gettimeofday(&now, NULL);
+                ts.tv_sec = now.tv_sec + timeout;
+                ts.tv_nsec = now.tv_usec*1000;
+                pthread_cond_timedwait(&q->qready,&q->qlock,&ts);
             }
-            atm_log("blocking queue awake, q addr is %p", q);
             pthread_mutex_unlock(&q->qlock);
         } else {
             atm_log_rout(ATM_LOG_FATAL, 

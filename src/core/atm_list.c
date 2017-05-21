@@ -147,6 +147,7 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
     res->size = 0;
     res->v_type = v_type;
     res->free_type = f_type;
+    res->riter = NULL;
     return res;
 }
 
@@ -336,13 +337,16 @@ atm_list_round(atm_list_t *list)
     void *res = NULL;
     atm_list_iter_t *it = NULL;
 
-    it = atm_list_iter_new(list);
+    if (list->riter == NULL) {
+        list->riter = atm_list_iter_new(list);
+    }
+    it = list->riter;
+
     res = atm_list_next(it);
     if (res == NULL) {
         atm_list_iter_reset(it);
         res = atm_list_next(it);
     }
-    atm_list_iter_free(it);
     return res;
 }
 

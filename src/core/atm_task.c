@@ -75,11 +75,11 @@ atm_task_worker_func(void *arg)
 {
     void *res = NULL;
     atm_task_worker_t *worker = NULL;
-    atm_queue_t *blking_tasks = NULL;
     atm_task_t *t = NULL;
 
     worker = arg;
-    blking_tasks = worker->blking_tasks;
+
+    atm_log("worker_fuc enter, worker tid[%u]", worker->tid);
     while (worker->active) {
         /* blocking pop hasppens here */
         t = atm_queue_pop(worker->blking_tasks);
@@ -95,6 +95,10 @@ atm_task_worker_func(void *arg)
 static void
 atm_task_worker_init(int nworker)
 {
+    int ret;
+    pthread_t tid;
+    pthread_attr_t attr;
+
     atm_task_worker_t *w = NULL;
     workers = atm_list_new(
             ATM_TASK_WORKER_T, 
@@ -102,7 +106,21 @@ atm_task_worker_init(int nworker)
     for (int i=0; i<nworker; ++i) {
         w = atm_task_worker_new();
         if (w != NULL) {
-            atm_list_push(workers, w);
+            pthread_attr_init(&attr);
+            ret = pthread_create(&tid,&attr,
+                atm_task_worker_func,w);
+
+            if (ret == ATM_OK) {
+                w->tid = tid;
+                w->active = ATM_TRUE;
+                atm_list_push(workers, w);
+                continue;
+            } else {
+                atm_log_rout(ATM_LOG_ERROR, 
+                    "task create worker fail");
+                atm_task_worker_free(w);
+                continue;
+            }
         }
     }
 }
@@ -112,40 +130,14 @@ static atm_task_worker_t *
 atm_task_worker_new()
 {
     atm_task_worker_t *res = NULL;
-    atm_queue_t *blking_tasks = NULL;
-
-    int ret;
-    pthread_t tid;
-    pthread_attr_t attr;
 
     res = atm_alloc(sizeof(atm_task_worker_t));
     res->blking_tasks = atm_queue_new(
                 ATM_TASK_T,
                 ATM_FREE_DEEP,
                 ATM_QUEUE_BLOCK);
-    res->active = ATM_TRUE;
-    res->tid = 0;
-
-    pthread_attr_init(&attr);
-    ret = pthread_create(&tid,&attr,
-            atm_task_worker_func,res);
-
-    if (ret != ATM_OK) {
-        atm_log_rout(ATM_LOG_ERROR, 
-                "task create worker fail");
-        goto init_exception;
-    }
-    res->tid = tid;
+    res->active = ATM_FALSE;
     return res;
-
-init_exception:
-    if (blking_tasks != NULL) {
-        atm_queue_free(blking_tasks);
-    }
-    if (res != NULL) {
-        atm_free(res);
-    }
-    return NULL;
 }
 
 
@@ -168,7 +160,7 @@ atm_task_worker_free(void *worker)
 void 
 atm_task_init()
 {
-    int nworker = 1;
+    int nworker = 10;
     /* workers init */
     atm_task_worker_init(nworker);
     /* dispatch pipe init*/

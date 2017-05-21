@@ -18,6 +18,8 @@ struct atm_list_s {
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
+    /* for atm_list_round */
+    atm_list_iter_t    *riter;
 };
 
 

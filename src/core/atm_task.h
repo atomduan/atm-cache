@@ -15,7 +15,6 @@ struct atm_task_s {
 typedef struct {
     /* blocking queue */
     atm_queue_t        *blking_tasks;
-
     atm_bool_t          active;
     pthread_t           tid;
 } atm_task_worker_t;

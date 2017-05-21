@@ -44,7 +44,7 @@ atm_event_notify_handle(void *eop)
             atm_event_del_event(op->e, op->mask);
         }
     }
-    atm_event_op_free(op);
+    atm_event_op_free(eop);
 }
 
 

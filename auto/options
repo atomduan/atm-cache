@@ -3,6 +3,7 @@ ATM_BINARY_NAME="atmc"
 ATM_BINARY_SUFFIX=""
 
 ATM_DEBUG=YES
+
 #If unit test enabled, we can use "make test" to do unit test
 ATM_UNIT_TEST=YES
 #ATM_UNIT_TEST=NO
@@ -20,7 +21,9 @@ ATM_PREFIX=${ATM_PREFIX:-/usr/local/$ATM_BINARY_NAME}
 ATM_USER=${ATM_USER:-nobody}
 ATM_GROUP=
 
-USE_THREADS=YES #This option must open,TODO
+#This option must open,TODO
+USE_THREADS=YES 
+
 ATM_FILE_AIO=NO
 EVENT_FOUND=NO
 EVENT_POLL=NO

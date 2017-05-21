@@ -8,10 +8,11 @@
 
 
 struct atm_arr_s {
-    void       *arr;
-    atm_uint_t  length;
-    atm_uint_t  size;
-    atm_uint_t  step;
+    atm_atomic_t        refn;           
+    void               *arr;
+    atm_uint_t          capacity;
+    atm_uint_t          size;
+    atm_uint_t          step;
 };
 
 

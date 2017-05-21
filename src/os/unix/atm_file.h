@@ -8,7 +8,7 @@
 struct atm_pipe_s {
     int                 recv_fd;
     int                 sent_fd;
-    atm_list_t*         mqueue;
+    atm_queue_t*        mqueue;
     pthread_mutex_t     mqlock;
     /* if epoll is using for msging */
     atm_event_t*        event;
@@ -36,11 +36,8 @@ void
 atm_pipe_free(void *pipe);
 
 void
-atm_pipe_notify(atm_pipe_t *pipe, void *load,
+atm_pipe_notify(atm_pipe_t *pipe, void *load, 
         void (*call_back)(void *load));
-
-void
-atm_pip_handle_recv(atm_event_t *e);
 
 
 #endif /* _ATM_FILE_H_INCLUDED_ */

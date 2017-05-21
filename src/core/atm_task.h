@@ -10,15 +10,14 @@ struct atm_task_s {
     atm_bool_t          active;
     void               *load;
     atm_int_t         (*run)(atm_task_t *self);
-    atm_bool_t          retry;
 };
 
 typedef struct {
-    atm_list_t         *wtasks;
+    /* blocking queue */
+    atm_queue_t        *blking_tasks;
+
     atm_bool_t          active;
     pthread_t           tid;
-    pthread_cond_t      qready;
-    pthread_mutex_t     qlock;
 } atm_task_worker_t;
 
 void 

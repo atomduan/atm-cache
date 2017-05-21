@@ -1,5 +1,5 @@
-#ifndef _ATM_MAIN_H_INCLUDED_
-#define _ATM_MAIN_H_INCLUDED_
+#ifndef _ATM_CTX_H_INCLUDED_
+#define _ATM_CTX_H_INCLUDED_
 
 #include <atm_core.h>
 
@@ -9,4 +9,4 @@ struct atm_ctx_s {
     atm_dict_t      *dt; 
 };
 
-#endif /* _ATM_MAIN_H_INCLUDED_ */
+#endif /* _ATM_CTX_H_INCLUDED_ */

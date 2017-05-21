@@ -285,7 +285,8 @@ atm_conn_handle_read(atm_event_t *conn_event)
         conn = conn_event->load;
         if (conn != NULL) {
             task = atm_task_new(
-                    conn, atm_conn_task_read);
+                    conn, 
+                    atm_conn_task_read);
             atm_task_dispatch(task);
         }
     }
@@ -306,7 +307,8 @@ atm_conn_handle_write(atm_event_t *conn_event)
         conn = conn_event->load;
         if (conn != NULL) {
             task = atm_task_new(
-                    conn, atm_conn_task_write);
+                    conn, 
+                    atm_conn_task_write);
             atm_task_dispatch(task);
         }
         conn_event->on_write = ATM_TRUE;

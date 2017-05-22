@@ -54,7 +54,7 @@ atm_str_hash(void *str)
     atm_str_t *ss = NULL;
 
     ss = (atm_str_t *) str;
-    res = atm_hash(ss->val, ss->len);
+    res = atm_dict_hash(ss->val, ss->len);
     return res;
 }
 

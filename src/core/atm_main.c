@@ -65,7 +65,7 @@ atm_init()
     atm_svctx_init();
     atm_config_init();
     atm_sig_init();
-    atm_hash_init();
+    atm_dict_init();
     atm_event_init();
     atm_conn_init();
     atm_task_init();

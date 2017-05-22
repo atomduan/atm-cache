@@ -41,6 +41,9 @@ struct atm_dict_entry_s {
 
 
 /* public dict type lifecycle */
+void 
+atm_dict_init();
+
 atm_dict_t *
 atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t free_type);
 
@@ -63,6 +66,12 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val);
 
 void 
 atm_dict_del(atm_dict_t *dict, void *key);
+
+uint64_t 
+atm_dict_hash(char *input, atm_uint_t inlen);
+
+uint64_t 
+atm_dict_hash_nocase(char *input, atm_uint_t inlen);
 
 
 #endif /* _ATM_DICT_H_INCLUDED_ */

@@ -114,7 +114,7 @@ atm_dict_entry_hash(void *entry)
 
     e = (atm_dict_entry_t *) entry;
     e_str = atm_str_ptr_str(e); 
-    res = atm_hash(e_str->val, e_str->len);
+    res = atm_dict_hash(e_str->val, e_str->len);
 
     atm_str_free(e_str);
     return res;
@@ -271,6 +271,13 @@ atm_dict_entry(atm_dict_t *dict, void *key)
 /*
  * Public
  * */
+void 
+atm_dict_init()
+{
+    atm_siphash_init();
+}
+
+
 atm_dict_t *
 atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t f_type)
 {
@@ -399,4 +406,18 @@ atm_dict_del(atm_dict_t *dict, void *key)
         atm_list_del(lptr, entry);
         dict->size--;
     }
+}
+
+
+uint64_t 
+atm_dict_hash(char *input, atm_uint_t inlen)
+{
+    return atm_siphash(input, inlen);
+}
+
+
+uint64_t 
+atm_dict_hash_nocase(char *input, atm_uint_t inlen)
+{
+    return atm_siphash_nocase(input, inlen);
 }

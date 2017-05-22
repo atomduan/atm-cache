@@ -13,6 +13,9 @@ atm_alloc(atm_uint_t size);
 void *
 atm_calloc(atm_uint_t nmemb, atm_uint_t size);
 
+void *
+atm_realloc(void *p, atm_uint_t size);
+
 void 
 atm_free(void *ptr);
 

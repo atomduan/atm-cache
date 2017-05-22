@@ -8,27 +8,27 @@
 
 
 struct atm_arr_s {
-    atm_atomic_t        refn;           
-    void               *arr;
+    void               *_vals;
     atm_uint_t          capacity;
-    atm_uint_t          size;
-    atm_uint_t          step;
+    atm_uint_t          length;
+    atm_uint_t          tsize;
+    pthread_mutex_t     mutex;
 };
 
 
 atm_arr_t *
-atm_arr_new(atm_uint_t step);
+atm_arr_new(atm_uint_t tsize);
 
 void
 atm_arr_free(void *arr);
 
 atm_uint_t
-atm_arr_add(void *e);
+atm_arr_add(atm_arr_t *arr, void *v);
 
 void *
-atm_arr_get(atm_uint_t i);
+atm_arr_get(atm_arr_t *arr, atm_uint_t i);
 
 void
-atm_arr_del(atm_uint_t i);
+atm_arr_del(atm_arr_t *arr, atm_uint_t i);
 
 #endif /* _ATM_ARR_H_INCLUDED_ */

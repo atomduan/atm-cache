@@ -112,7 +112,6 @@ typedef struct atm_queue_s          atm_queue_t;
 #include <atm_ctx.h>
 #include <atm_dict.h>
 #include <atm_event.h>
-#include <atm_hash.h>
 #include <atm_list.h>
 #include <atm_log.h>
 #include <atm_queue.h>

@@ -20,10 +20,10 @@ struct atm_conn_s {
     atm_buf_t   *w_buf;
 
     /* conn layer job controll */
-    pthread_mutex_t            _mutex;
-    volatile atm_bool_t         on_read;
-    volatile atm_bool_t         on_write;
-    atm_uint_t                  write_reqs;
+    pthread_mutex_t    _mutex;
+    atm_bool_t          on_read;
+    atm_bool_t          on_write;
+    atm_uint_t          write_reqs;
 };
 
 typedef struct {

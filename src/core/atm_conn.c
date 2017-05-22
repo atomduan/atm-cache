@@ -12,7 +12,7 @@ static void
 atm_conn_free_enqueue(atm_conn_t *c);
 
 static void
-atm_conn_inactive(atm_conn_t *c);
+atm_conn_inactive(atm_conn_t *c, atm_bool_t *flag);
 
 static void
 atm_conn_inter_write(atm_conn_t *c, atm_uint_t wreqs, int wrmn);
@@ -119,13 +119,14 @@ atm_conn_free_enqueue(atm_conn_t *c)
 
 
 static void
-atm_conn_inactive(atm_conn_t *c)
+atm_conn_inactive(atm_conn_t *c, atm_bool_t *flag)
 {
     atm_event_t *e = c->event;
     if (e->active) {
         pthread_mutex_lock(&c->_mutex);
         if (e->active) {
             atm_event_inactive(e);
+            *flag = ATM_FALSE;
             atm_conn_free_enqueue(c);
         }
         pthread_mutex_unlock(&c->_mutex);
@@ -219,8 +220,7 @@ atm_conn_task_read(atm_task_t *t)
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
             atm_log("conn_task_read->ev inact");
             /* SAFE_FREE_TAG */
-            atm_conn_inactive(conn);
-            conn->on_read = ATM_FALSE;
+            atm_conn_inactive(conn, &conn->on_read);
             return ATM_ERROR;
         } else {
             atm_sess_process(se);
@@ -233,12 +233,14 @@ atm_conn_task_read(atm_task_t *t)
         atm_event_add_notify(e,ATM_EVENT_READ);
     }
 
+    pthread_mutex_lock(&conn->_mutex);
     if (e->active == ATM_FALSE) {
         conn->on_read = ATM_FALSE;
         atm_conn_free_notify();
     } else {
         conn->on_read = ATM_FALSE;
     }
+    pthread_mutex_unlock(&conn->_mutex);
     return ATM_OK;
 }
 
@@ -280,8 +282,7 @@ atm_conn_task_write(atm_task_t *t)
         if (ret ==-1 && errno!=EAGAIN) {
             atm_log("atm_conn_task_write inact");
             /* SAFE_FREE_TAG */
-            atm_conn_inactive(conn);
-            conn->on_write = ATM_FALSE;
+            atm_conn_inactive(conn, &conn->on_write);
             return ATM_ERROR;
         } else if (ret == 0) {
             /* write is not aval, 
@@ -299,12 +300,14 @@ atm_conn_task_write(atm_task_t *t)
         }
     }
 
+    pthread_mutex_lock(&conn->_mutex);
     if (e->active == ATM_FALSE) {
         conn->on_write = ATM_FALSE;
         atm_conn_free_notify();
     } else {
         conn->on_write = ATM_FALSE;
     }
+    pthread_mutex_unlock(&conn->_mutex);
     return ATM_OK;
 }
 

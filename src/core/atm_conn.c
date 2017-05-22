@@ -2,6 +2,27 @@
 /*
  * Private
  * */
+static void
+atm_conn_free_notify();
+
+static atm_int_t
+atm_conn_free_func(atm_task_t *t);
+
+static void
+atm_conn_free_enqueue(atm_conn_t *c);
+
+static void
+atm_conn_inactive(atm_conn_t *c);
+
+static void
+atm_conn_inter_write(atm_conn_t *c, atm_uint_t wreqs, int wrmn);
+
+static atm_bool_t
+atm_conn_yield_write(atm_conn_t *c, atm_uint_t wreqs);
+
+static void
+atm_conn_write_notify(atm_conn_t *c);
+
 static atm_int_t 
 atm_conn_task_read_raw(atm_conn_t *conn); 
 
@@ -33,10 +54,139 @@ static void
 atm_conn_handle_write(atm_event_t *conn_event);
 
 
+/* task type define for container */
+static atm_list_t  *conn_free_list;
+static pthread_mutex_t  conn_free_lock;
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
  * */
+static void
+atm_conn_free_notify()
+{
+    atm_task_t *task = NULL;
+
+    task = atm_task_new(NULL, 
+        atm_conn_free_func);
+    atm_task_dispatch(task);
+}
+
+
+static atm_int_t
+atm_conn_free_func(atm_task_t *t)
+{
+    atm_conn_t *c = NULL; 
+    atm_conn_t *unproc = NULL;
+    atm_sess_t *sess = NULL;
+
+    pthread_mutex_lock(&conn_free_lock);
+    while ((c = atm_list_lpop(conn_free_list)) != NULL) {
+        /* all conn has been process */
+        if (c == unproc) {
+            if (!c->on_write && !c->on_read) {
+                sess = c->session; 
+                atm_sess_free(sess);
+            } else {
+                atm_list_push(conn_free_list, c);
+            }
+            break;
+        }
+        /* do normal conn check */
+        if (!c->on_write && !c->on_read) {
+            sess = c->session; 
+            atm_sess_free(sess);
+        } else {
+            if (unproc == NULL) {
+                unproc = c;
+            }
+            atm_list_push(conn_free_list, c);
+        }
+    }
+    pthread_mutex_unlock(&conn_free_lock);
+    return ATM_OK;
+}
+
+
+static void
+atm_conn_free_enqueue(atm_conn_t *c)
+{
+    if (c != NULL) {
+        pthread_mutex_lock(&conn_free_lock);
+        atm_list_push(conn_free_list, c);
+        pthread_mutex_unlock(&conn_free_lock);
+    }
+}
+
+
+static void
+atm_conn_inactive(atm_conn_t *c)
+{
+    atm_event_t *e = c->event;
+    if (e->active) {
+        pthread_mutex_lock(&c->_mutex);
+        if (e->active) {
+            atm_event_inactive(e);
+            atm_conn_free_enqueue(c);
+        }
+        pthread_mutex_unlock(&c->_mutex);
+    }
+    atm_conn_free_notify();
+}
+
+
+static void
+atm_conn_inter_write(atm_conn_t *c, atm_uint_t wreqs, int wrmn)
+{
+    atm_event_t *e = NULL;
+
+    pthread_mutex_lock(&c->_mutex);
+    e = c->event;
+    c->on_write = ATM_FALSE;
+    /* wrmn > 0 means buf still have byte aval to write */
+    if(c->write_reqs > wreqs || wrmn > 0) {
+        if (e->active) {
+            atm_event_add_notify(e, ATM_EVENT_WRITE);
+        }
+    }
+    pthread_mutex_unlock(&c->_mutex);
+}
+
+
+static atm_bool_t
+atm_conn_yield_write(atm_conn_t *c, atm_uint_t wreqs)
+{
+    atm_event_t *e = c->event;
+    atm_bool_t res = ATM_FALSE;
+
+    pthread_mutex_lock(&c->_mutex);
+    if(c->write_reqs == wreqs || !e->active) {
+        c->on_write = ATM_FALSE;
+        res = ATM_TRUE;
+    }
+    pthread_mutex_unlock(&c->_mutex);
+    return res;
+}
+
+
+static void
+atm_conn_write_notify(atm_conn_t *c)
+{
+    atm_event_t *e = c->event;
+
+    pthread_mutex_lock(&c->_mutex);
+    if (e->active) {
+        c->write_reqs += 1;
+        if (c->on_write == ATM_FALSE) {
+            atm_log("atm_conn_write_notify add");
+            atm_event_add_notify(e, ATM_EVENT_WRITE); 
+        } else {
+            atm_log("atm_conn_wirte_notify req");
+        }
+    }
+    pthread_mutex_unlock(&c->_mutex);
+}
+
+
 static atm_int_t
 atm_conn_task_read_raw(atm_conn_t *conn)
 {
@@ -69,35 +219,27 @@ atm_conn_task_read(atm_task_t *t)
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
             atm_log("conn_task_read->ev inact");
             /* SAFE_FREE_TAG */
-            atm_event_inactive(e);
-            /* must return SAFE_FREE_TAG*/
+            atm_conn_inactive(conn);
+            conn->on_read = ATM_FALSE;
             return ATM_ERROR;
         } else {
             atm_sess_process(se);
         }
     }
-
+    
     /* restore read event */
-    if (ATM_TRUE == e->active){
+    if (ATM_TRUE == e->active) {
         atm_log("conn_task_read->restore read");
         atm_event_add_notify(e,ATM_EVENT_READ);
+    }
+
+    if (e->active == ATM_FALSE) {
+        conn->on_read = ATM_FALSE;
+        atm_conn_free_notify();
     } else {
-        /* is safe to free here by corp with 
-         * atm_event_process_ev and 
-         * atm_event_inactive direct return
-         * SAFE_FREE_TAG*/
-        atm_log("conn_task_read->free sess");
-        /*
-         * to garentee the release happens
-         * at the end of this function
-         */
-        goto bottom_release;
+        conn->on_read = ATM_FALSE;
     }
     return ATM_OK;
-
-bottom_release:
-    atm_sess_free(se);
-    return ATM_ERROR;
 }
 
 
@@ -133,13 +275,13 @@ atm_conn_task_write(atm_task_t *t)
 
     atm_log("atm_conn_task_write enter");
     while (ATM_FALSE != e->active) {
-        wreqs = e->write_reqs;
+        wreqs = conn->write_reqs;
         ret = atm_conn_task_write_raw(conn);
         if (ret ==-1 && errno!=EAGAIN) {
             atm_log("atm_conn_task_write inact");
             /* SAFE_FREE_TAG */
-            atm_event_inactive(e);
-            /* must return SAFE_FREE_TAG*/
+            atm_conn_inactive(conn);
+            conn->on_write = ATM_FALSE;
             return ATM_ERROR;
         } else if (ret == 0) {
             /* write is not aval, 
@@ -147,33 +289,23 @@ atm_conn_task_write(atm_task_t *t)
             atm_log("atm_conn_task_write inter");
             /* need to have a rest */
             int wrmn = w_buf->aval;
-            atm_event_inter_write(e,wreqs,wrmn);
+            atm_conn_inter_write(conn,wreqs,wrmn);
             break;
         }
         /* to check if more work came in */
-        if (atm_event_yield_write(e,wreqs)) {
+        if (atm_conn_yield_write(conn,wreqs)) {
             atm_log("atm_conn_task_write yield");
             break;
         }
     }
 
-    if (ATM_FALSE == e->active){
-        /* is safe to free here by corp with 
-         * atm_event_process_ev and 
-         * atm_event_inactive direct return
-         * SAFE_FREE_TAG*/
-        atm_log("atm_conn_task_write free sess");
-        /*
-         * to garentee the release happens
-         * at the end of this function
-         */
-        goto bottom_release;
+    if (e->active == ATM_FALSE) {
+        conn->on_write = ATM_FALSE;
+        atm_conn_free_notify();
+    } else {
+        conn->on_write = ATM_FALSE;
     }
     return ATM_OK;
-
-bottom_release:
-    atm_sess_free(se);
-    return ATM_ERROR;
 }
 
 
@@ -189,6 +321,10 @@ atm_conn_new(atm_socket_t *cs)
     res->handle_write = atm_conn_handle_write;
     res->r_buf = atm_buf_new();
     res->w_buf = atm_buf_new();
+    pthread_mutex_init(&res->_mutex,NULL);
+    res->on_read = ATM_FALSE;
+    res->on_write = ATM_FALSE;
+    res->write_reqs = 0;
     return res; 
 }
 
@@ -277,20 +413,22 @@ atm_conn_handle_read(atm_event_t *conn_event)
 {
     atm_conn_t *conn = NULL;
     atm_task_t *task = NULL;
-
-    /* SAFE_FREE_TAG */
-    pthread_mutex_lock(&conn_event->mutex);
-    if (conn_event->active) {
-        atm_event_del_event(conn_event, ATM_EVENT_READ);
+    if (conn_event != NULL) {
         conn = conn_event->load;
-        if (conn != NULL) {
-            task = atm_task_new(
-                    conn, 
-                    atm_conn_task_read);
-            atm_task_dispatch(task);
+        /* SAFE_FREE_TAG */
+        pthread_mutex_lock(&conn->_mutex);
+        if (conn_event->active) {
+            atm_event_del_event(conn_event, ATM_EVENT_READ);
+            if (conn != NULL) {
+                task = atm_task_new(
+                        conn, 
+                        atm_conn_task_read);
+                atm_task_dispatch(task);
+                conn->on_read = ATM_TRUE;
+            }
         }
+        pthread_mutex_unlock(&conn->_mutex);
     }
-    pthread_mutex_unlock(&conn_event->mutex);
 }
 
 
@@ -300,20 +438,22 @@ atm_conn_handle_write(atm_event_t *conn_event)
     atm_conn_t *conn = NULL;
     atm_task_t *task = NULL;
 
-    /* SAFE_FREE_TAG */
-    pthread_mutex_lock(&conn_event->mutex);
-    if (conn_event->active) {
-        atm_event_del_event(conn_event, ATM_EVENT_WRITE);
+    if (conn_event != NULL) {
         conn = conn_event->load;
-        if (conn != NULL) {
-            task = atm_task_new(
-                    conn, 
-                    atm_conn_task_write);
-            atm_task_dispatch(task);
+        /* SAFE_FREE_TAG */
+        pthread_mutex_lock(&conn->_mutex);
+        if (conn_event->active) {
+            atm_event_del_event(conn_event, ATM_EVENT_WRITE);
+            if (conn != NULL) {
+                task = atm_task_new(
+                        conn, 
+                        atm_conn_task_write);
+                atm_task_dispatch(task);
+                conn->on_write = ATM_TRUE;
+            }
         }
-        conn_event->on_write = ATM_TRUE;
+        pthread_mutex_unlock(&conn->_mutex);
     }
-    pthread_mutex_unlock(&conn_event->mutex);
 }
 
 
@@ -324,6 +464,10 @@ void
 atm_conn_init()
 {
     atm_conn_listen_tcp();
+    /* init conn free thread task */
+    conn_free_list = atm_list_new(
+            NULL, ATM_FREE_SHALLOW);
+    pthread_mutex_init(&conn_free_lock, NULL);
 }
 
 
@@ -342,6 +486,7 @@ atm_conn_free(void *conn)
         atm_socket_free(c->sock);
         atm_buf_free(rbuf);
         atm_buf_free(wbuf);
+        pthread_mutex_destroy(&c->_mutex);
         atm_free(c);
     }
 }
@@ -382,7 +527,7 @@ atm_conn_write(atm_conn_t *c,
         atm_log("atm_conn_write enter");
         w_buf = c->w_buf;
         atm_buf_write(w_buf,src,nbyte); 
-        atm_event_write_notify(c->event);
+        atm_conn_write_notify(c);
     }
 }
 

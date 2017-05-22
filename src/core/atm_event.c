@@ -19,6 +19,7 @@ static void
 atm_event_process_events();
 
 
+/* epoll define */
 static int                   ep = -1;
 static struct epoll_event   *event_list = NULL;
 static atm_uint_t            nevents = 0;
@@ -154,11 +155,6 @@ atm_event_new(void *load, int fd,
     res->active = ATM_TRUE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
-
-    pthread_mutex_init(&res->mutex, NULL);
-    res->on_write = ATM_FALSE;
-    res->write_reqs = 0;
-
     return res;
 }
 
@@ -169,7 +165,6 @@ atm_event_free(void *ev)
     atm_event_t *e = ev;
     if (e != NULL) {
         atm_event_del_event(e, ATM_EVENT_ALL);
-        pthread_mutex_destroy(&e->mutex);
         atm_free(e);
     }
 }
@@ -271,19 +266,6 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
 }
 
 
-void
-atm_event_add_notify(atm_event_t *e, uint32_t mask)
-{
-    atm_uint_t type = ATM_EVENT_OP_ADD; 
-    atm_event_op_t *eop = atm_event_op_new(e,mask,type);
-
-    atm_pipe_notify(
-            notify_pipe,
-            eop,
-            atm_event_notify_handle);
-}
-
-
 /*
  * 1. unmsk the event's fd's bits in epoll 
  * 2. if fd's bits is empty then del it from epoll
@@ -330,57 +312,20 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
 
 
 void
-atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs, int wrmn)
-{
-    pthread_mutex_lock(&e->mutex);
-    e->on_write = ATM_FALSE;
-    /*
-     * wrmn > 0 means buf still have byte aval to write
-     */
-    if(e->write_reqs > wreqs || wrmn > 0) {
-        if (e->active) {
-            atm_event_add_notify(e, ATM_EVENT_WRITE);
-        }
-    }
-    pthread_mutex_unlock(&e->mutex);
-}
-
-
-atm_bool_t
-atm_event_yield_write(atm_event_t *e, atm_uint_t wreqs)
-{
-    atm_bool_t res = ATM_FALSE;
-    pthread_mutex_lock(&e->mutex);
-    if(e->write_reqs == wreqs || !e->active) {
-        e->on_write = ATM_FALSE;
-        res = ATM_TRUE;
-    }
-    pthread_mutex_unlock(&e->mutex);
-    return res;
-}
-
-
-void
-atm_event_write_notify(atm_event_t *e)
-{
-    pthread_mutex_lock(&e->mutex);
-    if (e->active) {
-        e->write_reqs += 1;
-        if (e->on_write == ATM_FALSE) {
-            atm_log("atm_event_write_notify add");
-            atm_event_add_notify(e, ATM_EVENT_WRITE); 
-        } else {
-            atm_log("atm_event_wirte_notify req");
-        }
-    }
-    pthread_mutex_unlock(&e->mutex);
-}
-
-
-void
 atm_event_inactive(atm_event_t *e)
 {
-    pthread_mutex_lock(&e->mutex);
     e->active = ATM_FALSE;
-    pthread_mutex_unlock(&e->mutex);
+}
+
+
+void
+atm_event_add_notify(atm_event_t *e, uint32_t mask)
+{
+    atm_uint_t type = ATM_EVENT_OP_ADD; 
+    atm_event_op_t *eop = atm_event_op_new(e,mask,type);
+
+    atm_pipe_notify(
+            notify_pipe,
+            eop,
+            atm_event_notify_handle);
 }

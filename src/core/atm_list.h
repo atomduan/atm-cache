@@ -20,6 +20,8 @@ struct atm_list_s {
     atm_uint_t          size;
     /* for atm_list_round */
     atm_list_iter_t    *riter;
+    /* list op thread safe enforce */
+    pthread_rwlock_t    rwlk;
 };
 
 

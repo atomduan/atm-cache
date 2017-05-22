@@ -21,6 +21,7 @@ struct bar {
 static struct foo my_foo;
 static struct bar my_bar;
 
+/* test the memory align figure */
 int main(int argc, char **argv)
 {
     printf("foo size is:%lu\n", sizeof(my_foo));

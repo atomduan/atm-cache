@@ -12,7 +12,7 @@ struct atm_arr_s {
     atm_uint_t          capacity;
     atm_uint_t          length;
     atm_uint_t          tsize;
-    pthread_mutex_t     mutex;
+    pthread_rwlock_t    rwlk;
 };
 
 
@@ -28,7 +28,7 @@ atm_arr_add(atm_arr_t *arr, void *v);
 void *
 atm_arr_get(atm_arr_t *arr, atm_uint_t i);
 
-void
+atm_int_t
 atm_arr_del(atm_arr_t *arr, atm_uint_t i);
 
 #endif /* _ATM_ARR_H_INCLUDED_ */

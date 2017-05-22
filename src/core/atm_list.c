@@ -53,7 +53,9 @@ atm_list_entry_free(void *entry)
 
     atm_list_entry_isol(e);
     if (list->free_type == ATM_FREE_DEEP) {
-        v_type->free(e->val);
+        if (v_type != NULL) {
+            v_type->free(e->val);
+        }
     }
     atm_free(e);
 }

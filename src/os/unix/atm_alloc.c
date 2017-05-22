@@ -30,14 +30,23 @@ atm_calloc(atm_uint_t nmemb, atm_uint_t size)
     return ptr;
 }
 
+
 void *
-atm_realloc(void *p, atm_uint_t size)
+atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz)
 {
     void * ptr = NULL;
-    ptr = realloc(p, size);
-    if (ptr == NULL) {
+    atm_uint_t len = atm_min(osz, nsz);
+
+    ptr = atm_alloc(nsz);
+    if (ptr != NULL) {
+        if (len > 0) {
+            memcpy(ptr, p, len);
+        }
+        atm_free(p);
+    } else {
         atm_log_rout(ATM_LOG_FATAL, 
-            "realloc(%p,%u) failed",p,size);
+            "atm_alloc(%p,%u) failed",p,nsz);
+        ptr = p;
     }
     return ptr;
 }

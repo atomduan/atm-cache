@@ -34,11 +34,6 @@ struct atm_event_s {
     /* only be called by epoll */
     void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
-
-    /* job controll */
-    pthread_mutex_t     mutex;
-    atm_bool_t          on_write;
-    atm_uint_t          write_reqs;
 };
 
 typedef struct {
@@ -75,22 +70,13 @@ void
 atm_event_add_event(atm_event_t *e, uint32_t mask);
 
 void
-atm_event_add_notify(atm_event_t *e, uint32_t mask);
-
-void
 atm_event_del_event(atm_event_t *e, uint32_t unmask);
 
 void
-atm_event_inter_write(atm_event_t *e, atm_uint_t wreqs, int wrmn);
-
-atm_bool_t
-atm_event_yield_write(atm_event_t *e, atm_uint_t wreqs);
-
-void
-atm_event_write_notify(atm_event_t *e);
-
-void
 atm_event_inactive(atm_event_t *e);
+
+void
+atm_event_add_notify(atm_event_t *e, uint32_t mask);
 
 
 #endif /* _ATM_EVENT_H_INCLUDED_ */

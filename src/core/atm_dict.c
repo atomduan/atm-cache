@@ -173,10 +173,10 @@ atm_dict_entry_free(void *entry)
         dict = e->dict; 
         if (dict != NULL) {
             if (dict->free_type == ATM_FREE_DEEP) {
-                if (e->key) {
+                if (e->key && dict->k_type) {
                     dict->k_type->free(e->key);
                 }
-                if (e->val) {
+                if (e->val && dict->v_type) {
                     dict->v_type->free(e->val);
                 }
             }

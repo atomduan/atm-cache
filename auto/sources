@@ -7,7 +7,8 @@
 #gcc lib option. .a -R -L can be here 
 #   CORE_LIBS="$CORE_LIBS $OPENSSL/.openssl/lib/libssl.a"
 
-CORE_INCS="src/core"
+CORE_INCS="src/core \
+           $ATM_JEMALLOC/include/jemalloc"
 
 CORE_DEPS="src/core/atm_core.h \
            src/core/atm_arr.h \

@@ -7,7 +7,14 @@ void *
 atm_alloc(atm_uint_t size) 
 {
     void * ptr = NULL;
+    /* TODO if use atm_log, 
+     * a loop call will happen, 
+     * then core dump*/
+#if (ATM_HAVE_JEMALLOC)
+    ptr = je_malloc(size);
+#else
     ptr = malloc(size);
+#endif
     if (ptr != NULL) {
         memset(ptr, ATM_MEM_ZERO, size);
     } else {
@@ -22,7 +29,14 @@ void *
 atm_calloc(atm_uint_t nmemb, atm_uint_t size)
 {
     void * ptr = NULL;
+    /* TODO if use atm_log, 
+     * a loop call will happen, 
+     * then core dump*/
+#if (ATM_HAVE_JEMALLOC)
+    ptr = je_calloc(nmemb, size);
+#else
     ptr = calloc(nmemb, size);
+#endif
     if (ptr == NULL) {
         atm_log_rout(ATM_LOG_FATAL, 
             "calloc(%u,%u) failed",nmemb,size);
@@ -38,6 +52,7 @@ atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz)
     atm_uint_t len = atm_min(osz, nsz);
 
     ptr = atm_alloc(nsz);
+
     if (ptr != NULL) {
         if (len > 0) {
             memcpy(ptr, p, len);
@@ -55,5 +70,14 @@ atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz)
 void 
 atm_free(void *ptr) 
 {
-    free(ptr);
+    if (ptr != NULL) {
+#if (ATM_HAVE_JEMALLOC)
+        /* TODO if use atm_log, 
+         * a loop call will happen, 
+         * then core dump*/
+        je_free(ptr);
+#else
+        free(ptr);
+#endif
+    }
 }

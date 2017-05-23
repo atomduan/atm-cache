@@ -265,13 +265,11 @@ atm_conn_task_write(atm_task_t *t)
 {
     int ret = 0;
     atm_conn_t *conn = NULL;
-    atm_sess_t *se = NULL;
     atm_event_t *e = NULL;
     atm_uint_t wreqs = 0;
     atm_buf_t *w_buf = NULL;
 
     conn = t->load;
-    se = conn->session;
     e = conn->event;
     w_buf = conn->w_buf;
 

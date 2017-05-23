@@ -54,7 +54,10 @@ ATM_ERROR_LOG_PATH=${ATM_ERROR_LOG_PATH:-logs/error.log}
 
 ############ COMPILER #############
 #USE clang for dev, cc for default
-ATM_CC=clang
+#TODO WE HAVE A COMPILE FAIL OF CLANG FOR JEMALLOC
+#ATM_CC=clang
+
+ATM_CC=gcc
 CC=${ATM_CC:-cc}
 
 CPU=NO

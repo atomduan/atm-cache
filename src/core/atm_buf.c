@@ -27,7 +27,7 @@ atm_buf_get_rblk(atm_buf_t *buf)
                 && bk->widx == bk->size) {
             /* recycle the readed blk */
             bk = atm_list_lpop(buf->blks);
-            atm_blk_new(bk);
+            atm_blk_free(bk);
             /* peek the new one */
             bk = atm_list_lpeek(buf->blks);
         }
@@ -37,7 +37,7 @@ atm_buf_get_rblk(atm_buf_t *buf)
         }
     }
     pthread_mutex_unlock(&buf->mutex);
-    return bk;
+    return res;
 }
 
 

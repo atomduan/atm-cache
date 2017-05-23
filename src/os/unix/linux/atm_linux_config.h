@@ -52,6 +52,9 @@
 
 #include <atm_auto_config.h>
 
+#if (ATM_HAVE_JEMALLOC)
+#include <jemalloc.h>
+#endif
 
 #if (ATM_THREADS)
 #include <pthread.h>

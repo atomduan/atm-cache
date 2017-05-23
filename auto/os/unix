@@ -187,6 +187,8 @@ if [ $atm_found = yes -a "$ATM_SYSTEM" = "Linux" ]; then
     have=ATM_HAVE_ALIGNED_DIRECTIO . auto/have
 fi
 
+#--------------------------------------------
+
 atm_feature="F_NOCACHE"
 atm_feature_name="ATM_HAVE_F_NOCACHE"
 atm_feature_run=no

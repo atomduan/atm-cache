@@ -30,6 +30,7 @@ EVENT_POLL=NO
 ATM_CPU_CACHE_LINE=
 
 ############ LIB CONFIGURE #############
+#YES | NO | <the path to the lib src>
 ATM_LIBATOMIC=NO
 
 ############ CONFIGURE  #############

@@ -29,7 +29,11 @@ echo " + $ATM_SYSTEM $ATM_RELEASE $ATM_MACHINE"
 cat << END > Makefile
 default:	build
 clean:
-	rm -rf Makefile $ATM_BUILD
+	rm -r Makefile $ATM_BUILD
+clean_all:
+	rm -r Makefile $ATM_BUILD \\
+	&& \$(MAKE) -f $ATM_JEMALLOC/Makefile clean \\
+	&& rm deps/jemalloc/lib/libjemalloc.a
 rmobj:
 	rm build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}
 	find build/src -type f -name '*.o' -delete

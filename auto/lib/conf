@@ -2,3 +2,7 @@
 if [ $ATM_LIBATOMIC != NO ]; then
     . auto/lib/libatomic/conf
 fi
+
+if [ $ATM_JEMALLOC != NO ]; then
+    . auto/lib/jemalloc/conf
+fi

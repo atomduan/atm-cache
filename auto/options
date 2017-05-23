@@ -29,9 +29,13 @@ EVENT_FOUND=NO
 EVENT_POLL=NO
 ATM_CPU_CACHE_LINE=
 
+############ DEPS CONFIGURE #############
+ATM_DEPS=deps
+
 ############ LIB CONFIGURE #############
 #YES | NO | <the path to the lib src>
 ATM_LIBATOMIC=NO
+ATM_JEMALLOC=$ATM_DEPS/jemalloc
 
 ############ CONFIGURE  #############
 ATM_MAKEFILE=$ATM_BUILD/Makefile

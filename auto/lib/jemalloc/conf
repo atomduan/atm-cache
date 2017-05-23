@@ -1,0 +1,18 @@
+#!/bin/sh
+have=ATM_HAVE_JEMALLOC . auto/have
+CORE_INCS="$CORE_INCS $ATM_JEMALLOC/lib"
+LINK_DEPS="$ATM_JEMALLOC/lib/libjemalloc.a $LINK_DEPS"
+CORE_LIBS="$ATM_JEMALLOC/lib/libjemalloc.a $CORE_LIBS"
+
+JEMALLOC_CFLAGS="-std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops"
+JEMALLOC_LDFLAGS=${ATM_LD_OPT}
+
+if ! [ -f $ATM_JEMALLOC/lib/libjemalloc.a ]; then
+cd $ATM_JEMALLOC;
+./configure --with-lg-quantum=3 \
+    --with-jemalloc-prefix=je_ \
+    --enable-cc-silence \
+    CFLAGS="${JEMALLOC_CFLAGS}" \
+    LDFLAGS="${JEMALLOC_LDFLAGS}"
+cd $ATM_PROJECT_HOME
+fi

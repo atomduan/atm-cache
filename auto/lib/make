@@ -2,3 +2,7 @@
 if [ $ATM_LIBATOMIC != NO -a $ATM_LIBATOMIC != YES ]; then
     . auto/lib/libatomic/make
 fi
+
+if [ $ATM_JEMALLOC != NO -a $ATM_JEMALLOC != YES ]; then
+    . auto/lib/jemalloc/make
+fi

@@ -26,7 +26,7 @@ struct atm_event_s {
     void       *load;
 
     /* whether register in epoll*/
-    atm_bool_t  registed;
+    atm_bool_t  _registed;
 
     /* whether the event relevant is valid */
     atm_bool_t  active;

@@ -18,10 +18,6 @@ struct atm_list_s {
     atm_list_entry_t   *head;
     atm_list_entry_t   *tail;
     atm_uint_t          size;
-    /* for atm_list_round */
-    atm_list_iter_t    *riter;
-    /* list op thread safe enforce */
-    pthread_rwlock_t    rwlk;
 };
 
 
@@ -74,9 +70,6 @@ atm_list_rpeek(atm_list_t *list);
 
 void
 atm_list_clear(atm_list_t *list);
-
-void *
-atm_list_round(atm_list_t *list);
 
 atm_list_iter_t *
 atm_list_iter_new(atm_list_t *list);

@@ -8,43 +8,43 @@
 #   BUILD_LIBS="$BUILD_LIBS $OPENSSL/.openssl/lib/libssl.a"
 
 BUILD_INCS="src/core \
-           $ATM_JEMALLOC/include/jemalloc"
+            $ATM_JEMALLOC/include/jemalloc"
 
 BUILD_DEPS="src/core/atm_core.h \
-           src/core/atm_arr.h \
-           src/core/atm_blk.h \
-           src/core/atm_buf.h \
-           src/core/atm_config.h \
-           src/core/atm_conn.h \
-           src/core/atm_ctx.h \
-           src/core/atm_dict.h \
-           src/core/atm_event.h \
-           src/core/atm_list.h \
-           src/core/atm_log.h \
-           src/core/atm_queue.h \
-           src/core/atm_sess.h \
-           src/core/atm_siphash.h \
-           src/core/atm_str.h \
-           src/core/atm_task.h \
-           src/core/atm_time.h \
-           src/core/atm_util.h"
+            src/core/atm_arr.h \
+            src/core/atm_blk.h \
+            src/core/atm_buf.h \
+            src/core/atm_config.h \
+            src/core/atm_conn.h \
+            src/core/atm_ctx.h \
+            src/core/atm_dict.h \
+            src/core/atm_event.h \
+            src/core/atm_list.h \
+            src/core/atm_log.h \
+            src/core/atm_queue.h \
+            src/core/atm_sess.h \
+            src/core/atm_siphash.h \
+            src/core/atm_str.h \
+            src/core/atm_task.h \
+            src/core/atm_time.h \
+            src/core/atm_util.h"
 
 BUILD_SRCS="src/core/atm_arr.c \
-           src/core/atm_blk.c \
-           src/core/atm_buf.c \
-           src/core/atm_config.c \
-           src/core/atm_conn.c \
-           src/core/atm_dict.c \
-           src/core/atm_event.c \
-           src/core/atm_list.c \
-           src/core/atm_log.c \
-           src/core/atm_main.c \
-           src/core/atm_queue.c \
-           src/core/atm_sess.c \
-           src/core/atm_siphash.c \
-           src/core/atm_str.c \
-           src/core/atm_task.c \
-           src/core/atm_time.c"
+            src/core/atm_blk.c \
+            src/core/atm_buf.c \
+            src/core/atm_config.c \
+            src/core/atm_conn.c \
+            src/core/atm_dict.c \
+            src/core/atm_event.c \
+            src/core/atm_list.c \
+            src/core/atm_log.c \
+            src/core/atm_main.c \
+            src/core/atm_queue.c \
+            src/core/atm_sess.c \
+            src/core/atm_siphash.c \
+            src/core/atm_str.c \
+            src/core/atm_task.c \
+            src/core/atm_time.c"
 
 BUILD_LIBS=""
 
@@ -60,6 +60,7 @@ BUILD_INCS="$BUILD_INCS \
 
 BUILD_DEPS="$BUILD_DEPS \
             src/test/atm_unit_test.h \
+            src/test/core/atm_test_arr.h \
             src/test/core/atm_test_dict.h \
             src/test/core/atm_test_event.h \
             src/test/core/atm_test_siphash.h \
@@ -69,6 +70,7 @@ BUILD_DEPS="$BUILD_DEPS \
 
 BUILD_SRCS="$BUILD_SRCS \
             src/test/atm_unit_test.c \
+            src/test/core/atm_test_arr.c \
             src/test/core/atm_test_dict.c \
             src/test/core/atm_test_event.c \
             src/test/core/atm_test_siphash.c \

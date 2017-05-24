@@ -6,7 +6,7 @@
 
 struct atm_buf_s {
     atm_atomic_t        aval;           
-    pthread_mutex_t     mutex; 
+    pthread_mutex_t     _mutex; 
     atm_list_t         *blks;
 };
 

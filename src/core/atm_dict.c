@@ -113,7 +113,7 @@ atm_dict_entry_hash(void *entry)
     atm_str_t *e_str = NULL;
 
     e = (atm_dict_entry_t *) entry;
-    e_str = atm_str_ptr_str(e); 
+    e_str = atm_str_ptr(e); 
     res = atm_dict_hash(e_str->val, e_str->len);
 
     atm_str_free(e_str);
@@ -145,12 +145,12 @@ atm_dict_entry_str(void *entry)
             if (k_t != NULL && k_t->str != NULL) {
                 ks = k_t->str(e->key);
             } else {
-                ks = atm_str_ptr_str(e->key);
+                ks = atm_str_ptr(e->key);
             }
             if (v_t != NULL && v_t->str != NULL) {
                 vs = v_t->str(e->val);
             } else {
-                vs = atm_str_ptr_str(e->val);
+                vs = atm_str_ptr(e->val);
             }
         }
     }

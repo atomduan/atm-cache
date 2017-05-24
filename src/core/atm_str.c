@@ -136,31 +136,17 @@ atm_str_t *
 atm_str_fmt(char *fmt,...)
 {
     atm_str_t *res = NULL;
+    char *s = NULL;
+    char temp[ATM_STR_MAXLEN];
+    memset(temp, 0, ATM_STR_MAXLEN);
+
     va_list args;
     va_start(args, fmt);
-    res = atm_str_vfmt(fmt, args);
+    vsnprintf(temp,ATM_STR_MAXLEN,fmt,args);
+    s = atm_str_mtrim(temp);
+    if (s != NULL)
+        res = atm_str_wrp(s);
     va_end(args);
-    return res;
-}
-
-
-atm_str_t *
-atm_str_vfmt(char *fmt, va_list args)
-{
-    atm_str_t *res = NULL;
-    atm_uint_t size = 0;
-    char *temp = NULL;
-    char *dest = NULL;
-
-    size = ATM_STR_FMT_MAX_LEN;
-    if (fmt != NULL) {
-        temp = atm_alloc(size);
-        vsnprintf(temp, size, fmt, args);
-        dest = atm_str_mtrim(temp);
-        if (dest != NULL)
-            res = atm_str_wrp(dest);
-    }
-    atm_free(temp);
     return res;
 }
 
@@ -181,7 +167,7 @@ atm_str_mtrim(char *s)
 
 
 atm_str_t *
-atm_str_ptr_str(void *p)
+atm_str_ptr(void *p)
 {
     return atm_str_fmt("%p",p);
 }

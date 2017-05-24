@@ -14,7 +14,6 @@ struct atm_conn_s {
 
     void (*handle_read)(atm_event_t *ev);
     void (*handle_write)(atm_event_t *ev);
-    void (*post_proc)(atm_event_t *ev);
 
     atm_buf_t   *r_buf;
     atm_buf_t   *w_buf;
@@ -31,7 +30,6 @@ typedef struct {
     atm_event_t        *event;
 
     void (*handle_accept)(atm_event_t *ev);
-    void (*post_proc)(atm_event_t *ev);
 } atm_conn_listen_t;
 
 

@@ -5,7 +5,7 @@
 
 
 #define ATM_STR_TMN \0
-#define ATM_STR_FMT_MAX_LEN 1024
+#define ATM_STR_MAXLEN 512
 
 
 extern atm_T_t *ATM_STR_T;
@@ -51,14 +51,11 @@ atm_str_eqs(atm_str_t *s1, char *s);
 atm_str_t *
 atm_str_fmt(char *fmt,...);
 
-atm_str_t *
-atm_str_vfmt(char *fmt, va_list args);
-
 char *
 atm_str_mtrim(char *s);
 
 atm_str_t *
-atm_str_ptr_str();
+atm_str_ptr(void *p);
 
 atm_str_t *
 atm_str_cat(atm_str_t *dest, char *src);

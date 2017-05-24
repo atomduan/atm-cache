@@ -12,7 +12,7 @@
 #define ATM_LOG_ERROR   5
 #define ATM_LOG_FATAL   6
 
-#define ATM_LOG_MAX_LEN   1024
+#define ATM_LOG_MAXLEN   1024
 
 void 
 atm_log(char *fmt, ...);

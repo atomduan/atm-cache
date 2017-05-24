@@ -19,7 +19,7 @@ atm_buf_get_rblk(atm_buf_t *buf)
     atm_blk_t *res = NULL;
     atm_blk_t *bk = NULL;
 
-    pthread_mutex_lock(&buf->mutex);
+    pthread_mutex_lock(&buf->_mutex);
     bk = atm_list_lpeek(buf->blks);
     if (bk != NULL) {
         /* refresh rblk */
@@ -36,7 +36,7 @@ atm_buf_get_rblk(atm_buf_t *buf)
             res = bk;
         }
     }
-    pthread_mutex_unlock(&buf->mutex);
+    pthread_mutex_unlock(&buf->_mutex);
     return res;
 }
 
@@ -46,14 +46,14 @@ atm_buf_get_wblk(atm_buf_t *buf)
 {
     atm_blk_t *bk = NULL;
 
-    pthread_mutex_lock(&buf->mutex);
+    pthread_mutex_lock(&buf->_mutex);
     bk = atm_list_rpeek(buf->blks);
     if (bk == NULL || bk->size == bk->widx) {
         bk = atm_blk_new(); 
         atm_list_push(buf->blks,bk);
         bk = atm_list_rpeek(buf->blks);
     }
-    pthread_mutex_unlock(&buf->mutex);
+    pthread_mutex_unlock(&buf->_mutex);
     return bk;
 }
 
@@ -71,7 +71,7 @@ atm_buf_new()
     res->blks = atm_list_new(
             ATM_BLK_T, 
             ATM_FREE_DEEP);
-    pthread_mutex_init(&res->mutex, NULL);
+    pthread_mutex_init(&res->_mutex, NULL);
     return res;
 }
 
@@ -83,7 +83,7 @@ atm_buf_free(void *buf)
 
     if (b != NULL) {
         atm_list_free(b->blks);
-        pthread_mutex_destroy(&b->mutex);
+        pthread_mutex_destroy(&b->_mutex);
         atm_free(b);
     }
 }

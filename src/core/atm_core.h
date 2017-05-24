@@ -37,7 +37,6 @@ typedef int8_t              atm_bool_t;
 
 /* int64_t or int32_t */
 typedef int32_t             atm_int_t; 
-
 /* In 64 system same to: size_t and unsigned long int
  * In 32 system: same to: size_t and unsigned int 
  */

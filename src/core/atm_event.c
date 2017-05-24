@@ -151,7 +151,7 @@ atm_event_new(void *load, int fd,
     res->fd = fd;
     res->events = ATM_EVENT_NONE;
     res->load = load;
-    res->registed = ATM_FALSE;
+    res->_registed = ATM_FALSE;
     res->active = ATM_TRUE;
     res->handle_read = handle_read;
     res->handle_write = handle_write;
@@ -243,7 +243,7 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
         fd = e->fd;
         e->events = e->events | mask;
         if (e->events != ATM_EVENT_NONE) {
-            if (e->registed) {
+            if (e->_registed) {
                 op = EPOLL_CTL_MOD;
                 atm_log("add event op is mod");
             } else {
@@ -260,7 +260,7 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
                 break;
             }
             atm_log("epoll_ctl add ret is %d", ret);
-            e->registed = ATM_TRUE;
+            e->_registed = ATM_TRUE;
         }
     }
 }
@@ -283,7 +283,7 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
     if (e != NULL) {
         fd = e->fd;
         e->events = e->events & (~unmask);
-        if (e->registed) {
+        if (e->_registed) {
             if (e->events != ATM_EVENT_NONE) {
                 op = EPOLL_CTL_MOD;
                 atm_log("del event op is mod");
@@ -304,7 +304,7 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
             atm_log("epoll_ctl del ret is %d", ret);
 
             if (op == EPOLL_CTL_DEL) {
-                e->registed = ATM_FALSE;
+                e->_registed = ATM_FALSE;
             }
         }
     }

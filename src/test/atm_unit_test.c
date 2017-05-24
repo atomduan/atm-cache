@@ -37,6 +37,7 @@ atm_test_suit_proc(int argc, char **argv)
     atm_test_event_suit();
     atm_test_str_suit();
     atm_test_time_suit();
+    atm_test_arr_suit();
     return ATM_OK;
 }
 

@@ -12,8 +12,8 @@ name=$(echo $name | sed 's/\.//g')
 rm Makefile
 
 cat <<END > Makefile
-CC = clang
-CFLAGS = -pipe -O0 -Wall -Wextra -Wpointer-arith -Wconditional-uninitialized -Wno-unused-parameter -Werror -g 
+CC = gcc
+CFLAGS = -c -pipe  -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
 
@@ -21,7 +21,8 @@ BUILD_DEPS = misc_utils.h
 
 BUILD_INCS = -I ./ \\
 	-I ../../../src/os/unix/linux \\
-	-I ../../../build
+	-I ../../../build \\
+	-I ../../../deps/jemalloc/include/jemalloc
 
 
 END

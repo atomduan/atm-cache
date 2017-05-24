@@ -20,4 +20,7 @@ atm_log(char *fmt, ...);
 void 
 atm_log_rout(atm_uint_t lv, char *fmt, ...);
 
+void
+atm_log_fflush();
+
 #endif /* _ATM_LOGGER_H_INCLUDED_ */

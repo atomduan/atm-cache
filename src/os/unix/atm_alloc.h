@@ -19,5 +19,8 @@ atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz);
 void 
 atm_free(void *ptr);
 
+atm_uint_t
+atm_phy_mems();
+
 
 #endif /* _ATM_ALLOC_H_INCLUDED_ */

@@ -74,3 +74,12 @@ atm_log_rout(atm_uint_t level, char *fmt, ...)
 
     atm_log_rout_raw(level, msg);
 }
+
+
+void
+atm_log_fflush()
+{
+    /* TODO SHOULD FLUSH ALL REGULAR FILE */
+    fflush(stderr);
+    fflush(stdout);
+}

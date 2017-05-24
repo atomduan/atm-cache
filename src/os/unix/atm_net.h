@@ -10,7 +10,7 @@
 
 struct atm_socket_s {
     int         fd;
-    atm_str_t  *src_ip; 
+    atm_str_t   src_ip; 
     int         src_port;
 };
 

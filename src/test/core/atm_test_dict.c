@@ -55,9 +55,9 @@ atm_test_dict_contains()
     atm_log("atm_test_dict_contains");
     atm_uint_t res = ATM_TEST_PASS;
 
-    atm_str_t *k = atm_str_new("foo");
-    atm_str_t *v = atm_str_new("foo--value");
-    atm_str_t *k2 = atm_str_new("bar");
+    atm_str_t k = atm_str_new("foo");
+    atm_str_t v = atm_str_new("foo--value");
+    atm_str_t k2 = atm_str_new("bar");
 
     atm_dict_set(dt, k, v);
     

@@ -27,34 +27,34 @@ atm_test_str_split()
 {
     atm_log("atm_test_str_split");
     char *a = NULL;
-    atm_str_t **b = NULL;
+    atm_str_t *b = NULL;
 
     a = " a    b  d s \"   'a'   \"   kkk  k";
     atm_log("strim org is: %s", a);
     b = atm_str_split(a, strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
-        atm_log("strim res len: %d, val: %s", (*b)->len, (*b)->val);
+        atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "a";
     atm_log("strim org is: %s", a);
     b = atm_str_split(a, strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
-        atm_log("strim res len: %d, val: %s", (*b)->len, (*b)->val);
+        atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "         ";
     atm_log("strim org is: %s", a);
     b = atm_str_split(a, strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
-        atm_log("strim res len: %d, val: %s", (*b)->len, (*b)->val);
+        atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "";
     atm_log("strim org is: %s", a);
     b = atm_str_split(a, strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
-        atm_log("strim res len: %d, val: %s", (*b)->len, (*b)->val);
+        atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     return ATM_TEST_PASS;

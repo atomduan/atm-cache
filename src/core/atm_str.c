@@ -2,6 +2,15 @@
 /*
  * Private
  * */
+static atm_uint_t
+atm_str_size(atm_uint_t slen);
+
+static atm_str_hdr *
+atm_str_get_hdr(atm_str_t str);
+
+static atm_str_t
+atm_str_get_str(atm_str_hdr *hdr);
+
 static atm_T_t ATM_STR_TYPE = {
     NULL,
     atm_str_match,
@@ -20,20 +29,71 @@ atm_T_t *ATM_STR_T = &ATM_STR_TYPE;
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
+ * Private
+ * */
+static atm_uint_t
+atm_str_size(atm_uint_t slen)
+{
+    atm_uint_t res = 0; 
+    if (slen > 0) {
+        int r = slen % ATM_WORDLEN;
+        res = (slen - r) + ATM_WORDLEN;
+    }
+    return res;
+}
+
+
+static atm_str_hdr *
+atm_str_get_hdr(atm_str_t str)
+{
+    void *res = NULL;
+    atm_uint_t hdrlen;
+
+    if (str != NULL) {
+        hdrlen = sizeof(atm_str_hdr);
+        res = (uint8_t *)str - hdrlen; 
+    }
+    return (atm_str_hdr *)res;
+}
+
+
+static atm_str_t
+atm_str_get_str(atm_str_hdr *hdr)
+{
+    void *res = NULL;
+    atm_uint_t hdrlen;
+
+    if (hdr != NULL) {
+        hdrlen = sizeof(atm_str_hdr);
+        res = (uint8_t *)hdr + hdrlen;
+    }
+    return (atm_str_t)res;
+}
+
+
+/*
  * Public
  * */
-/* public string type lifecycle */
-atm_str_t *
+atm_str_t
 atm_str_new(char *str)
 {
-    atm_str_t *res = NULL;
-    atm_uint_t len = 0;
-    char *copy = NULL;
+    atm_str_t res = NULL;
+    atm_str_hdr *ash;
+    atm_uint_t hdrlen;
+    atm_uint_t size;
+    atm_uint_t slen;
 
-    len = strlen(str);
-    copy = atm_alloc(len+1);
-    memcpy(copy, str, len);
-    res = atm_str_wrp(copy);
+    if (str != NULL) {
+        slen = strlen(str);
+        hdrlen = sizeof(atm_str_hdr);
+        size = atm_str_size(hdrlen+slen+1);
+        ash = atm_alloc(size);
+        ash->cap = size - hdrlen;
+        ash->len = slen;
+        res = atm_str_get_str(ash);
+        if (slen > 0)
+            memcpy(res, str, slen);
+    }
     return res;
 }
 
@@ -41,8 +101,8 @@ atm_str_new(char *str)
 atm_bool_t 
 atm_str_match(void *str1, void *str2)
 {
-    atm_str_t *s1 = (atm_str_t *) str1;
-    atm_str_t *s2 = (atm_str_t *) str2;
+    atm_str_t s1 = (atm_str_t) str1;
+    atm_str_t s2 = (atm_str_t) str2;
     return atm_str_eq(s1,s2);
 }
 
@@ -51,10 +111,12 @@ uint64_t
 atm_str_hash(void *str)
 {
     uint64_t res = 0;
-    atm_str_t *ss = NULL;
+    atm_str_t ss = NULL;
+    atm_uint_t len = 0; 
 
-    ss = (atm_str_t *) str;
-    res = atm_dict_hash(ss->val, ss->len);
+    ss = (atm_str_t) str;
+    len = atm_str_len(ss);
+    res = atm_dict_hash(ss, len);
     return res;
 }
 
@@ -62,80 +124,81 @@ atm_str_hash(void *str)
 atm_int_t 
 atm_str_cmp(void *str1, void *str2)
 {
-    atm_int_t res = ATM_CMP_EQ;
-    atm_str_t *s1 = NULL;
-    atm_str_t *s2 = NULL;
+    atm_str_t s1 = NULL;
+    atm_str_t s2 = NULL;
 
-    s1 = (atm_str_t *) str1;
-    s2 = (atm_str_t *) str2;
-    if (s1 == s2) {
-        res = ATM_CMP_EQ;
-    } else {
-        res = strcmp(s1->val,s2->val);
-    }
-    return res;
+    s1 = (atm_str_t) str1;
+    s2 = (atm_str_t) str2;
+    if (s1 == s2) 
+        return ATM_CMP_EQ;
+    if (atm_str_len(s1) > atm_str_len(s2))
+        return ATM_CMP_GT;
+    if (atm_str_len(s1) < atm_str_len(s2))
+        return ATM_CMP_LT;
+    return strcmp(s1,s2);
 }
 
 
-atm_str_t *
+atm_str_t
 atm_str_string(void *str)
 {
-    return (atm_str_t *) str;
+    return (atm_str_t) str;
 }
 
 
 void
 atm_str_free(void *str) 
 {
-    atm_str_t *s = NULL;
+    atm_str_t s = NULL;
+    atm_str_hdr *hdr = NULL;
 
-    s = (atm_str_t *) str;
-    atm_free(s->val);
-    atm_free(s); 
+    s = (atm_str_t) str;
+    hdr = atm_str_get_hdr(s);
+    atm_free(hdr);
 }
 
 
 /* public funcs */
-
-
-atm_str_t *
-atm_str_wrp(char *str)
+atm_uint_t
+atm_str_len(atm_str_t str)
 {
-    atm_str_t *res = NULL;
+    atm_uint_t res = 0; 
+    atm_str_hdr *h;
+    atm_uint_t hdrlen;
+
     if (str != NULL) {
-        atm_uint_t len = strlen(str);
-        res = atm_alloc(sizeof(atm_str_t));
-        res->val = str;
-        res->len = len;
+        hdrlen = sizeof(atm_str_hdr);
+        h = (atm_str_hdr *)((uint8_t *)str - hdrlen); 
+        res = h->len;
     }
     return res;
 }
 
 
 atm_bool_t 
-atm_str_eq(atm_str_t *s1, atm_str_t *s2) 
+atm_str_eq(atm_str_t str1, atm_str_t str2) 
 {
     atm_bool_t res = ATM_FALSE;
-    res = atm_str_cmp(s1, s2);
+    res = atm_str_cmp(str1, str2);
     return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
 }
 
 
 atm_bool_t 
-atm_str_eqs(atm_str_t *s1, char *s) 
+atm_str_eqs(atm_str_t str1, char *s) 
 {
     atm_bool_t res = ATM_FALSE;
-    atm_str_t *t = atm_str_new(s);
-    res = atm_str_cmp(s1,t);
-    atm_free(t);
+    atm_str_t str2 = atm_str_new(s);
+    res = atm_str_cmp(str1, str2);
+    atm_str_free(str2);
     return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
 }
 
 
-atm_str_t *
+atm_str_t
 atm_str_fmt(char *fmt,...)
 {
-    atm_str_t *res = NULL;
+    atm_str_t res = NULL;
     char *s = NULL;
     char temp[ATM_STR_MAXLEN];
     memset(temp, 0, ATM_STR_MAXLEN);
@@ -145,7 +208,7 @@ atm_str_fmt(char *fmt,...)
     vsnprintf(temp,ATM_STR_MAXLEN,fmt,args);
     s = atm_str_mtrim(temp);
     if (s != NULL)
-        res = atm_str_wrp(s);
+        res = atm_str_new(s);
     va_end(args);
     return res;
 }
@@ -166,25 +229,25 @@ atm_str_mtrim(char *s)
 }
 
 
-atm_str_t *
+atm_str_t
 atm_str_ptr(void *p)
 {
     return atm_str_fmt("%p",p);
 }
 
 
-atm_str_t *
-atm_str_cat(atm_str_t *dest, char *src)
+atm_str_t
+atm_str_cat(atm_str_t dest, char *src)
 {
-    atm_str_t *res = NULL;
-    char * r = NULL;
+    atm_str_t res = NULL;
+    char *r = NULL;
 
     /*
      * TODO : too expansive... 
      * TODO : this impl mey mem leak!!!!
      */
     if (dest != NULL) {
-        r = dest->val;
+        r = dest;
         r = strcat(r, src);
     } else {
         r = src;
@@ -195,10 +258,10 @@ atm_str_cat(atm_str_t *dest, char *src)
 }
 
 
-atm_str_t **
+atm_str_t *
 atm_str_split(char *s, int len)
 {
-    atm_str_t **res = NULL;
+    atm_str_t *res = NULL;
     char *p = s;
 
     atm_int_t sli = 0;
@@ -282,7 +345,7 @@ atm_str_split(char *s, int len)
 
     /* the last one is sentinal */
     if (sli > 0) {
-        res = atm_alloc(sizeof(atm_str_t *)*(sli+1));
+        res = atm_alloc(sizeof(atm_str_t)*(sli+1));
         for (i=0; i<sli; ++i) {
             res[i] = atm_str_new(atm_str_mtrim(sl[i]));
             atm_free(sl[i]);

@@ -54,7 +54,7 @@ typedef uint8_t             atm_byte_t;/* same to u_char */
 /*
  * Char and string relevant
  */
-typedef struct atm_str_s    atm_str_t;
+typedef char               *atm_str_t;
 
 /*
  * Non Primitive Data types define
@@ -66,7 +66,7 @@ struct atm_T_s {
     atm_bool_t      (* match)(void *v1, void *v2);
     uint64_t        (* hash)(void *v);
     atm_int_t       (* compare)(void *v1, void *v2);
-    atm_str_t      *(* str)(void *v);
+    atm_str_t       (* str)(void *v);
     void            (* free)(void *v);
 };
 

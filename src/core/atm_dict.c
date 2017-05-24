@@ -18,7 +18,7 @@ atm_dict_entry_hash(void *entry);
 static atm_int_t 
 atm_dict_entry_cmp(void *entry1, void *entry2);
 
-static atm_str_t *
+static atm_str_t
 atm_dict_entry_str(void *entry);
 
 static void 
@@ -110,11 +110,13 @@ atm_dict_entry_hash(void *entry)
 {
     uint64_t res = 0;
     atm_dict_entry_t *e = NULL; 
-    atm_str_t *e_str = NULL;
+    atm_str_t e_str = NULL;
+    atm_uint_t e_len;
 
     e = (atm_dict_entry_t *) entry;
     e_str = atm_str_ptr(e); 
-    res = atm_dict_hash(e_str->val, e_str->len);
+    e_len = atm_str_len(e_str);
+    res = atm_dict_hash(e_str, e_len);
 
     atm_str_free(e_str);
     return res;
@@ -128,12 +130,12 @@ atm_dict_entry_cmp(void *entry1, void *entry2)
 }
 
 
-static atm_str_t *
+static atm_str_t
 atm_dict_entry_str(void *entry)
 {
-    atm_str_t *res = NULL;
-    atm_str_t *ks = NULL;
-    atm_str_t *vs = NULL;
+    atm_str_t res = NULL;
+    atm_str_t ks = NULL;
+    atm_str_t vs = NULL;
     atm_T_t *k_t = NULL;
     atm_T_t *v_t = NULL;
     atm_dict_entry_t *e = NULL;
@@ -300,10 +302,10 @@ atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t f_type)
 }
 
 
-atm_str_t *
+atm_str_t
 atm_dict_str(void *dict)
 {
-    atm_str_t *res = NULL;
+    atm_str_t res = NULL;
     atm_dict_t *d = NULL; 
 
     d = (atm_dict_t *) dict;

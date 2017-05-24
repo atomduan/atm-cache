@@ -6,13 +6,13 @@
 void 
 atm_config_init();
 
-char *
-atm_config_get(char *k);
+atm_str_t
+atm_config_get(atm_str_t k);
 
 void 
-atm_config_set(char *k, char *v);
+atm_config_set(atm_str_t k, atm_str_t v);
 
 void 
-atm_config_del(char *k);
+atm_config_del(atm_str_t k);
 
 #endif /* _ATM_CONFIG_H_INCLUDED_ */

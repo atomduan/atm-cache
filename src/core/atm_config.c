@@ -33,38 +33,30 @@ atm_config_init()
     atm_config_load();
 }
 
-char *
-atm_config_get(char *k)
-{
-    atm_str_t *key = NULL;
-    atm_str_t *value = NULL;
-    char *res = NULL;
-    
-    key = atm_str_new(k);
-    value = atm_dict_get(config, key);
-    if (value != NULL) {
-        res = value->val;
-    }
 
-    atm_str_free(key);
+atm_str_t
+atm_config_get(atm_str_t k)
+{
+    atm_str_t res = NULL;
+    void *value;
+
+    value = atm_dict_get(config, k);
+    if (value != NULL) {
+        res = (atm_str_t)value;
+    }
     return res;
 }
 
-void 
-atm_config_set(char *k, char *v)
-{
-    atm_str_t *key = NULL;
-    atm_str_t *value = NULL;
-    
-    key = atm_str_new(k);
-    value = atm_str_new(v);
-    atm_dict_set(config, key, value);
-}
 
 void 
-atm_config_del(char *k)
+atm_config_set(atm_str_t k, atm_str_t v)
 {
-    atm_str_t *key = NULL;
-    key = atm_str_new(k);
-    atm_dict_del(config, key);
+    atm_dict_set(config, k, v);
+}
+
+
+void 
+atm_config_del(atm_str_t k)
+{
+    atm_dict_del(config, k);
 }

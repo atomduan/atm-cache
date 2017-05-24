@@ -153,10 +153,10 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
 }
 
 
-atm_str_t *
+atm_str_t
 atm_list_str(void *list)
 {
-    atm_str_t *res;
+    atm_str_t res;
     atm_list_t *l; 
 
     l = (atm_list_t *) list;

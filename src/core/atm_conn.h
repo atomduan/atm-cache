@@ -42,7 +42,7 @@ atm_conn_free(void *conn);
 void
 atm_conn_listen_free(void *listen);
 
-atm_str_t *
+atm_str_t
 atm_conn_read_line(atm_conn_t *c);
 
 void
@@ -50,7 +50,7 @@ atm_conn_write(atm_conn_t *c,
         void *src, atm_uint_t nbyte);
 
 void
-atm_conn_write_str(atm_conn_t *c, atm_str_t *s);
+atm_conn_write_str(atm_conn_t *c, atm_str_t s);
 
 
 #endif /* _ATM_CONN_H_INCLUDED_ */

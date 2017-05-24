@@ -10,7 +10,7 @@ atm_sess_reset(atm_sess_t *se);
 
 static void
 atm_sess_process_cmd(atm_conn_t *c, 
-        atm_uint_t argc, atm_str_t **argv);
+        atm_uint_t argc, atm_str_t *argv);
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -21,7 +21,7 @@ static void
 atm_sess_reply(atm_conn_t *c, char *m)
 {
     atm_log("atm_sess_reply enter %s", m);
-    atm_str_t *msg = NULL;
+    atm_str_t msg = NULL;
     msg = atm_str_new(m);
     msg = atm_str_cat(msg, "\n");
     atm_conn_write_str(c,msg);
@@ -33,10 +33,10 @@ static void
 atm_sess_reset(atm_sess_t *se)
 {
     int i = 0;
-    atm_str_t *v = NULL;
+    atm_str_t v = NULL;
 
     for (;i<se->argc;++i) {
-        v = &se->argv[i];
+        v = se->argv[i];
         atm_str_free(v);
     }
     se->argc = 0;
@@ -46,12 +46,12 @@ atm_sess_reset(atm_sess_t *se)
 
 static void
 atm_sess_process_cmd(atm_conn_t *c, 
-        atm_uint_t argc, atm_str_t **argv)
+        atm_uint_t argc, atm_str_t *argv)
 {
-    atm_str_t *k = NULL;
-    atm_str_t *v = NULL;
-    atm_str_t *r = NULL;
-    atm_str_t *cmd = NULL;
+    atm_str_t k = NULL;
+    atm_str_t v = NULL;
+    atm_str_t r = NULL;
+    atm_str_t cmd = NULL;
 
     atm_log("sess_process_cmd");
     cmd = argv[0];
@@ -107,17 +107,18 @@ atm_sess_free(void *sess)
 void
 atm_sess_process(atm_sess_t *se)
 {
-    atm_str_t   *line = NULL;
-    atm_str_t  **argv = NULL;
-    atm_str_t  **t = NULL;
-    atm_uint_t   argc = 0;
-    atm_conn_t * c = NULL;
+    atm_str_t   line = NULL;
+    atm_str_t  *argv = NULL;
+    atm_str_t  *t = NULL;
+    atm_uint_t  argc = 0;
+    atm_conn_t *c = NULL;
 
     c = se->conn;
     line = atm_conn_read_line(c);
     if (line != NULL) {
-        atm_log("sess_proc %s", line->val);
-        argv = atm_str_split(line->val, line->len); 
+        atm_log("sess_proc %s", line);
+        atm_uint_t len = atm_str_len(line);
+        argv = atm_str_split(line, len); 
         if (argv != NULL) {
             t = argv;
             for (;*t!=NULL; t++) {

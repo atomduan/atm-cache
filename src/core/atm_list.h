@@ -39,7 +39,7 @@ struct atm_list_iter_s {
 atm_list_t *
 atm_list_new(atm_T_t *v_type, atm_uint_t f_type);
 
-atm_str_t *
+atm_str_t
 atm_list_str(void *list);
 
 void 

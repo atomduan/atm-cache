@@ -17,13 +17,13 @@
 #define ATM_TEST_EVENT_ON       0
 #include <atm_test_event.h>
 
-#define ATM_TEST_STR_ON         0
+#define ATM_TEST_STR_ON         1
 #include <atm_test_str.h>
 
 #define ATM_TEST_TIME_ON        0
 #include <atm_test_time.h>
 
-#define ATM_TEST_ARR_ON         1
+#define ATM_TEST_ARR_ON         0
 #include <atm_test_arr.h>
 
 

@@ -491,14 +491,14 @@ atm_conn_listen_free(void *listen)
 }
 
 
-atm_str_t *
+atm_str_t
 atm_conn_read_line(atm_conn_t *c)
 {
-    atm_str_t *res = NULL;
+    atm_str_t res = NULL;
     atm_buf_t *r_buf = c->r_buf;
     char *s = atm_buf_read_line(r_buf);
     if (s != NULL) {
-        res = atm_str_wrp(s);
+        res = atm_str_new(s);
     }
     return res; 
 }
@@ -519,9 +519,11 @@ atm_conn_write(atm_conn_t *c,
 
 
 void
-atm_conn_write_str(atm_conn_t *c, atm_str_t *s)
+atm_conn_write_str(atm_conn_t *c, atm_str_t s)
 {
+    atm_uint_t len;
     if (c != NULL) {
-        atm_conn_write(c,s->val,s->len);
+        len = atm_str_len(s);
+        atm_conn_write(c,s,len);
     }
 }

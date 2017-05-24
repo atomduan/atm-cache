@@ -1,8 +1,8 @@
 #!/bin/sh
 have=ATM_HAVE_JEMALLOC . auto/have
-CORE_INCS="$CORE_INCS $ATM_JEMALLOC/lib"
+BUILD_INCS="$BUILD_INCS $ATM_JEMALLOC/lib"
 LINK_DEPS="$ATM_JEMALLOC/lib/libjemalloc.a $LINK_DEPS"
-CORE_LIBS="$ATM_JEMALLOC/lib/libjemalloc.a $CORE_LIBS"
+BUILD_LIBS="$ATM_JEMALLOC/lib/libjemalloc.a $BUILD_LIBS"
 
 JEMALLOC_CFLAGS="-std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops"
 JEMALLOC_LDFLAGS=${ATM_LD_OPT}

@@ -67,6 +67,6 @@ ATM_RPATH=NO
 #Note: The system CFLAG should be set in /cc/gcc in this case
 ATM_CC_OPT=""
 
-#supplement to CORE_LIBS, .a -R -L can be set here 
+#supplement to BUILD_LIBS, .a -R -L can be set here 
 #more infos in auto/lib/${libname}/conf
 ATM_LD_OPT=

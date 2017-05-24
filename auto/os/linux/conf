@@ -43,7 +43,7 @@ atm_feature_test="int efd = 0;
 
 if [ $atm_found = yes ]; then
     have=ATM_HAVE_CLEAR_EVENT . auto/have
-    CORE_SRCS="$CORE_SRCS $EPOLL_SRCS"
+    BUILD_SRCS="$BUILD_SRCS $EPOLL_SRCS"
     EVENT_MODULES="$EVENT_MODULES $EPOLL_MODULE"
     EVENT_FOUND=YES
 
@@ -114,7 +114,7 @@ atm_feature_test="int s = 0, fd = 1;
 . auto/feature
 
 if [ $atm_found = yes ]; then
-    CORE_SRCS="$CORE_SRCS $LINUX_SENDFILE_SRCS"
+    BUILD_SRCS="$BUILD_SRCS $LINUX_SENDFILE_SRCS"
 fi
 
 

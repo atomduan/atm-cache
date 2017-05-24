@@ -17,9 +17,9 @@ CFLAGS = -pipe -O0 -Wall -Wextra -Wpointer-arith -Wconditional-uninitialized -Wn
 
 LINK = \$(CC)
 
-CORE_DEPS = misc_utils.h
+BUILD_DEPS = misc_utils.h
 
-CORE_INCS = -I ./ \\
+BUILD_INCS = -I ./ \\
 	-I ../../../src/os/unix/linux \\
 	-I ../../../build
 
@@ -36,8 +36,8 @@ ${name}:	${name}.o \\
 	-ldl -lpthread -Wl,-E
 
 
-${name}.o:	\$(CORE_DEPS)
-	\$(CC) -c \$(CFLAGS) \$(CORE_INCS) -o ${name}.o ${name}.c
+${name}.o:	\$(BUILD_DEPS)
+	\$(CC) -c \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
 
 
 END
@@ -45,8 +45,8 @@ fi
 
 
 cat <<END >> Makefile
-misc_utils.o:	\$(CORE_DEPS)
-	\$(CC) -c \$(CFLAGS) \$(CORE_INCS) -o misc_utils.o misc_utils.c
+misc_utils.o:	\$(BUILD_DEPS)
+	\$(CC) -c \$(CFLAGS) \$(BUILD_INCS) -o misc_utils.o misc_utils.c
 
 
 END

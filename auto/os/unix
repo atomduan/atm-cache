@@ -35,7 +35,7 @@ atm_feature_test="int  n, dp; struct dvpoll  dvp;
 . auto/feature
 
 if [ $atm_found = yes ]; then
-    CORE_SRCS="$CORE_SRCS $DEVPOLL_SRCS"
+    BUILD_SRCS="$BUILD_SRCS $DEVPOLL_SRCS"
     EVENT_MODULES="$EVENT_MODULES $DEVPOLL_MODULE"
     EVENT_FOUND=YES
 fi
@@ -56,7 +56,7 @@ if test -z "$ATM_KQUEUE_CHECKED"; then
 
         have=ATM_HAVE_CLEAR_EVENT . auto/have
         EVENT_MODULES="$EVENT_MODULES $KQUEUE_MODULE"
-        CORE_SRCS="$CORE_SRCS $KQUEUE_SRCS"
+        BUILD_SRCS="$BUILD_SRCS $KQUEUE_SRCS"
         EVENT_FOUND=YES
 
         atm_feature="kqueue's NOTE_LOWAT"
@@ -256,7 +256,7 @@ if [ $atm_found = no ]; then
     . auto/feature
 
     if [ $atm_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS -ldl"
+        BUILD_LIBS="$BUILD_LIBS -ldl"
         ATM_LIBDL="-ldl"
     fi
 fi
@@ -280,7 +280,7 @@ if [ $atm_found = no ]; then
     . auto/feature
 
     if [ $atm_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS -lrt"
+        BUILD_LIBS="$BUILD_LIBS -lrt"
     fi
 fi
 
@@ -499,7 +499,7 @@ if [ $ATM_FILE_AIO = YES ]; then
     . auto/feature
 
     if [ $atm_found = yes ]; then
-        CORE_SRCS="$CORE_SRCS $FILE_AIO_SRCS"
+        BUILD_SRCS="$BUILD_SRCS $FILE_AIO_SRCS"
     fi
 
     if [ $atm_found = no ]; then
@@ -522,7 +522,7 @@ if [ $ATM_FILE_AIO = YES ]; then
         if [ $atm_found = yes ]; then
             have=ATM_HAVE_EVENTFD . auto/have
             have=ATM_HAVE_SYS_EVENTFD_H . auto/have
-            CORE_SRCS="$CORE_SRCS $LINUX_AIO_SRCS"
+            BUILD_SRCS="$BUILD_SRCS $LINUX_AIO_SRCS"
         fi
     fi
 
@@ -541,7 +541,7 @@ if [ $ATM_FILE_AIO = YES ]; then
 
         if [ $atm_found = yes ]; then
             have=ATM_HAVE_EVENTFD . auto/have
-            CORE_SRCS="$CORE_SRCS $LINUX_AIO_SRCS"
+            BUILD_SRCS="$BUILD_SRCS $LINUX_AIO_SRCS"
         fi
     fi
 
@@ -857,7 +857,7 @@ if [ $atm_found = no ]; then
     . auto/feature
 
     if [ $atm_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS -lpthread"
+        BUILD_LIBS="$BUILD_LIBS -lpthread"
     fi
 fi
 
@@ -870,7 +870,7 @@ if [ $atm_found = no ]; then
     . auto/feature
 
     if [ $atm_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS -lrt"
+        BUILD_LIBS="$BUILD_LIBS -lrt"
     fi
 fi
 
@@ -986,8 +986,8 @@ atm_feature_test='struct addrinfo *res;
 #TODO. need checking?
 if [ $USE_THREADS = YES ]; then
     have=ATM_THREADS . auto/have
-    if ! echo $CORE_LIBS | grep '\-lpthread' > /dev/null; then
-        CORE_LIBS="$CORE_LIBS -lpthread"
+    if ! echo $BUILD_LIBS | grep '\-lpthread' > /dev/null; then
+        BUILD_LIBS="$BUILD_LIBS -lpthread"
     fi
 fi
 

@@ -16,20 +16,20 @@ LINK = $LINK
 
 END
 
-atm_all_srcs="$CORE_SRCS"
+atm_all_srcs="$BUILD_SRCS"
 
 # the core dependencies and include paths
 
-atm_deps=`echo $CORE_DEPS $ATM_AUTO_CONFIG_H $ATM_AUTO_SYS_HEADERS_H \
+atm_deps=`echo $BUILD_DEPS $ATM_AUTO_CONFIG_H $ATM_AUTO_SYS_HEADERS_H \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
 
-atm_incs=`echo $CORE_INCS $ATM_BUILD \
+atm_incs=`echo $BUILD_INCS $ATM_BUILD \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont$atm_include_opt\1/g"`
 
 cat << END >> $ATM_MAKEFILE
-CORE_DEPS = $atm_deps
+BUILD_DEPS = $atm_deps
 
-CORE_INCS = $atm_include_opt$atm_incs
+BUILD_INCS = $atm_include_opt$atm_incs
 
 END
 
@@ -42,8 +42,8 @@ atm_build=`echo $atm_all_objs \
     | sed -e "s/  *\([^ ][^ ]*\)/$atm_regex_cont\1/g"`
 
 atm_libs=
-if test -n "$ATM_LD_OPT$CORE_LIBS"; then
-    atm_libs=`echo $ATM_LD_OPT $CORE_LIBS | sed -e "s/^/$atm_regex_cont/"`
+if test -n "$ATM_LD_OPT$BUILD_LIBS"; then
+    atm_libs=`echo $ATM_LD_OPT $BUILD_LIBS | sed -e "s/^/$atm_regex_cont/"`
 fi
 
 atm_link=${CORE_LINK:+`echo $CORE_LINK \
@@ -66,14 +66,14 @@ END
 
 
 # the core sources
-atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(CORE_INCS)"
+atm_cc="\$(CC) $atm_compile_opt \$(CFLAGS) \$(BUILD_INCS)"
 for atm_src in $atm_all_srcs
 do
     atm_obj=`echo $atm_src \
         | sed -e "s#^\(.*\.\)c\\$#${ATM_BUILD}\/\1$atm_objext#g"`
 
     cat << END >> $ATM_MAKEFILE
-$atm_obj:	\$(CORE_DEPS)$atm_cont$atm_src
+$atm_obj:	\$(BUILD_DEPS)$atm_cont$atm_src
 	$atm_cc$atm_tab$atm_objout$atm_obj$atm_tab$atm_src
 
 END

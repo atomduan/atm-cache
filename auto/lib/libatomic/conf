@@ -1,9 +1,9 @@
 #!/bin/sh
 if [ $ATM_LIBATOMIC != YES ]; then
     have=ATM_HAVE_LIBATOMIC . auto/have
-    CORE_INCS="$CORE_INCS $ATM_LIBATOMIC/src"
+    BUILD_INCS="$BUILD_INCS $ATM_LIBATOMIC/src"
     LINK_DEPS="$LINK_DEPS $ATM_LIBATOMIC/src/libatomic_ops.a"
-    CORE_LIBS="$CORE_LIBS $ATM_LIBATOMIC/src/libatomic_ops.a"
+    BUILD_LIBS="$BUILD_LIBS $ATM_LIBATOMIC/src/libatomic_ops.a"
 else
     atm_feature="atomic_ops library"
     atm_feature_name=ATM_HAVE_LIBATOMIC
@@ -22,7 +22,7 @@ else
                       AO_nop();"
     . auto/feature
     if [ $atm_found = yes ]; then
-        CORE_LIBS="$CORE_LIBS $atm_feature_libs"
+        BUILD_LIBS="$BUILD_LIBS $atm_feature_libs"
     else
 cat << END
 

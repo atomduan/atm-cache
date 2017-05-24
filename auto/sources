@@ -1,16 +1,16 @@
 #!/bin/sh
 #Example:
 #gcc -I option: 
-#   CORE_INCS="$CORE_INCS $OPENSSL/.openssl/include"
+#   BUILD_INCS="$BUILD_INCS $OPENSSL/.openssl/include"
 #gcc file plus these dep files to make each .c file target .o: 
-#   CORE_DEPS="$CORE_DEPS $OPENSSL/.openssl/include/openssl/ssl.h"
+#   BUILD_DEPS="$BUILD_DEPS $OPENSSL/.openssl/include/openssl/ssl.h"
 #gcc lib option. .a -R -L can be here 
-#   CORE_LIBS="$CORE_LIBS $OPENSSL/.openssl/lib/libssl.a"
+#   BUILD_LIBS="$BUILD_LIBS $OPENSSL/.openssl/lib/libssl.a"
 
-CORE_INCS="src/core \
+BUILD_INCS="src/core \
            $ATM_JEMALLOC/include/jemalloc"
 
-CORE_DEPS="src/core/atm_core.h \
+BUILD_DEPS="src/core/atm_core.h \
            src/core/atm_arr.h \
            src/core/atm_blk.h \
            src/core/atm_buf.h \
@@ -29,7 +29,7 @@ CORE_DEPS="src/core/atm_core.h \
            src/core/atm_time.h \
            src/core/atm_util.h"
 
-CORE_SRCS="src/core/atm_arr.c \
+BUILD_SRCS="src/core/atm_arr.c \
            src/core/atm_blk.c \
            src/core/atm_buf.c \
            src/core/atm_config.c \
@@ -46,19 +46,19 @@ CORE_SRCS="src/core/atm_arr.c \
            src/core/atm_task.c \
            src/core/atm_time.c"
 
-CORE_LIBS=""
+BUILD_LIBS=""
 
 
 #------------------------------------------------------
 #TEST SRC Config
 if [ $ATM_UNIT_TEST = YES ]; then
-CORE_INCS="$CORE_INCS \
+BUILD_INCS="$BUILD_INCS \
             src/test \
             src/test/core \
             src/test/os \
             src/test/os/unix"
 
-CORE_DEPS="$CORE_DEPS \
+BUILD_DEPS="$BUILD_DEPS \
             src/test/atm_unit_test.h \
             src/test/core/atm_test_dict.h \
             src/test/core/atm_test_event.h \
@@ -67,7 +67,7 @@ CORE_DEPS="$CORE_DEPS \
             src/test/core/atm_test_time.h"
             
 
-CORE_SRCS="$CORE_SRCS \
+BUILD_SRCS="$BUILD_SRCS \
             src/test/atm_unit_test.c \
             src/test/core/atm_test_dict.c \
             src/test/core/atm_test_event.c \
@@ -79,12 +79,12 @@ fi
 
 #------------------------------------------------------
 #CONFIG OS TYPE DIFFERENCE SOURCE, 
-CORE_INCS="$CORE_INCS \
+BUILD_INCS="$BUILD_INCS \
             src/os \
             src/os/unix \
             src/os/unix/linux"
 
-CORE_DEPS="$CORE_DEPS \
+BUILD_DEPS="$BUILD_DEPS \
             src/os/unix/linux/atm_linux_config.h \
             src/os/unix/atm_alloc.h \
             src/os/unix/atm_atomic.h \
@@ -92,7 +92,7 @@ CORE_DEPS="$CORE_DEPS \
             src/os/unix/atm_net.h \
             src/os/unix/atm_sig.h"
 
-CORE_SRCS="$CORE_SRCS \
+BUILD_SRCS="$BUILD_SRCS \
             src/os/unix/atm_alloc.c \
             src/os/unix/atm_file.c \
             src/os/unix/atm_net.c \

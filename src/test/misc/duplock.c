@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     //printf("enter in first rdlock, ret is %d\n", ret);
     ///* ret is 35, error msg is Resource deadlock avoided */
     //printf("error is %s\n", strerror(ret));
-    
+
     //ret = pthread_rwlock_unlock(&rwlk);
     //printf("leave first rdlock, ret is %d\n", ret);
 

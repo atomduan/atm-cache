@@ -22,7 +22,7 @@ atm_buf_get_rblk(atm_buf_t *buf)
     bk = atm_list_lpeek(buf->blks);
     if (bk != NULL) {
         /* refresh rblk */
-        if (bk->ridx == bk->widx 
+        if (bk->ridx == bk->widx
                 && bk->widx == bk->size) {
             /* recycle the readed blk */
             bk = atm_list_lpop(buf->blks);
@@ -48,7 +48,7 @@ atm_buf_get_wblk(atm_buf_t *buf)
     pthread_mutex_lock(&buf->_mutex);
     bk = atm_list_rpeek(buf->blks);
     if (bk == NULL || bk->size == bk->widx) {
-        bk = atm_blk_new(); 
+        bk = atm_blk_new();
         atm_list_push(buf->blks,bk);
         bk = atm_list_rpeek(buf->blks);
     }
@@ -68,7 +68,7 @@ atm_buf_new()
     res = atm_alloc(sizeof(atm_buf_t));
     res->aval = 0;
     res->blks = atm_list_new(
-            ATM_BLK_T, 
+            ATM_BLK_T,
             ATM_FREE_DEEP);
     pthread_mutex_init(&res->_mutex, NULL);
     return res;
@@ -91,7 +91,7 @@ atm_buf_free(void *buf)
 /* public funcs */
 /* for epoll event call back funcs */
 atm_int_t
-atm_buf_read_sock(atm_buf_t *buf, 
+atm_buf_read_sock(atm_buf_t *buf,
         atm_socket_t *src)
 {
     atm_socket_t *srcsock = src;
@@ -121,7 +121,7 @@ atm_buf_read_sock(atm_buf_t *buf,
 
 
 atm_int_t
-atm_buf_write_sock(atm_buf_t *buf, 
+atm_buf_write_sock(atm_buf_t *buf,
         atm_socket_t *dest)
 {
     atm_socket_t *destsock = dest;
@@ -187,7 +187,7 @@ atm_buf_read_line(atm_buf_t *buf)
 start_build:
     atm_list_iter_free(it);
     if (len > 0) {
-        res = atm_alloc(len+1); 
+        res = atm_alloc(len+1);
         atm_buf_read(buf,res,len);
     }
     return res;
@@ -195,7 +195,7 @@ start_build:
 
 
 atm_int_t
-atm_buf_read(atm_buf_t *buf, void *dest, 
+atm_buf_read(atm_buf_t *buf, void *dest,
         atm_uint_t nbyte)
 {
     atm_int_t total = 0;
@@ -229,7 +229,7 @@ atm_buf_read(atm_buf_t *buf, void *dest,
 
 
 atm_int_t
-atm_buf_write(atm_buf_t *buf, void *src, 
+atm_buf_write(atm_buf_t *buf, void *src,
         atm_uint_t nbyte)
 {
     uint8_t *sptr = (uint8_t *)src;

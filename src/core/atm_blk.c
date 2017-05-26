@@ -16,7 +16,7 @@ static atm_T_t ATM_BLK_TYPE = {
  * Public
  * */
 atm_T_t *ATM_BLK_T = &ATM_BLK_TYPE;
-       
+
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*

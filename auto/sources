@@ -1,10 +1,10 @@
 #!/bin/sh
 #Example:
-#gcc -I option: 
+#gcc -I option:
 #   BUILD_INCS="$BUILD_INCS $OPENSSL/.openssl/include"
-#gcc file plus these dep files to make each .c file target .o: 
+#gcc file plus these dep files to make each .c file target .o:
 #   BUILD_DEPS="$BUILD_DEPS $OPENSSL/.openssl/include/openssl/ssl.h"
-#gcc lib option. .a -R -L can be here 
+#gcc lib option. .a -R -L can be here
 #   BUILD_LIBS="$BUILD_LIBS $OPENSSL/.openssl/lib/libssl.a"
 
 BUILD_INCS="src/core"
@@ -72,7 +72,7 @@ BUILD_DEPS="$BUILD_DEPS \
             src/test/core/atm_test_siphash.h \
             src/test/core/atm_test_str.h \
             src/test/core/atm_test_time.h"
-            
+
 BUILD_SRCS="$BUILD_SRCS \
             src/test/atm_unit_test.c \
             src/test/core/atm_test_arr.c \
@@ -85,7 +85,7 @@ fi
 
 
 #------------------------------------------------------
-#CONFIG OS TYPE DIFFERENCE SOURCE, 
+#CONFIG OS TYPE DIFFERENCE SOURCE,
 BUILD_INCS="$BUILD_INCS \
             src/os \
             src/os/unix \

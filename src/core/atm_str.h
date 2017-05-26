@@ -9,7 +9,7 @@
 
 extern atm_T_t *ATM_STR_T;
 
-typedef struct atm_str_hdr_s    atm_str_hdr;  
+typedef struct atm_str_hdr_s    atm_str_hdr;
 struct __attribute__ ((__packed__)) atm_str_hdr_s {
     atm_uint_t  cap;
     atm_uint_t  len;
@@ -21,19 +21,19 @@ struct __attribute__ ((__packed__)) atm_str_hdr_s {
 atm_str_t
 atm_str_new(char *str);
 
-atm_bool_t 
-atm_str_match(void *str1, void *str2); 
+atm_bool_t
+atm_str_match(void *str1, void *str2);
 
-uint64_t 
+uint64_t
 atm_str_hash(void *str);
 
-atm_int_t 
+atm_int_t
 atm_str_cmp(void *str1, void *str2);
 
 atm_str_t
 atm_str_string(void *str);
 
-void 
+void
 atm_str_free(void *str);
 
 
@@ -44,10 +44,10 @@ atm_str_dup(atm_str_t str);
 atm_uint_t
 atm_str_len(atm_str_t str);
 
-atm_bool_t 
+atm_bool_t
 atm_str_eq(atm_str_t str1, atm_str_t str2);
 
-atm_bool_t 
+atm_bool_t
 atm_str_eqs(atm_str_t str1, char *s);
 
 atm_str_t

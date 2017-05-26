@@ -10,13 +10,13 @@
 
 /*
 #define ATM_EVENT_SIZE          1024
-#define ATM_EVENT_LIST_SIZE     1024 
+#define ATM_EVENT_LIST_SIZE     1024
 */
 #define ATM_EVENT_SIZE          1
 #define ATM_EVENT_LIST_SIZE     1
 
 #define ATM_EVENT_READ          EPOLLIN
-#define ATM_EVENT_WRITE         EPOLLOUT 
+#define ATM_EVENT_WRITE         EPOLLOUT
 
 #define ATM_EVENT_OP_ADD        1
 #define ATM_EVENT_OP_DEL        2
@@ -41,7 +41,7 @@ struct atm_event_s {
 };
 
 typedef struct {
-    atm_event_t    *e; 
+    atm_event_t    *e;
     uint32_t        mask;
     atm_uint_t      op_type;
 } atm_event_op_t;
@@ -53,7 +53,7 @@ atm_event_init();
 
 /* get new event instance*/
 atm_event_t *
-atm_event_new(void *load, int fd, 
+atm_event_new(void *load, int fd,
         void (*handle_read)(atm_event_t *ev),
         void (*handle_write)(atm_event_t *ev));
 

@@ -6,7 +6,7 @@
 #define ATM_QUEUE_BLOCK         1
 #define ATM_QUEUE_NONBLOCK      2
 
-/* 
+/*
  * blocking queue struct
  * */
 struct atm_queue_s {
@@ -18,7 +18,7 @@ struct atm_queue_s {
 
 
 atm_queue_t *
-atm_queue_new(atm_T_t *v_type, 
+atm_queue_new(atm_T_t *v_type,
         atm_uint_t f_type, atm_uint_t blk_type);
 
 void

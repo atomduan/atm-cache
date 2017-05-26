@@ -4,8 +4,8 @@
 #include <atm_core.h>
 
 
-/* this is a inner type 
- * so we do not define it in atm_types.h 
+/* this is a inner type
+ * so we do not define it in atm_types.h
  * plz do not use it in other file, consciously
  * the global type should be define is atm_types.h Specific Tyes sect
  * */
@@ -42,15 +42,15 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type);
 atm_str_t
 atm_list_str(void *list);
 
-void 
+void
 atm_list_free(void *list);
 
 
 /* public funcs */
-void 
+void
 atm_list_push(atm_list_t *list, void *val);
 
-void 
+void
 atm_list_del(atm_list_t *list, void *hint);
 
 void *

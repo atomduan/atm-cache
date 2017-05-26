@@ -3,14 +3,14 @@
  * Private
  * */
 static void
-atm_task_notify_handle(void *task); 
+atm_task_notify_handle(void *task);
 static void *
 atm_task_worker_func(void *arg);
 static void
 atm_task_worker_init(int nworker);
 static atm_task_worker_t *
 atm_task_worker_new();
-static void 
+static void
 atm_task_worker_free(void *worker);
 
 
@@ -49,18 +49,18 @@ atm_task_notify_handle(void *task)
 
     worker_nums = workers->length;
     if (worker_nums > 0) {
-        wi = ++workers_round % worker_nums; 
+        wi = ++workers_round % worker_nums;
     }
 
     wks = atm_arr_get(workers, wi);
     curr_worker = *wks;
     if (curr_worker == NULL) {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
                 "can not get curr_worker");
         exit(1);
     }
     /* push t to worker's blocking queue */
-    atm_log("notified worker queue is %p", 
+    atm_log("notified worker queue is %p",
             curr_worker->blking_tasks);
     atm_queue_push(curr_worker->blking_tasks, t);
 }
@@ -111,7 +111,7 @@ atm_task_worker_init(int nworker)
                 continue;
             } else {
                 w->active = ATM_FALSE;
-                atm_log_rout(ATM_LOG_ERROR, 
+                atm_log_rout(ATM_LOG_ERROR,
                     "task create worker fail");
                 atm_task_worker_free(w);
                 continue;
@@ -137,7 +137,7 @@ atm_task_worker_new()
 }
 
 
-static void 
+static void
 atm_task_worker_free(void *worker)
 {
     pthread_t curr_thread = pthread_self();
@@ -162,7 +162,7 @@ atm_task_worker_free(void *worker)
 /*
  * Public
  * */
-void 
+void
 atm_task_init()
 {
     int nworker = 10;
@@ -175,8 +175,8 @@ atm_task_init()
 }
 
 
-atm_task_t * 
-atm_task_new(void *load, 
+atm_task_t *
+atm_task_new(void *load,
         atm_int_t (*run)(atm_task_t *self))
 {
     atm_task_t *t = NULL;
@@ -187,7 +187,7 @@ atm_task_new(void *load,
 }
 
 
-void 
+void
 atm_task_free(void *task)
 {
     atm_task_t *t = task;
@@ -197,7 +197,7 @@ atm_task_free(void *task)
 }
 
 
-void 
+void
 atm_task_dispatch(atm_task_t *task)
 {
     if (task != NULL) {

@@ -45,7 +45,7 @@ atm_sess_reset(atm_sess_t *se)
 
 
 static void
-atm_sess_process_cmd(atm_conn_t *c, 
+atm_sess_process_cmd(atm_conn_t *c,
         atm_uint_t argc, atm_str_t *argv)
 {
     atm_str_t k;
@@ -90,7 +90,7 @@ atm_sess_new(atm_conn_t *conn)
 {
     atm_sess_t *res = NULL;
 
-    res = atm_alloc(sizeof(atm_sess_t)); 
+    res = atm_alloc(sizeof(atm_sess_t));
     res->conn = conn;
     return res;
 }
@@ -122,12 +122,12 @@ atm_sess_process(atm_sess_t *se)
     if (line != NULL) {
         atm_log("sess_proc %s", line);
         atm_uint_t len = atm_str_len(line);
-        argv = atm_str_split(line, len); 
+        argv = atm_str_split(line, len);
         if (argv != NULL) {
             for (t=argv; *t!=NULL; t++) {
                 argc++;
             }
-            atm_sess_process_cmd(c, argc, argv); 
+            atm_sess_process_cmd(c, argc, argv);
         }
         atm_sess_reset(se);
     }

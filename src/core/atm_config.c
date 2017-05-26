@@ -2,7 +2,7 @@
 /*
  * Private
  * */
-static void 
+static void
 atm_config_load();
 
 
@@ -13,7 +13,7 @@ static atm_dict_t *config;
 /*
  * Private
  * */
-static void 
+static void
 atm_config_load()
 {
     /* load from default config path */
@@ -23,14 +23,14 @@ atm_config_load()
 /*
  * Public
  * */
-void 
+void
 atm_config_init()
 {
     config = atm_dict_new(
-            ATM_STR_T, 
-            ATM_STR_T, 
+            ATM_STR_T,
+            ATM_STR_T,
             ATM_FREE_DEEP);
-    /* load from conf path */ 
+    /* load from conf path */
     atm_config_load();
 }
 
@@ -49,14 +49,14 @@ atm_config_get(atm_str_t k)
 }
 
 
-void 
+void
 atm_config_set(atm_str_t k, atm_str_t v)
 {
     atm_dict_set(config, k, v);
 }
 
 
-void 
+void
 atm_config_del(atm_str_t k)
 {
     atm_dict_del(config, k);

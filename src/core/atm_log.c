@@ -2,7 +2,7 @@
 /*
  * Private
  * */
-static void 
+static void
 atm_log_rout_raw(atm_uint_t lv, char *msg);
 
 
@@ -18,7 +18,7 @@ static const char * ATM_LOG_LV_ENUM[] = {
 
 
 static const char *
-atm_log_lvstr(atm_uint_t level) 
+atm_log_lvstr(atm_uint_t level)
 {
     atm_uint_t lvs_size = 0;
 
@@ -29,8 +29,8 @@ atm_log_lvstr(atm_uint_t level)
 }
 
 
-static void 
-atm_log_rout_raw(atm_uint_t lv, char *msg) 
+static void
+atm_log_rout_raw(atm_uint_t lv, char *msg)
 {
     if (msg != NULL) {
         printf("[%s]:%s\n",atm_log_lvstr(lv),msg);
@@ -44,8 +44,8 @@ atm_log_rout_raw(atm_uint_t lv, char *msg)
 /*
  * Public
  * */
-void 
-atm_log(char *fmt, ...) 
+void
+atm_log(char *fmt, ...)
 {
     atm_uint_t size = ATM_LOG_MAXLEN;
     char msg[size];
@@ -60,8 +60,8 @@ atm_log(char *fmt, ...)
 }
 
 
-void 
-atm_log_rout(atm_uint_t level, char *fmt, ...) 
+void
+atm_log_rout(atm_uint_t level, char *fmt, ...)
 {
     atm_uint_t size = ATM_LOG_MAXLEN;
     char msg[size];

@@ -45,7 +45,7 @@ atm_str_grow(atm_str_t str, atm_uint_t need)
 
     if (need > 0) {
         if (str != NULL) {
-            hdr = atm_str_get_hdr(str); 
+            hdr = atm_str_get_hdr(str);
             avail = hdr->cap - hdr->len;
             if (avail < need) {
                 hdrlen = sizeof(atm_str_hdr);
@@ -61,7 +61,7 @@ atm_str_grow(atm_str_t str, atm_uint_t need)
                 res = str;
             }
         } else {
-            res = atm_str_new("");                        
+            res = atm_str_new("");
             res = atm_str_grow(res, need);
         }
     } else {
@@ -74,7 +74,7 @@ atm_str_grow(atm_str_t str, atm_uint_t need)
 static atm_uint_t
 atm_str_size(atm_uint_t slen)
 {
-    atm_uint_t res = 0; 
+    atm_uint_t res = 0;
     if (slen > 0) {
         atm_uint_t r = slen % ATM_WORDLEN;
         res = (slen - r) + ATM_WORDLEN;
@@ -91,7 +91,7 @@ atm_str_get_hdr(atm_str_t str)
 
     if (str != NULL) {
         hdrlen = sizeof(atm_str_hdr);
-        res = ((uint8_t *)str) - hdrlen; 
+        res = ((uint8_t *)str) - hdrlen;
     }
     return (atm_str_hdr *)res;
 }
@@ -124,7 +124,7 @@ atm_str_dup(atm_str_t str)
     atm_uint_t size;
 
     if (str != NULL) {
-        hdr = atm_str_get_hdr(str); 
+        hdr = atm_str_get_hdr(str);
         hdrlen = sizeof(atm_str_hdr);
         size = hdrlen+hdr->cap+1;
         newhdr = atm_alloc(size);
@@ -159,7 +159,7 @@ atm_str_new(char *str)
 }
 
 
-atm_bool_t 
+atm_bool_t
 atm_str_match(void *str1, void *str2)
 {
     atm_str_t s1 = (atm_str_t) str1;
@@ -168,12 +168,12 @@ atm_str_match(void *str1, void *str2)
 }
 
 
-uint64_t 
+uint64_t
 atm_str_hash(void *str)
 {
     uint64_t res = 0;
     atm_str_t ss;
-    atm_uint_t len; 
+    atm_uint_t len;
 
     ss = (atm_str_t) str;
     len = atm_str_len(ss);
@@ -182,13 +182,13 @@ atm_str_hash(void *str)
 }
 
 
-atm_int_t 
+atm_int_t
 atm_str_cmp(void *str1, void *str2)
 {
     atm_str_t s1 = (atm_str_t) str1;
     atm_str_t s2 = (atm_str_t) str2;
 
-    if (s1 == s2) 
+    if (s1 == s2)
         return ATM_CMP_EQ;
     if (atm_str_len(s1) > atm_str_len(s2))
         return ATM_CMP_GT;
@@ -206,7 +206,7 @@ atm_str_string(void *str)
 
 
 void
-atm_str_free(void *str) 
+atm_str_free(void *str)
 {
     atm_str_t s;
     atm_str_hdr *hdr;
@@ -221,14 +221,14 @@ atm_str_free(void *str)
 atm_uint_t
 atm_str_len(atm_str_t str)
 {
-    atm_uint_t res = 0; 
+    atm_uint_t res = 0;
     atm_str_hdr *h;
     atm_uint_t hdrlen;
-    void *tmp; 
+    void *tmp;
 
     if (str != NULL) {
         hdrlen = sizeof(atm_str_hdr);
-        tmp = ((uint8_t *)str) - hdrlen; 
+        tmp = ((uint8_t *)str) - hdrlen;
         h = (atm_str_hdr *)tmp;
         res = h->len;
     }
@@ -236,8 +236,8 @@ atm_str_len(atm_str_t str)
 }
 
 
-atm_bool_t 
-atm_str_eq(atm_str_t str1, atm_str_t str2) 
+atm_bool_t
+atm_str_eq(atm_str_t str1, atm_str_t str2)
 {
     atm_bool_t res = ATM_FALSE;
     res = atm_str_cmp(str1, str2);
@@ -245,8 +245,8 @@ atm_str_eq(atm_str_t str1, atm_str_t str2)
 }
 
 
-atm_bool_t 
-atm_str_eqs(atm_str_t str1, char *s) 
+atm_bool_t
+atm_str_eqs(atm_str_t str1, char *s)
 {
     atm_bool_t res = ATM_FALSE;
     atm_str_t str2;
@@ -286,7 +286,7 @@ atm_str_mtrim(char *s)
     if (s != NULL) {
         len = strlen(s);
         res = atm_alloc(len+1);
-        memcpy(res,s,len); 
+        memcpy(res,s,len);
     }
     return res;
 }
@@ -344,7 +344,7 @@ atm_str_split(char *s, int len)
     char *p = s;
 
     atm_int_t sli = 0;
-    char **sl = atm_alloc(sizeof(char *)*len); 
+    char **sl = atm_alloc(sizeof(char *)*len);
 
     char qty = 0; /* quote type: 1->', 2->" */
     int inq = 0; /* in the quote */
@@ -352,7 +352,7 @@ atm_str_split(char *s, int len)
 
     atm_int_t i = 0;
     atm_int_t ti = 0;
-    char *t = atm_alloc(len+1); 
+    char *t = atm_alloc(len+1);
     while (i < len) {
         if (*p) {
             if (inq > 0) {
@@ -366,7 +366,7 @@ atm_str_split(char *s, int len)
                         }
                     } else
                     if (qty == '\'') {
-                        inq++;     
+                        inq++;
                         qty = '"';
                     }
                 } else
@@ -376,7 +376,7 @@ atm_str_split(char *s, int len)
                         qty = '\'';
                     } else
                     if (qty == '\'') {
-                        inq--;     
+                        inq--;
                         if (inq > 0) {
                             qty = '"';
                         } else {
@@ -396,7 +396,7 @@ atm_str_split(char *s, int len)
                     if (trb == 0) {
                         /* reload a new t */
                         if (strlen(t)>0) {
-                            sl[sli++] = t;       
+                            sl[sli++] = t;
                             t = atm_alloc(len+1);
                             ti = 0;
                         }
@@ -405,7 +405,7 @@ atm_str_split(char *s, int len)
                 } else {
                     trb = 0;
                 }
-                if (!skip) 
+                if (!skip)
                     t[ti++] = *p;
             }
         }
@@ -415,10 +415,10 @@ atm_str_split(char *s, int len)
     /* add the final one */
     if (strlen(t)>0) {
         if (sli > 0 && sl[sli-1]!=t) {
-            sl[sli++] = t;       
-        } else 
+            sl[sli++] = t;
+        } else
         if (sli == 0) {
-            sl[sli++] = t;       
+            sl[sli++] = t;
         }
     }
 

@@ -9,8 +9,8 @@
 #define ATM_DICT_INITIAL_BUCKET_SIZE 1
 
 
-/* this is a inner type 
- * so we do not define it in atm_types.h 
+/* this is a inner type
+ * so we do not define it in atm_types.h
  * plz do not use it in other file, consciously
  * the global type should be define is atm_types.h Specific Tyes sect
  * */
@@ -43,7 +43,7 @@ struct atm_dict_entry_s {
 
 
 /* public dict type lifecycle */
-void 
+void
 atm_dict_init();
 
 atm_dict_t *
@@ -52,27 +52,27 @@ atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, atm_uint_t free_type);
 atm_str_t
 atm_dict_str(void *dict);
 
-void 
+void
 atm_dict_free(void *dict);
 
 
 /* public funcs */
-atm_bool_t 
+atm_bool_t
 atm_dict_contains(atm_dict_t *dict, void *key);
 
 void *
 atm_dict_get(atm_dict_t *dict, void *key);
 
-void 
+void
 atm_dict_set(atm_dict_t *dict, void *key, void *val);
 
-void 
+void
 atm_dict_del(atm_dict_t *dict, void *key);
 
-uint64_t 
+uint64_t
 atm_dict_hash(char *input, atm_uint_t inlen);
 
-uint64_t 
+uint64_t
 atm_dict_hash_nocase(char *input, atm_uint_t inlen);
 
 

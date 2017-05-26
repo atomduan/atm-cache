@@ -22,7 +22,7 @@ ATM_USER=${ATM_USER:-nobody}
 ATM_GROUP=
 
 #This option must open,TODO
-USE_THREADS=YES 
+USE_THREADS=YES
 
 ATM_FILE_AIO=NO
 EVENT_FOUND=NO
@@ -63,10 +63,10 @@ CC=${ATM_CC:-cc}
 CPU=NO
 ATM_RPATH=NO
 
-#gcc -c options, supplement to CFLAGS, 
+#gcc -c options, supplement to CFLAGS,
 #Note: The system CFLAG should be set in /cc/gcc in this case
 ATM_CC_OPT=""
 
-#supplement to BUILD_LIBS, .a -R -L can be set here 
+#supplement to BUILD_LIBS, .a -R -L can be set here
 #more infos in auto/lib/${libname}/conf
 ATM_LD_OPT=

@@ -5,7 +5,7 @@
 static void
 atm_test_chd_exit_eval(int stat);
 
-static int 
+static int
 atm_test_suit_proc(int argc, char **argv);
 
 
@@ -17,7 +17,7 @@ static void
 atm_test_chd_exit_eval(int stat)
 {
     if (WIFEXITED(stat)) {
-        atm_log("test chd exit normally with code %d", 
+        atm_log("test chd exit normally with code %d",
                 WEXITSTATUS(stat));
     }
     if (WIFSIGNALED(stat)) {
@@ -28,8 +28,8 @@ atm_test_chd_exit_eval(int stat)
 }
 
 
-static atm_int_t 
-atm_test_suit_proc(int argc, char **argv) 
+static atm_int_t
+atm_test_suit_proc(int argc, char **argv)
 {
     atm_log("enter ");
     atm_test_siphash_suit();
@@ -46,8 +46,8 @@ atm_test_suit_proc(int argc, char **argv)
  * Public
  * */
 void
-atm_test_suit(int argc, char **argv) 
-{ 
+atm_test_suit(int argc, char **argv)
+{
     int stat = 0;
     pid_t pid = 0, wpid;
 
@@ -71,8 +71,8 @@ atm_test_suit(int argc, char **argv)
 }
 
 
-void 
-atm_test_report(char *func_name, atm_uint_t res) 
+void
+atm_test_report(char *func_name, atm_uint_t res)
 {
     if (ATM_TEST_PASS == res) {
         atm_log("PASS : test func name is [%s]",

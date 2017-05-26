@@ -30,24 +30,24 @@
  */
 
 
-/* 
+/*
  * Primitive data type define
  */
 typedef int8_t              atm_bool_t;
 
 /* int64_t or int32_t */
-typedef int32_t             atm_int_t; 
+typedef int32_t             atm_int_t;
 /* In 64 system same to: size_t and unsigned long int
- * In 32 system: same to: size_t and unsigned int 
+ * In 32 system: same to: size_t and unsigned int
  */
 typedef uint32_t            atm_uint_t;
 typedef int64_t             atm_long_t;
 typedef uint64_t            atm_ulong_t;
 
-/* 
+/*
  * Byte oriented data type define:
- *      we recommand to use unint*_t 
- *      to represent bit wise data type 
+ *      we recommand to use unint*_t
+ *      to represent bit wise data type
  */
 typedef uint8_t             atm_byte_t;/* same to u_char */
 

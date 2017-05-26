@@ -48,7 +48,7 @@ atm_str_t
 atm_conn_read_line(atm_conn_t *c);
 
 void
-atm_conn_write(atm_conn_t *c, 
+atm_conn_write(atm_conn_t *c,
         void *src, atm_uint_t nbyte);
 
 void

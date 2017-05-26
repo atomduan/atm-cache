@@ -4,10 +4,10 @@
  * */
 static atm_list_entry_t *
 atm_list_entry_new(void *val);
-static void 
+static void
 atm_list_entry_free(void *entry);
 /* private funcs */
-static void 
+static void
 atm_list_entry_isol(atm_list_entry_t * entry);
 static atm_list_entry_t *
 atm_list_find_linear(atm_list_t *list, void *entry);
@@ -33,7 +33,7 @@ atm_list_entry_new (void *val)
 }
 
 
-static void 
+static void
 atm_list_entry_free(void *entry)
 {
     atm_list_entry_t *e;
@@ -55,7 +55,7 @@ atm_list_entry_free(void *entry)
 
 
 /* make sure that the entry has no deps with the list position */
-static void 
+static void
 atm_list_entry_isol(atm_list_entry_t * entry)
 {
     if (entry != NULL) {
@@ -69,16 +69,16 @@ static atm_list_entry_t *
 atm_list_find_linear(atm_list_t *list, void *entry)
 {
     atm_list_entry_t *res = NULL;
-    atm_list_entry_t *curr;         
+    atm_list_entry_t *curr;
 
     if (list != NULL) {
-        curr = list->head;       
+        curr = list->head;
         while (curr != NULL) {
             if (list->v_type->match(curr->val, entry)) {
                 res = curr;
                 break;
             }
-            curr = curr->next;    
+            curr = curr->next;
         }
     }
     return res;
@@ -150,7 +150,7 @@ atm_str_t
 atm_list_str(void *list)
 {
     atm_str_t res;
-    atm_list_t *l; 
+    atm_list_t *l;
 
     l = (atm_list_t *) list;
     if (l != NULL) {
@@ -165,7 +165,7 @@ atm_list_str(void *list)
 }
 
 
-void 
+void
 atm_list_free(void *list)
 {
     atm_list_t *l = list;
@@ -174,7 +174,7 @@ atm_list_free(void *list)
 }
 
 
-void 
+void
 atm_list_push(atm_list_t *list, void *val)
 {
     atm_list_entry_t * entry;
@@ -204,7 +204,7 @@ atm_list_push(atm_list_t *list, void *val)
 }
 
 
-void 
+void
 atm_list_del(atm_list_t *list, void *hint)
 {
     atm_list_entry_t *entry;
@@ -219,7 +219,7 @@ atm_list_del(atm_list_t *list, void *hint)
         next = curr->next;
         if (prev == NULL && next == NULL) {
             /* only one entry */
-            list->head = NULL; 
+            list->head = NULL;
             list->tail = NULL;
         } else
         if (prev == NULL && next != NULL) {

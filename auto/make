@@ -53,7 +53,7 @@ atm_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
     | sed -e "s/^/$atm_regex_cont/"`}
 
 cat << END >> $ATM_MAKEFILE
-build:	binary 
+build:	binary
 
 binary:	${ATM_BUILD}/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}
 

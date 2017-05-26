@@ -15,8 +15,8 @@ atm_test_dict_init()
 {
     atm_dict_init();
     dt = atm_dict_new(
-            ATM_STR_T, 
-            ATM_STR_T, 
+            ATM_STR_T,
+            ATM_STR_T,
             ATM_FREE_DEEP);
 }
 
@@ -60,7 +60,7 @@ atm_test_dict_contains()
     atm_str_t k2 = atm_str_new("bar");
 
     atm_dict_set(dt, k, v);
-    
+
     if (atm_dict_contains(dt, k2)) {
         res = ATM_TEST_FAIL; goto fin;
     }

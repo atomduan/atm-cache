@@ -9,7 +9,7 @@ typedef struct timespec    atm_timespec_t;
 
 
 unsigned long
-atm_time_mval(atm_timespec_t *rct, 
+atm_time_mval(atm_timespec_t *rct,
         atm_timespec_t *old);
 
 void

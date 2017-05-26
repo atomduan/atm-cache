@@ -18,14 +18,14 @@ static atm_bool_t
 atm_conn_yield_write(atm_conn_t *c, atm_uint_t wreqs);
 static void
 atm_conn_write_notify(atm_conn_t *c);
-static atm_int_t 
-atm_conn_task_read_raw(atm_conn_t *conn); 
-static atm_int_t 
-atm_conn_task_read(atm_task_t *t); 
+static atm_int_t
+atm_conn_task_read_raw(atm_conn_t *conn);
+static atm_int_t
+atm_conn_task_read(atm_task_t *t);
 static atm_int_t
 atm_conn_task_write_raw(atm_conn_t *conn);
 static atm_int_t
-atm_conn_task_write(atm_task_t *t); 
+atm_conn_task_write(atm_task_t *t);
 static atm_conn_t *
 atm_conn_new(atm_socket_t *so);
 static atm_conn_listen_t *
@@ -77,7 +77,7 @@ atm_conn_free_notify()
 {
     atm_task_t *task = NULL;
 
-    task = atm_task_new(NULL, 
+    task = atm_task_new(NULL,
         atm_conn_free_func);
     atm_task_dispatch(task);
 }
@@ -86,7 +86,7 @@ atm_conn_free_notify()
 static atm_int_t
 atm_conn_free_func(atm_task_t *t)
 {
-    atm_conn_t *c; 
+    atm_conn_t *c;
     atm_conn_t *unproc;
     atm_sess_t *sess;
     atm_list_t *ls;
@@ -98,7 +98,7 @@ atm_conn_free_func(atm_task_t *t)
         c = atm_list_lpop(ls);
         /* do normal conn check */
         if (!c->on_write && !c->on_read) {
-            sess = c->session; 
+            sess = c->session;
             atm_sess_free(sess);
         } else {
             if (unproc == NULL) unproc = c;
@@ -182,7 +182,7 @@ atm_conn_write_notify(atm_conn_t *c)
         c->write_reqs += 1;
         if (c->on_write == ATM_FALSE) {
             atm_log("atm_conn_write_notify add");
-            atm_event_add_notify(e, ATM_EVENT_WRITE); 
+            atm_event_add_notify(e, ATM_EVENT_WRITE);
         } else {
             atm_log("atm_conn_wirte_notify req");
         }
@@ -199,7 +199,7 @@ atm_conn_task_read_raw(atm_conn_t *conn)
     atm_buf_t *r_buf;
 
     srcsock = conn->sock;
-    r_buf = conn->r_buf;   
+    r_buf = conn->r_buf;
 
     ret = atm_buf_read_sock(r_buf, srcsock);
     return ret;
@@ -229,7 +229,7 @@ atm_conn_task_read(atm_task_t *t)
             atm_sess_process(se);
         }
     }
-    
+
     /* restore read event */
     if (ATM_TRUE == e->active) {
         atm_log("conn_task_read->restore read");
@@ -279,7 +279,7 @@ atm_conn_task_write(atm_task_t *t)
             atm_conn_inactive(conn, &conn->on_write);
             return ATM_ERROR;
         } else if (ret == 0) {
-            /* write is not aval, 
+            /* write is not aval,
              * need wait another event */
             atm_log("atm_conn_task_write inter");
             /* need to have a rest */
@@ -315,7 +315,7 @@ atm_conn_new(atm_socket_t *cs)
     res->on_read = ATM_FALSE;
     res->on_write = ATM_FALSE;
     res->write_reqs = 0;
-    return res; 
+    return res;
 }
 
 
@@ -328,7 +328,7 @@ atm_conn_listen_new(atm_socket_t *ss)
     res->ssck = ss;
     res->event = NULL;
     res->handle_accept = atm_conn_handle_accept;
-    return res; 
+    return res;
 }
 
 
@@ -341,28 +341,28 @@ atm_conn_listen_tcp()
     int backlog = 1024;
 
     atm_socket_t *ss;
-    atm_conn_listen_t *tcpl; 
+    atm_conn_listen_t *tcpl;
 
-    ss = atm_net_listen_tcp(port, 
+    ss = atm_net_listen_tcp(port,
             bindaddr, backlog);
 
     int ret = -1;
     if (ss != NULL) {
-        ret = atm_net_nonblock(ss, ATM_TRUE); 
+        ret = atm_net_nonblock(ss, ATM_TRUE);
         if (ret != ATM_OK) goto error;
         tcpl = atm_conn_listen_new(ss);
         /* register listen fd to epoll */
         atm_event_add_listen(tcpl);
     } else {
         atm_log_rout(ATM_LOG_ERROR,
-            "atm_conn_listen_tcp, ss NULL " 
+            "atm_conn_listen_tcp, ss NULL "
             "errno: %s",strerror(errno));
         goto error;
     }
     return ATM_OK;
 error:
     atm_log_rout(ATM_LOG_ERROR,
-        "atm_conn_listen_tcp, " 
+        "atm_conn_listen_tcp, "
         "errno: %s",strerror(errno));
     return ATM_ERROR;
 }
@@ -377,19 +377,19 @@ atm_conn_handle_accept(
     atm_socket_t *cs;
     atm_conn_t *conn;
     atm_sess_t *se;
-    
+
     atm_int_t max = ATM_CONN_PERCALL_ACCEPTS;
     int interval = ATM_NET_DEFAULT_TCP_KEEPALIVE;
 
     ls = listen_event->load;
-    ss = ls->ssck;  
+    ss = ls->ssck;
     while (max--) {
         cs = atm_net_accept(ss);
         if (cs == NULL) break;
         /*config conn socket*/
-        atm_net_nonblock(cs, ATM_TRUE); 
-        atm_net_nodelay(cs, ATM_TRUE); 
-        atm_net_keepalive(cs, interval); 
+        atm_net_nonblock(cs, ATM_TRUE);
+        atm_net_nodelay(cs, ATM_TRUE);
+        atm_net_keepalive(cs, interval);
         conn = atm_conn_new(cs);
         /* register conn to epoll */
         atm_event_add_conn(conn);
@@ -413,7 +413,7 @@ atm_conn_handle_read(atm_event_t *conn_event)
             atm_event_del_event(conn_event, ATM_EVENT_READ);
             if (conn != NULL) {
                 task = atm_task_new(
-                        conn, 
+                        conn,
                         atm_conn_task_read);
                 atm_task_dispatch(task);
                 conn->on_read = ATM_TRUE;
@@ -438,7 +438,7 @@ atm_conn_handle_write(atm_event_t *conn_event)
             atm_event_del_event(conn_event, ATM_EVENT_WRITE);
             if (conn != NULL) {
                 task = atm_task_new(
-                        conn, 
+                        conn,
                         atm_conn_task_write);
                 atm_task_dispatch(task);
                 conn->on_write = ATM_TRUE;
@@ -508,20 +508,20 @@ atm_conn_read_line(atm_conn_t *c)
     if (s != NULL) {
         res = atm_str_new(s);
     }
-    return res; 
+    return res;
 }
 
 
 void
-atm_conn_write(atm_conn_t *c, 
+atm_conn_write(atm_conn_t *c,
         void *src, atm_uint_t nbyte)
 {
-    atm_buf_t *w_buf; 
+    atm_buf_t *w_buf;
 
     if (c != NULL) {
         atm_log("atm_conn_write enter");
         w_buf = c->w_buf;
-        atm_buf_write(w_buf,src,nbyte); 
+        atm_buf_write(w_buf,src,nbyte);
         atm_conn_write_notify(c);
     }
 }

@@ -4,7 +4,7 @@
  * */
 static void
 atm_pip_handle_recv(atm_event_t *e);
-static void 
+static void
 atm_pipe_process_msgs(atm_pipe_t *pipe, char *notify);
 static atm_pipe_msg_t *
 atm_pipe_msg_new(void *load, void (*call_back)(void *load));
@@ -41,7 +41,7 @@ atm_pip_handle_recv(atm_event_t *e)
         ret = read(recv_fd, buf, 1);
         if (ret > 0) {
             if (!processed) {
-                atm_pipe_process_msgs(p,buf);             
+                atm_pipe_process_msgs(p,buf);
                 processed++;
             }
             /* flush all buf */
@@ -54,8 +54,8 @@ atm_pip_handle_recv(atm_event_t *e)
 }
 
 
-static void 
-atm_pipe_process_msgs(atm_pipe_t *pipe, 
+static void
+atm_pipe_process_msgs(atm_pipe_t *pipe,
         char *notify)
 {
     atm_pipe_t *p = pipe;
@@ -102,17 +102,17 @@ atm_pipe_msg_free(void *msg)
  * Public
  * */
 atm_int_t
-atm_file_nonblock(int fd, 
+atm_file_nonblock(int fd,
         atm_bool_t nblk)
 {
     int flags;
-    /* 
-     * Note that fcntl(2) for F_GETFL 
+    /*
+     * Note that fcntl(2) for F_GETFL
      * and F_SETFL can't be
      * interrupted by a signal. */
     if ((flags=fcntl(fd, F_GETFL))==-1) {
         atm_log_rout(ATM_LOG_FATAL,
-            "fcntl(F_GETFL): %s", 
+            "fcntl(F_GETFL): %s",
             strerror(errno));
         return ATM_ERROR;
     }
@@ -124,7 +124,7 @@ atm_file_nonblock(int fd,
 
     if (fcntl(fd,F_SETFL,flags)==-1) {
         atm_log_rout(ATM_LOG_FATAL,
-            "fcntl(F_SETFL,O_NONBLOCK): %s", 
+            "fcntl(F_SETFL,O_NONBLOCK): %s",
             strerror(errno));
         return ATM_ERROR;
     }
@@ -139,7 +139,7 @@ atm_pipe_new()
     int fds[2];
 
     if (pipe(fds)) {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
                 "can not create notify pipe");
         exit(1);
     }
@@ -173,7 +173,7 @@ atm_pipe_event_init(atm_pipe_t *pipe)
             pipe,
             pipe->recv_fd,
             atm_pip_handle_recv,
-            NULL); 
+            NULL);
 
     events = EPOLLIN|EPOLLHUP|EPOLLET;
     atm_event_add_event(pe, events);
@@ -185,15 +185,15 @@ void
 atm_pipe_free(void *pipe)
 {
     /*
-     * TODO the msg in pip 
+     * TODO the msg in pip
      * SHOULD NOT be * discard !!!
      * we need another queue to place it
      * or wait it to finish
      */
     atm_pipe_t *p = pipe;
     if (p != NULL) {
-        if (p->event != NULL) 
-            atm_event_free(p->event); 
+        if (p->event != NULL)
+            atm_event_free(p->event);
         atm_queue_free(p->mqueue);
         pthread_mutex_destroy(&p->mqlock);
         atm_free(p);
@@ -202,25 +202,25 @@ atm_pipe_free(void *pipe)
 
 
 void
-atm_pipe_notify(atm_pipe_t *pipe, void *load, 
+atm_pipe_notify(atm_pipe_t *pipe, void *load,
         void (*call_back)(void *load))
 {
     char buf[1];
     atm_pipe_t *p;
-    atm_pipe_msg_t *msg; 
+    atm_pipe_msg_t *msg;
 
     buf[0] = ATM_PIPE_NCHAR;
     p = pipe;
     msg = atm_pipe_msg_new(load,call_back);
-    
+
     atm_log("pipe_notify msg[%p],[%p][%p]",msg,msg->load,msg->call_back);
     pthread_mutex_lock(&p->mqlock);
     atm_queue_push(p->mqueue, msg);
     pthread_mutex_unlock(&p->mqlock);
-    
+
     /* sent pipe notify */
     if (write(p->sent_fd,buf,1)!=1) {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
                 "pipe notify fail");
     }
 }

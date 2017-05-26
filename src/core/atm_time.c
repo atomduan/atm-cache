@@ -55,7 +55,7 @@ atm_time_mval(atm_time_pair_t *tp)
     old_one = &tp->ts[0];
     new_one = &tp->ts[1];
     if (new_one->tv_sec >= old_one->tv_sec) {
-        sec_diff = new_one->tv_sec - old_one->tv_sec;  
+        sec_diff = new_one->tv_sec - old_one->tv_sec;
         nr = sec_diff * ATM_TIME_NANO_RES + new_one->tv_nsec;
         no = old_one->tv_nsec;
         res = ((nr-no)*ATM_TIME_MILI_RES)/ATM_TIME_NANO_RES;

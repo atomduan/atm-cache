@@ -1,7 +1,7 @@
 #include <atm_linux_config.h>
 #include <misc_utils.h>
 
-/* the cpu cache line can 
+/* the cpu cache line can
  * heavyly impact the mm copy profermence
  * more than 100 times difference
  * SO, to zero-copy as possible as we can.

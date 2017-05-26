@@ -17,17 +17,17 @@ typedef struct {
     pthread_t           tid;
 } atm_task_worker_t;
 
-void 
+void
 atm_task_init();
 
-atm_task_t * 
-atm_task_new(void *load, 
+atm_task_t *
+atm_task_new(void *load,
         atm_int_t (*run)(atm_task_t *self));
 
-void 
+void
 atm_task_free(void *task);
 
-void 
+void
 atm_task_dispatch(atm_task_t *task);
 
 

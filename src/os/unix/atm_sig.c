@@ -2,7 +2,7 @@
 /*
  * Private
  * */
-static void 
+static void
 atm_sig_handle(atm_int_t signo);
 
 
@@ -10,8 +10,8 @@ atm_sig_handle(atm_int_t signo);
 /*
  * Private
  * */
-static void 
-atm_sig_handle(atm_int_t signo) 
+static void
+atm_sig_handle(atm_int_t signo)
 {
     pid_t pid;
     atm_int_t stat = 0;
@@ -30,7 +30,7 @@ atm_sig_handle(atm_int_t signo)
  * Public
  * */
 void
-atm_sig_init() 
+atm_sig_init()
 {
     if (signal(SIGCLD,atm_sig_handle) == SIG_ERR) {
         atm_log("sgnal error in init,SIGCLD");

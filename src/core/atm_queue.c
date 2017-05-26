@@ -38,7 +38,7 @@ atm_queue_nonempty_wait(atm_queue_t *queue)
             }
             pthread_mutex_unlock(&q->qlock);
         } else {
-            atm_log_rout(ATM_LOG_FATAL, 
+            atm_log_rout(ATM_LOG_FATAL,
                 "waiting for nonblock queue");
             exit(1);
         }
@@ -50,7 +50,7 @@ atm_queue_nonempty_wait(atm_queue_t *queue)
  * Public
  * */
 atm_queue_t *
-atm_queue_new(atm_T_t *v_type, 
+atm_queue_new(atm_T_t *v_type,
         atm_uint_t f_type, atm_uint_t blk_type)
 {
     atm_queue_t *res = NULL;

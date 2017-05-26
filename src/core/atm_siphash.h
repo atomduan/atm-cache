@@ -4,13 +4,13 @@
 #include <atm_core.h>
 
 
-void 
+void
 atm_siphash_init();
 
-uint64_t 
+uint64_t
 atm_siphash(char *input, atm_uint_t inlen);
 
-uint64_t 
+uint64_t
 atm_siphash_nocase(char *input, atm_uint_t inlen);
 
 

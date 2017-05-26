@@ -20,7 +20,7 @@ typedef struct {
 } atm_pipe_msg_t;
 
 atm_int_t
-atm_file_nonblock(int fd, 
+atm_file_nonblock(int fd,
         atm_bool_t nblk);
 
 atm_pipe_t *
@@ -36,7 +36,7 @@ void
 atm_pipe_free(void *pipe);
 
 void
-atm_pipe_notify(atm_pipe_t *pipe, void *load, 
+atm_pipe_notify(atm_pipe_t *pipe, void *load,
         void (*call_back)(void *load));
 
 

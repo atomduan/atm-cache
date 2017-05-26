@@ -31,9 +31,9 @@
  * The entry point of unit test system
  */
 void
-atm_test_suit(int argc, char **argv); 
+atm_test_suit(int argc, char **argv);
 
-void 
+void
 atm_test_report(char *argc, atm_uint_t res);
 
 

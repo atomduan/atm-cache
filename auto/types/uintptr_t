@@ -31,7 +31,7 @@ if [ -x $ATM_AUTOTEST ]; then
     echo " uintptr_t found"
     found=yes
 else
-    echo -n " uintptr_t not found" 
+    echo -n " uintptr_t not found"
 fi
 
 rm -rf $ATM_AUTOTEST*

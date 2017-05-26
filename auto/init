@@ -16,7 +16,7 @@ if [ ".$ATM_BINARY_NAME" = "." ]; then
     echo "ATM_BINARY_NAME can not be empty"
     exit 1
 else
-    have=ATM_BINARY_NAME 
+    have=ATM_BINARY_NAME
     value="\"$ATM_BINARY_NAME\""
     . auto/define
 fi

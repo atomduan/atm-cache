@@ -3,7 +3,7 @@
 
 
 /* Returns the size of physical memory (RAM) in bytes.
- * It looks ugly, but this is the cleanest way to achive 
+ * It looks ugly, but this is the cleanest way to achive
  * cross platform results.
  * Cleaned up from:
  *
@@ -63,10 +63,10 @@ atm_phy_mems()
 
 int main(int argc, char **argv)
 {
-    size_t b = atm_phy_mems();    
-    size_t k = b / 1024;    
-    size_t m = k / 1024;    
-    size_t g = m / 1024;    
+    size_t b = atm_phy_mems();
+    size_t k = b / 1024;
+    size_t m = k / 1024;
+    size_t g = m / 1024;
 
     printf("The physical mem can detected stats are:\n");
     printf("The physical mem is %lu Bytes\n",b);

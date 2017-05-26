@@ -39,7 +39,7 @@ atm_arr_add(atm_arr_t *arr, void *v)
     atm_uint_t nsz = 0;
     atm_uint_t add_index = 0;
     int8_t *p = NULL;
-    
+
     void *old_ptr = NULL;
     void *new_ptr = NULL;
     if (v != NULL) {
@@ -53,7 +53,7 @@ atm_arr_add(atm_arr_t *arr, void *v)
             if (new_ptr != old_ptr) {
                 arr->capacity *= 2;
             } else {
-                atm_log_rout(ATM_LOG_FATAL, 
+                atm_log_rout(ATM_LOG_FATAL,
                     "can not realloc atm_arr, "
                     "atm_realloc(%p,%u,%u)",
                     new_ptr,osz,nsz);
@@ -84,7 +84,7 @@ atm_arr_get(atm_arr_t *arr, atm_uint_t i)
 
 
 atm_int_t
-atm_arr_set(atm_arr_t *arr, 
+atm_arr_set(atm_arr_t *arr,
         atm_uint_t i, void *v)
 {
     atm_int_t ret = ATM_ERROR;
@@ -126,7 +126,7 @@ atm_arr_del(atm_arr_t *arr, atm_uint_t i)
         newcap = arr->capacity;
         if (i < currlen) {
             vo = arr->_vals;
-            if (currlen*4 < currcap && 
+            if (currlen*4 < currcap &&
                     ATM_ARR_INITIAL_LEN*2 <= currcap) {
                newcap = arr->capacity / 2;
             }
@@ -147,8 +147,8 @@ atm_arr_del(atm_arr_t *arr, atm_uint_t i)
                     memcpy(d, s, l);
                 }
                 arr->_vals = vn;
-                arr->length -= 1; 
-                arr->capacity = newcap; 
+                arr->length -= 1;
+                arr->capacity = newcap;
                 atm_free(vo);
                 ret = ATM_OK;
             }

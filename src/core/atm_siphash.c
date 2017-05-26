@@ -4,13 +4,13 @@
 static uint8_t siphash_seed[16];
 
 
-/* 
+/*
  * FUNCTIONS BIGIN
  * */
 
 
-void 
-atm_siphash_init() 
+void
+atm_siphash_init()
 {
     char *p = (char *)siphash_seed;
     atm_uint_t len = sizeof(siphash_seed);
@@ -47,8 +47,8 @@ atm_siphash_init()
 
 /* Fast tolower() alike function that does not care about locale
  * but just returns a-z insetad of A-Z. */
-static atm_int_t 
-siptlw(atm_int_t c) 
+static atm_int_t
+siptlw(atm_int_t c)
 {
     if (c >= 'A' && c <= 'Z') {
         return c+('a'-'A');
@@ -116,8 +116,8 @@ siptlw(atm_int_t c)
     } while (0)
 
 
-uint64_t 
-atm_siphash(char *input, atm_uint_t inlen) 
+uint64_t
+atm_siphash(char *input, atm_uint_t inlen)
 {
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;
@@ -179,8 +179,8 @@ atm_siphash(char *input, atm_uint_t inlen)
 #endif
 }
 
-uint64_t 
-atm_siphash_nocase(char *input, atm_uint_t inlen) 
+uint64_t
+atm_siphash_nocase(char *input, atm_uint_t inlen)
 {
     uint8_t *in = (uint8_t *) input;
     uint8_t *k = siphash_seed;

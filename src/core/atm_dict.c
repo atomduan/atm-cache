@@ -7,28 +7,28 @@ static atm_dict_entry_t *
 atm_dict_entry_new(void *dict, void *key, void *val);
 static void *
 atm_dict_entry_spec(void *entry);
-static atm_bool_t 
-atm_dict_entry_match(void *entry, void *hint); 
-static uint64_t 
+static atm_bool_t
+atm_dict_entry_match(void *entry, void *hint);
+static uint64_t
 atm_dict_entry_hash(void *entry);
-static atm_int_t 
+static atm_int_t
 atm_dict_entry_cmp(void *entry1, void *entry2);
 static atm_str_t
 atm_dict_entry_str(void *entry);
-static void 
+static void
 atm_dict_entry_free(void *entry);
 /* bucket type lifecycle */
 static atm_dict_bucket_t *
 atm_dict_bucket_new(atm_dict_t *dict);
 static atm_dict_bucket_t *
-atm_dict_bucket(atm_dict_t *dict, void *key); 
-static void 
+atm_dict_bucket(atm_dict_t *dict, void *key);
+static void
 atm_dict_bucket_free(void *bucket);
 /* private funcs */
-static atm_uint_t 
+static atm_uint_t
 atm_dict_hkey(atm_dict_t *dict, void *key);
 static atm_dict_entry_t *
-atm_dict_entry(atm_dict_t *dict, void *key); 
+atm_dict_entry(atm_dict_t *dict, void *key);
 
 
 static atm_T_t ATM_DICT_ENTRY_TYPE = {
@@ -47,14 +47,14 @@ static atm_T_t *ATM_DICT_ENTRY_T = &ATM_DICT_ENTRY_TYPE;
  * Private
  * */
 static atm_dict_entry_t *
-atm_dict_entry_new(void *dict, void *key, void *val) 
+atm_dict_entry_new(void *dict, void *key, void *val)
 {
     atm_dict_entry_t *res = NULL;
 
     res = atm_alloc(sizeof(atm_dict_entry_t));
     res->dict = dict;
-    res->key = key; 
-    res->val = val; 
+    res->key = key;
+    res->val = val;
     return res;
 }
 
@@ -67,7 +67,7 @@ atm_dict_entry_spec(void *entry)
 }
 
 
-static atm_bool_t 
+static atm_bool_t
 atm_dict_entry_match(void *entry, void *hint)
 {
     atm_bool_t res = ATM_FALSE;
@@ -78,7 +78,7 @@ atm_dict_entry_match(void *entry, void *hint)
     e = (atm_dict_entry_t *)entry;
     h = (atm_dict_entry_t *)hint;
     if (e == NULL || hint == NULL) {
-        atm_log_rout(ATM_LOG_ERROR, 
+        atm_log_rout(ATM_LOG_ERROR,
                 "atm_dict_entry_match:"
                 "entry carrupted should not NULL");
         exit(ATM_ERROR);
@@ -90,16 +90,16 @@ atm_dict_entry_match(void *entry, void *hint)
 }
 
 
-static uint64_t 
+static uint64_t
 atm_dict_entry_hash(void *entry)
 {
     uint64_t res = 0;
-    atm_dict_entry_t *e; 
+    atm_dict_entry_t *e;
     atm_str_t e_str;
     atm_uint_t e_len;
 
     e = (atm_dict_entry_t *) entry;
-    e_str = atm_str_ptr(e); 
+    e_str = atm_str_ptr(e);
     e_len = atm_str_len(e_str);
     res = atm_dict_hash(e_str, e_len);
 
@@ -108,7 +108,7 @@ atm_dict_entry_hash(void *entry)
 }
 
 
-static atm_int_t 
+static atm_int_t
 atm_dict_entry_cmp(void *entry1, void *entry2)
 {
     return ATM_CMP_EQ;
@@ -148,15 +148,15 @@ atm_dict_entry_str(void *entry)
 }
 
 
-static void 
-atm_dict_entry_free(void *entry) 
+static void
+atm_dict_entry_free(void *entry)
 {
     atm_dict_entry_t *e;
     atm_dict_t *dict;
 
     if (entry != NULL) {
         e = (atm_dict_entry_t *)entry;
-        dict = e->dict; 
+        dict = e->dict;
         if (dict != NULL) {
             if (dict->free_type == ATM_FREE_DEEP) {
                 if (e->key && dict->k_type) {
@@ -173,7 +173,7 @@ atm_dict_entry_free(void *entry)
 
 
 static atm_dict_bucket_t *
-atm_dict_bucket_new(atm_dict_t *dict) 
+atm_dict_bucket_new(atm_dict_t *dict)
 {
     atm_dict_bucket_t *res = NULL;
 
@@ -184,7 +184,7 @@ atm_dict_bucket_new(atm_dict_t *dict)
 
 
 static atm_dict_bucket_t *
-atm_dict_bucket(atm_dict_t *dict, void *key) 
+atm_dict_bucket(atm_dict_t *dict, void *key)
 {
     atm_dict_bucket_t *res = NULL;
     atm_uint_t hash_key = 0;
@@ -195,7 +195,7 @@ atm_dict_bucket(atm_dict_t *dict, void *key)
 }
 
 
-static void 
+static void
 atm_dict_bucket_free(void *bucket)
 {
     atm_dict_bucket_t *bkt;
@@ -211,15 +211,15 @@ atm_dict_bucket_free(void *bucket)
          */
         atm_list_free(lptr);
     } else {
-        atm_log_rout(ATM_LOG_ERROR, 
+        atm_log_rout(ATM_LOG_ERROR,
             "dict inner list curraput");
         exit(ATM_ERROR);
     }
 }
 
 
-static atm_uint_t 
-atm_dict_hkey(atm_dict_t *dict, void *k) 
+static atm_uint_t
+atm_dict_hkey(atm_dict_t *dict, void *k)
 {
     atm_uint_t res = 0;
     uint64_t hash_key;
@@ -233,7 +233,7 @@ atm_dict_hkey(atm_dict_t *dict, void *k)
 
 
 static atm_dict_entry_t *
-atm_dict_entry(atm_dict_t *dict, void *key) 
+atm_dict_entry(atm_dict_t *dict, void *key)
 {
     atm_dict_entry_t *res = NULL;
     atm_dict_bucket_t *bkt;
@@ -257,7 +257,7 @@ atm_dict_entry(atm_dict_t *dict, void *key)
 /*
  * Public
  * */
-void 
+void
 atm_dict_init()
 {
     atm_siphash_init();
@@ -287,7 +287,7 @@ atm_str_t
 atm_dict_str(void *dict)
 {
     atm_str_t res = NULL;
-    atm_dict_t *d; 
+    atm_dict_t *d;
 
     d = (atm_dict_t *) dict;
     if (d != NULL) {
@@ -304,7 +304,7 @@ atm_dict_str(void *dict)
 
 
 void
-atm_dict_free(void *dict) 
+atm_dict_free(void *dict)
 {
     atm_uint_t  i;
     atm_dict_t *d;
@@ -330,7 +330,7 @@ atm_dict_contains(atm_dict_t *dict, void *key)
 
 
 void *
-atm_dict_get(atm_dict_t *dict, void *key) 
+atm_dict_get(atm_dict_t *dict, void *key)
 {
     void * res = NULL;
     atm_dict_entry_t *entry;
@@ -348,10 +348,10 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
 {
     atm_dict_entry_t *entry;
     atm_dict_bucket_t *bkt;
-    atm_list_t *lptr; 
+    atm_list_t *lptr;
     atm_dict_entry_t *new_entry;
     atm_uint_t hash_key;
-    
+
     entry = atm_dict_entry(dict, key);
     if (entry != NULL) {
         entry->val = val;
@@ -364,13 +364,13 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
         }
         lptr = bkt->list;
         if (lptr == NULL) {
-            /* lptr is part of data structure 
+            /* lptr is part of data structure
              * so need to set deep free */
-            lptr = atm_list_new(ATM_DICT_ENTRY_T, 
+            lptr = atm_list_new(ATM_DICT_ENTRY_T,
                     ATM_FREE_DEEP);
             bkt->list = lptr;
         }
-        new_entry = atm_dict_entry_new(dict, key, val);   
+        new_entry = atm_dict_entry_new(dict, key, val);
         new_entry->dict = dict;
         atm_list_push(lptr, new_entry);
         dict->size++;
@@ -379,7 +379,7 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
 
 
 void
-atm_dict_del(atm_dict_t *dict, void *key) 
+atm_dict_del(atm_dict_t *dict, void *key)
 {
     atm_list_t *lptr;
     atm_dict_entry_t *entry;
@@ -395,14 +395,14 @@ atm_dict_del(atm_dict_t *dict, void *key)
 }
 
 
-uint64_t 
+uint64_t
 atm_dict_hash(char *input, atm_uint_t inlen)
 {
     return atm_siphash(input, inlen);
 }
 
 
-uint64_t 
+uint64_t
 atm_dict_hash_nocase(char *input, atm_uint_t inlen)
 {
     return atm_siphash_nocase(input, inlen);

@@ -2,10 +2,10 @@
 /*
  * Private
  * */
-static void 
-atm_init(); 
-static void 
-atm_service(); 
+static void
+atm_init();
+static void
+atm_service();
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
 static void
@@ -29,10 +29,10 @@ static void
 atm_svctx_init()
 {
     atm_ctx->dt = atm_dict_new(
-            ATM_STR_T, 
-            ATM_STR_T, 
+            ATM_STR_T,
+            ATM_STR_T,
             ATM_FREE_DEEP);
-    atm_dict_set(atm_ctx->dt, 
+    atm_dict_set(atm_ctx->dt,
             atm_str_new("foo"), NULL);
 }
 
@@ -54,8 +54,8 @@ atm_test_in_test_mod(int argc, char **argv)
 /*
  * Public
  * */
-void 
-atm_init() 
+void
+atm_init()
 {
     atm_log("atm_init enter......");
     atm_svctx_init();
@@ -68,8 +68,8 @@ atm_init()
 }
 
 
-void 
-atm_service() 
+void
+atm_service()
 {
     atm_log("atm_service enter......");
     for (;;) {
@@ -78,8 +78,8 @@ atm_service()
 }
 
 
-int 
-main(int argc,  char **argv) 
+int
+main(int argc,  char **argv)
 {
     if (atm_test_in_test_mod(argc, argv)) {
 #ifdef ATM_UNIT_TEST

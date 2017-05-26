@@ -1,6 +1,6 @@
 #include <atm_core.h>
 /*
- * Private 
+ * Private
  * */
 static void
 atm_event_notify_handle(void *eop);
@@ -45,7 +45,7 @@ atm_event_notify_handle(void *eop)
 
 
 static atm_event_op_t *
-atm_event_op_new(atm_event_t *e, 
+atm_event_op_new(atm_event_t *e,
         uint32_t mask, atm_uint_t op_type)
 {
     atm_event_op_t *res = NULL;
@@ -94,17 +94,17 @@ static void
 atm_event_process_events()
 {
     int             ev_count,i;
-    uint32_t        evs; 
+    uint32_t        evs;
     atm_event_t    *ev;
 
     ev_count = epoll_wait(ep,event_list,
             (int) nevents,ATM_EVENT_BLOCK);
-    
+
     if (ev_count > 0) {
        for (i=0; i<ev_count; ++i) {
            ev = event_list[i].data.ptr;
            if (ev->fd == -1) {
-               continue; 
+               continue;
            }
            evs = event_list[i].events;
            atm_event_process_ev(ev, evs);
@@ -136,7 +136,7 @@ atm_event_init()
 
 /* get new event instance*/
 atm_event_t *
-atm_event_new(void *load, int fd, 
+atm_event_new(void *load, int fd,
         void (*handle_read)(atm_event_t *ev),
         void (*handle_write)(atm_event_t *ev))
 {
@@ -185,7 +185,7 @@ atm_event_add_listen(atm_conn_listen_t *l)
         if (le == NULL) {
             le = atm_event_new(l,sfd,
                 l->handle_accept,
-                NULL); 
+                NULL);
             l->event = le;
         }
         events = EPOLLIN|EPOLLHUP;
@@ -205,9 +205,9 @@ atm_event_add_conn(atm_conn_t *c)
         cfd = c->sock->fd;
         ce = c->event;
         if (ce == NULL) {
-            ce = atm_event_new(c, cfd, 
-                    c->handle_read, 
-                    c->handle_write); 
+            ce = atm_event_new(c, cfd,
+                    c->handle_read,
+                    c->handle_write);
             c->event = ce;
         }
 
@@ -218,7 +218,7 @@ atm_event_add_conn(atm_conn_t *c)
 }
 
 
-/* 
+/*
  * 1. if e not managed by epoll then add it
  * 2. if the event and old mask then merge it
  * 3. mask the events's fd's bits in epoll
@@ -261,7 +261,7 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
 
 
 /*
- * 1. unmsk the event's fd's bits in epoll 
+ * 1. unmsk the event's fd's bits in epoll
  * 2. if fd's bits is empty then del it from epoll
  *    and unactivate it.
  */
@@ -315,7 +315,7 @@ atm_event_inactive(atm_event_t *e)
 void
 atm_event_add_notify(atm_event_t *e, uint32_t mask)
 {
-    atm_uint_t type = ATM_EVENT_OP_ADD; 
+    atm_uint_t type = ATM_EVENT_OP_ADD;
     atm_event_op_t *eop = atm_event_op_new(e,mask,type);
 
     atm_pipe_notify(

@@ -4,11 +4,11 @@
  * Public
  * */
 void *
-atm_alloc(atm_uint_t size) 
+atm_alloc(atm_uint_t size)
 {
     void * ptr = NULL;
-    /* TODO if use atm_log, 
-     * a loop call will happen, 
+    /* TODO if use atm_log,
+     * a loop call will happen,
      * then core dump*/
 #if (ATM_HAVE_JEMALLOC)
     ptr = je_malloc(size);
@@ -18,7 +18,7 @@ atm_alloc(atm_uint_t size)
     if (ptr != NULL) {
         memset(ptr, ATM_MEM_ZERO, size);
     } else {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
             "malloc(%u) failed",size);
         atm_log_fflush();
         abort();
@@ -31,8 +31,8 @@ void *
 atm_calloc(atm_uint_t nmemb, atm_uint_t size)
 {
     void * ptr = NULL;
-    /* TODO if use atm_log, 
-     * a loop call will happen, 
+    /* TODO if use atm_log,
+     * a loop call will happen,
      * then core dump*/
 #if (ATM_HAVE_JEMALLOC)
     ptr = je_calloc(nmemb, size);
@@ -40,7 +40,7 @@ atm_calloc(atm_uint_t nmemb, atm_uint_t size)
     ptr = calloc(nmemb, size);
 #endif
     if (ptr == NULL) {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
             "calloc(%u,%u) failed",nmemb,size);
         atm_log_fflush();
         abort();
@@ -63,7 +63,7 @@ atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz)
         }
         atm_free(p);
     } else {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
             "atm_alloc(%p,%u) failed",p,nsz);
         atm_log_fflush();
         abort();
@@ -72,13 +72,13 @@ atm_realloc(void *p, atm_uint_t osz, atm_uint_t nsz)
 }
 
 
-void 
-atm_free(void *ptr) 
+void
+atm_free(void *ptr)
 {
     if (ptr != NULL) {
 #if (ATM_HAVE_JEMALLOC)
-        /* TODO if use atm_log, 
-         * a loop call will happen, 
+        /* TODO if use atm_log,
+         * a loop call will happen,
          * then core dump*/
         je_free(ptr);
 #else
@@ -89,7 +89,7 @@ atm_free(void *ptr)
 
 
 /* Returns the size of physical memory (RAM) in bytes.
- * It looks ugly, but this is the cleanest way to achive 
+ * It looks ugly, but this is the cleanest way to achive
  * cross platform results.
  * Cleaned up from:
  *

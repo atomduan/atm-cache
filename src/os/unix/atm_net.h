@@ -4,7 +4,8 @@
 #include <atm_core.h>
 
 #define ATM_NET_ERR_FD -1
-#define ATM_NET_IP_STR_LEN 46
+#define ATM_NET_IPSLEN 46
+#define ATM_NET_PORTSLEN 6
 #define ATM_NET_DEFAULT_TCP_KEEPALIVE 300
 
 

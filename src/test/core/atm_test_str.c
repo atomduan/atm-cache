@@ -26,8 +26,8 @@ atm_uint_t
 atm_test_str_split()
 {
     atm_log("atm_test_str_split");
-    char *a = NULL;
-    atm_str_t *b = NULL;
+    char *a;
+    atm_str_t *b;
 
     a = " a    b  d s \"   'a'   \"   kkk  k";
     atm_log("strim org is: %s", a);

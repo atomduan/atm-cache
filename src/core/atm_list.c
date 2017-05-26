@@ -4,21 +4,15 @@
  * */
 static atm_list_entry_t *
 atm_list_entry_new(void *val);
-
 static void 
 atm_list_entry_free(void *entry);
-
-
-/* funcs */
+/* private funcs */
 static void 
 atm_list_entry_isol(atm_list_entry_t * entry);
-
 static atm_list_entry_t *
 atm_list_find_linear(atm_list_t *list, void *entry);
-
 static atm_list_entry_t *
 atm_list_lpop_entry(atm_list_t *list);
-
 static atm_list_entry_t *
 atm_list_rpop_entry(atm_list_t *list);
 
@@ -33,7 +27,6 @@ atm_list_entry_new (void *val)
     atm_list_entry_t *res = NULL;
 
     res = atm_alloc(sizeof(atm_list_entry_t));
-
     res->val = val;
     atm_list_entry_isol(res);
     return res;
@@ -43,9 +36,9 @@ atm_list_entry_new (void *val)
 static void 
 atm_list_entry_free(void *entry)
 {
-    atm_list_entry_t *e = NULL;
-    atm_list_t *list = NULL;
-    atm_T_t *v_type = NULL;
+    atm_list_entry_t *e;
+    atm_list_t *list;
+    atm_T_t *v_type;
 
     e = (atm_list_entry_t *) entry;
     list = e->list;
@@ -76,7 +69,7 @@ static atm_list_entry_t *
 atm_list_find_linear(atm_list_t *list, void *entry)
 {
     atm_list_entry_t *res = NULL;
-    atm_list_entry_t *curr = NULL;         
+    atm_list_entry_t *curr;         
 
     if (list != NULL) {
         curr = list->head;       
@@ -100,6 +93,7 @@ atm_list_lpop_entry(atm_list_t *list)
     res = list->head;
     if (res != NULL) {
         list->head = res->next;
+        atm_log("lpop ###### res[%p],head[%p],tail[%p]", res,list->head, list->tail);
         if (list->head != NULL) {
             list->head->prev = NULL;
         }
@@ -143,7 +137,6 @@ atm_list_new(atm_T_t *v_type, atm_uint_t f_type)
     atm_list_t *res = NULL;
 
     res = atm_alloc(sizeof(atm_list_t));
-
     res->head = NULL;
     res->tail = NULL;
     res->size = 0;
@@ -185,9 +178,11 @@ void
 atm_list_push(atm_list_t *list, void *val)
 {
     atm_list_entry_t * entry;
+
     if (list != NULL) {
         entry = atm_list_entry_new(val);
         entry->list = list;
+        atm_log("#####list push add entry %p", entry);
         /* add the first one */
         if (list->tail == NULL) {
             if (list->head == NULL) {
@@ -212,10 +207,10 @@ atm_list_push(atm_list_t *list, void *val)
 void 
 atm_list_del(atm_list_t *list, void *hint)
 {
-    atm_list_entry_t *curr = NULL;
-    atm_list_entry_t *prev = NULL;
-    atm_list_entry_t *next = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
+    atm_list_entry_t *curr;
+    atm_list_entry_t *prev;
+    atm_list_entry_t *next;
 
     entry = atm_list_find(list, hint);
     curr = entry;
@@ -251,7 +246,7 @@ void *
 atm_list_find(atm_list_t *list, void *hint)
 {
     void *res = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
 
     entry = atm_list_find_linear(list, hint);
     if (entry != NULL) {
@@ -265,7 +260,7 @@ void *
 atm_list_lpop(atm_list_t *list)
 {
     void *res = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
 
     entry = atm_list_lpop_entry(list);
     if (entry != NULL) {
@@ -280,7 +275,7 @@ void *
 atm_list_rpop(atm_list_t *list)
 {
     void *res = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
 
     entry = atm_list_rpop_entry(list);
     if (entry != NULL) {
@@ -295,7 +290,7 @@ void *
 atm_list_lpeek(atm_list_t *list)
 {
     void *res = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
 
     entry = list->head;
     if (entry != NULL) {
@@ -309,7 +304,7 @@ void *
 atm_list_rpeek(atm_list_t *list)
 {
     void *res = NULL;
-    atm_list_entry_t *entry = NULL;
+    atm_list_entry_t *entry;
 
     entry = list->tail;
     if (entry != NULL) {
@@ -322,8 +317,8 @@ atm_list_rpeek(atm_list_t *list)
 void
 atm_list_clear(atm_list_t *list)
 {
+    atm_list_entry_t *e;
     atm_list_t * l = list;
-    atm_list_entry_t *e = NULL;
     /* purge list elements */
     while ((e=atm_list_lpop_entry(l))!=NULL) {
         atm_list_entry_free(e);
@@ -356,7 +351,7 @@ void *
 atm_list_next(atm_list_iter_t *iter)
 {
     void *res = NULL;
-    atm_list_entry_t *curr = NULL;
+    atm_list_entry_t *curr;
     atm_list_iter_t *it = iter;
     if (it != NULL) {
         curr = it->curr;

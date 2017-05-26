@@ -3,8 +3,6 @@
 
 #include <atm_core.h>
 
-
-#define ATM_STR_TMN \0
 #define ATM_STR_MAXLEN 512
 #define ATM_WORDLEN 8
 
@@ -15,6 +13,7 @@ typedef struct atm_str_hdr_s    atm_str_hdr;
 struct __attribute__ ((__packed__)) atm_str_hdr_s {
     atm_uint_t  cap;
     atm_uint_t  len;
+    char        val[];
 };
 
 
@@ -39,6 +38,9 @@ atm_str_free(void *str);
 
 
 /* public funcs */
+atm_str_t
+atm_str_dup(atm_str_t str);
+
 atm_uint_t
 atm_str_len(atm_str_t str);
 
@@ -58,7 +60,10 @@ atm_str_t
 atm_str_ptr(void *p);
 
 atm_str_t
-atm_str_cat(atm_str_t dest, char *s);
+atm_str_cats(atm_str_t dest, char *s);
+
+atm_str_t
+atm_str_cat(atm_str_t dest, atm_str_t src);
 
 atm_str_t *
 atm_str_split(char *s, int len);

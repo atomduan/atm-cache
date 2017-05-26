@@ -16,7 +16,6 @@ atm_test_time_suit()
     if (!atm_test_time_pair()) {
         return ATM_TEST_FAIL;
     }
-
     return ATM_TEST_PASS;
 }
 
@@ -24,11 +23,11 @@ atm_test_time_suit()
 atm_uint_t
 atm_test_time_pair()
 {
-    atm_log("atm_test_str_split");
-    atm_time_pair_t *tp = NULL;
-    atm_ulong_t diff = 0;
+    atm_time_pair_t *tp;
+    atm_ulong_t diff;
     tp = atm_time_pair_new();
 
+    atm_log("atm_test_str_split");
     atm_time_mark(tp);
     usleep(12345);
     atm_time_mark(tp);

@@ -30,10 +30,23 @@ cat << END > Makefile
 default:	build
 clean:
 	rm -r Makefile $ATM_BUILD
+END
+
+cat << END >> Makefile
 clean_all:
 	rm -r Makefile $ATM_BUILD \\
+END
+if [ $ATM_JEMALLOC != NO -a $ATM_JEMALLOC != YES ]; then
+cat << END >> Makefile
 	&& \$(MAKE) -f $ATM_JEMALLOC/Makefile clean \\
-	&& rm deps/jemalloc/lib/libjemalloc.a
+	&& rm deps/jemalloc/lib/libjemalloc.a \\
+END
+fi
+cat << END >> Makefile
+	&& echo clean_all
+END
+
+cat << END >> Makefile
 rmobj:
 	rm build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX}
 	find build/src -type f -name '*.o' -delete

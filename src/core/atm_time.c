@@ -45,12 +45,12 @@ atm_time_mark(atm_time_pair_t *tp)
 atm_ulong_t
 atm_time_mval(atm_time_pair_t *tp)
 {
+    atm_ulong_t res = 0;
     atm_time_spec_t *new_one;
     atm_time_spec_t *old_one;
-    atm_ulong_t res = 0;
-    atm_ulong_t sec_diff = 0;
-    atm_ulong_t nr = 0;
-    atm_ulong_t no = 0;
+    atm_ulong_t sec_diff;
+    atm_ulong_t nr;
+    atm_ulong_t no;
 
     old_one = &tp->ts[0];
     new_one = &tp->ts[1];

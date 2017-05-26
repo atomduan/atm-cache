@@ -15,7 +15,7 @@
 
 #define ATM_OK          0
 #define ATM_ERROR      -1
-#define ATM_FATAL      -2
+#define ATM_FATAL      -1
 
 #define ATM_TRUE        1
 #define ATM_FALSE       0

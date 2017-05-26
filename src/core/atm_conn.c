@@ -43,6 +43,8 @@ atm_conn_handle_write(atm_event_t *conn_event);
 /* task type define for container */
 static atm_list_t *free_list;
 static pthread_mutex_t _mutex_free = PTHREAD_MUTEX_INITIALIZER;
+
+
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
@@ -84,11 +86,12 @@ atm_conn_free_notify()
 static atm_int_t
 atm_conn_free_func(atm_task_t *t)
 {
-    atm_conn_t *c = NULL; 
-    atm_conn_t *unproc = NULL;
-    atm_sess_t *sess = NULL;
-    atm_list_t *ls = NULL;
+    atm_conn_t *c; 
+    atm_conn_t *unproc;
+    atm_sess_t *sess;
+    atm_list_t *ls;
 
+    unproc = NULL;
     pthread_mutex_lock(&_mutex_free);
     ls = free_list;
     while ((c = atm_list_lpeek(ls)) != unproc) {
@@ -192,8 +195,8 @@ static atm_int_t
 atm_conn_task_read_raw(atm_conn_t *conn)
 {
     int ret = 0;
-    atm_socket_t *srcsock = NULL;
-    atm_buf_t *r_buf = NULL;
+    atm_socket_t *srcsock;
+    atm_buf_t *r_buf;
 
     srcsock = conn->sock;
     r_buf = conn->r_buf;   
@@ -208,8 +211,8 @@ atm_conn_task_read(atm_task_t *t)
 {
     int ret = 0;
     atm_conn_t *conn;
-    atm_sess_t *se = NULL;
-    atm_event_t *e = NULL;
+    atm_sess_t *se;
+    atm_event_t *e;
 
     conn = t->load;
     se = conn->session;
@@ -242,8 +245,8 @@ static atm_int_t
 atm_conn_task_write_raw(atm_conn_t *conn)
 {
     int ret = 0;
-    atm_socket_t *destsock = NULL;
-    atm_buf_t *w_buf = NULL;
+    atm_socket_t *destsock;
+    atm_buf_t *w_buf;
 
     destsock = conn->sock;
     w_buf = conn->w_buf;
@@ -257,10 +260,10 @@ static atm_int_t
 atm_conn_task_write(atm_task_t *t)
 {
     int ret = 0;
-    atm_conn_t *conn = NULL;
-    atm_event_t *e = NULL;
-    atm_uint_t wreqs = 0;
-    atm_buf_t *w_buf = NULL;
+    atm_conn_t *conn;
+    atm_event_t *e;
+    atm_uint_t wreqs;
+    atm_buf_t *w_buf;
 
     conn = t->load;
     e = conn->event;
@@ -337,12 +340,13 @@ atm_conn_listen_tcp()
     char *bindaddr = "0.0.0.0";
     int backlog = 1024;
 
-    atm_socket_t *ss = NULL;
-    atm_conn_listen_t *tcpl = NULL; 
-    int ret = -1;
+    atm_socket_t *ss;
+    atm_conn_listen_t *tcpl; 
 
     ss = atm_net_listen_tcp(port, 
             bindaddr, backlog);
+
+    int ret = -1;
     if (ss != NULL) {
         ret = atm_net_nonblock(ss, ATM_TRUE); 
         if (ret != ATM_OK) goto error;
@@ -368,18 +372,18 @@ static void
 atm_conn_handle_accept(
         atm_event_t *listen_event)
 {
+    atm_conn_listen_t *ls;
+    atm_socket_t *ss;
+    atm_socket_t *cs;
+    atm_conn_t *conn;
+    atm_sess_t *se;
+    
     atm_int_t max = ATM_CONN_PERCALL_ACCEPTS;
     int interval = ATM_NET_DEFAULT_TCP_KEEPALIVE;
 
-    atm_conn_listen_t *ls = NULL;
-    atm_socket_t *ss = NULL;
-    atm_socket_t *cs = NULL;
-    atm_conn_t *conn = NULL;
-    atm_sess_t *se = NULL;
-    
     ls = listen_event->load;
     ss = ls->ssck;  
-    while (--max) {
+    while (max--) {
         cs = atm_net_accept(ss);
         if (cs == NULL) break;
         /*config conn socket*/
@@ -398,8 +402,9 @@ atm_conn_handle_accept(
 static void
 atm_conn_handle_read(atm_event_t *conn_event)
 {
-    atm_conn_t *conn = NULL;
-    atm_task_t *task = NULL;
+    atm_conn_t *conn;
+    atm_task_t *task;
+
     if (conn_event != NULL) {
         conn = conn_event->load;
         /* SAFE_FREE_TAG */
@@ -422,8 +427,8 @@ atm_conn_handle_read(atm_event_t *conn_event)
 static void
 atm_conn_handle_write(atm_event_t *conn_event)
 {
-    atm_conn_t *conn = NULL;
-    atm_task_t *task = NULL;
+    atm_conn_t *conn;
+    atm_task_t *task;
 
     if (conn_event != NULL) {
         conn = conn_event->load;
@@ -460,9 +465,10 @@ atm_conn_init()
 void
 atm_conn_free(void *conn)
 {
-    atm_conn_t *c = NULL;
-    atm_buf_t *rbuf = NULL;
-    atm_buf_t *wbuf = NULL;
+    atm_conn_t *c;
+    atm_buf_t *rbuf;
+    atm_buf_t *wbuf;
+
     if (conn != NULL) {
         c = conn;
         rbuf = c->r_buf;
@@ -481,7 +487,8 @@ atm_conn_free(void *conn)
 void
 atm_conn_listen_free(void *listen)
 {
-    atm_conn_listen_t *l = NULL;
+    atm_conn_listen_t *l;
+
     if (listen != NULL) {
         l = listen;
         atm_event_free(l->event);
@@ -495,6 +502,7 @@ atm_str_t
 atm_conn_read_line(atm_conn_t *c)
 {
     atm_str_t res = NULL;
+
     atm_buf_t *r_buf = c->r_buf;
     char *s = atm_buf_read_line(r_buf);
     if (s != NULL) {
@@ -508,7 +516,8 @@ void
 atm_conn_write(atm_conn_t *c, 
         void *src, atm_uint_t nbyte)
 {
-    atm_buf_t *w_buf = NULL; 
+    atm_buf_t *w_buf; 
+
     if (c != NULL) {
         atm_log("atm_conn_write enter");
         w_buf = c->w_buf;

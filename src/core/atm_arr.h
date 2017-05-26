@@ -3,8 +3,10 @@
 
 #include <atm_core.h>
 
-
+/*
 #define ATM_ARR_INITIAL_LEN 32
+*/
+#define ATM_ARR_INITIAL_LEN 1
 
 
 struct atm_arr_s {

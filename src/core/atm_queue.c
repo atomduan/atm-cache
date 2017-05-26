@@ -5,8 +5,8 @@
 static void
 atm_queue_nonempty_wait(atm_queue_t *queue);
 
-/* resolution is millisecond(ms) */
-static atm_int_t loop_timeout = 5;
+
+static atm_int_t loop_timeout_sec = 5;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -17,8 +17,8 @@ static void
 atm_queue_nonempty_wait(atm_queue_t *queue)
 {
     atm_uint_t btyp;
-    atm_queue_t *q = NULL;
-    atm_int_t timeout = loop_timeout;
+    atm_queue_t *q;
+    atm_int_t timeout_sec = loop_timeout_sec;
 
     struct timespec ts;
     struct timeval now;
@@ -32,7 +32,7 @@ atm_queue_nonempty_wait(atm_queue_t *queue)
             pthread_mutex_lock(&q->qlock);
             while (atm_queue_size(q) == 0) {
                 gettimeofday(&now, NULL);
-                ts.tv_sec = now.tv_sec + timeout;
+                ts.tv_sec = now.tv_sec + timeout_sec;
                 ts.tv_nsec = now.tv_usec*1000;
                 pthread_cond_timedwait(&q->qready,&q->qlock,&ts);
             }
@@ -141,7 +141,7 @@ atm_queue_pop(atm_queue_t *queue)
 {
     void *res = NULL;
     atm_uint_t btyp;
-    atm_queue_t *q = NULL;
+    atm_queue_t *q;
     if (queue != NULL) {
         q = queue;
         btyp = q->blk_type;

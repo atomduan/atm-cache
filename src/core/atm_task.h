@@ -3,8 +3,6 @@
 
 #include <atm_core.h>
 
-#define ATM_TASK_WORKER_BLOCKING_INTVAL 1
-
 
 struct atm_task_s {
     atm_bool_t          active;

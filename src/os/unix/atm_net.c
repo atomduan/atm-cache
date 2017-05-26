@@ -3,23 +3,15 @@
  * Private
  * */
 static int
-atm_net_accept_raw(atm_socket_t *ssock, 
-        atm_socket_t *csock);
-
+atm_net_accept_raw(atm_socket_t *ssock, atm_socket_t *csock);
 static atm_socket_t *
-atm_net_socket_new(int fd); 
-
+atm_net_socket_new(int fd);
 static int
 atm_net_set_reuse_addr(int sockfd);
-
-static int 
-atm_net_listen_raw(int sockfd, 
-        struct sockaddr *sa, 
-        socklen_t len, int backlog);
-
 static int
-atm_net_listen_tcp_raw(int port, 
-        char *bindaddr, int backlog);
+atm_net_listen_raw(int sockfd, struct sockaddr *sa, socklen_t len, int backlog);
+static int
+atm_net_listen_tcp_raw(int port, char *bindaddr, int backlog);
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -33,16 +25,17 @@ atm_net_accept_raw(atm_socket_t *ssock,
     int fd;
     struct sockaddr_in *s;
     struct sockaddr_storage sa;
-    socklen_t salen = sizeof(sa);
+    socklen_t salen;
     int port;
     int ss;
    
+    salen = sizeof(struct sockaddr_storage);
     ss = ssock->fd;
-    char ip[ATM_NET_IP_STR_LEN];
+    char ip[ATM_NET_IPSLEN];
     atm_uint_t ip_len = sizeof(ip);
 
     while(ATM_TRUE) {
-        fd = accept(ss, (struct sockaddr*)&sa, &salen);
+        fd = accept(ss,(struct sockaddr*)&sa,&salen);
         if (fd == ATM_NET_ERR_FD) {
             if (errno == EINTR) {
                 continue;
@@ -85,13 +78,13 @@ atm_net_listen_raw(int sockfd,
 {
     if (bind(sockfd,sa,len) == -1) {
         atm_log_rout(ATM_LOG_ERROR, 
-            "bind: %s", strerror(errno));
+            "bind: %s",strerror(errno));
         return ATM_ERROR;
     }
 
     if (listen(sockfd, backlog) == -1) {
         atm_log_rout(ATM_LOG_ERROR,
-            "listen: %s", strerror(errno));
+            "listen: %s",strerror(errno));
         return ATM_ERROR;
     }
     return ATM_OK;
@@ -122,13 +115,13 @@ static int
 atm_net_listen_tcp_raw(int port, 
         char *bindaddr, int backlog)
 {
-    int             sockfd = -1;
-    int             ret = 0;
-    char            port_str[6];
+    int sockfd = ATM_NET_ERR_FD;
+    int ret;
+    char port_str[ATM_NET_PORTSLEN];
     struct addrinfo hints,*servinfo,*p;
 
-    snprintf(port_str,6,"%d",port);
-    memset(&hints,0,sizeof(hints));
+    snprintf(port_str,ATM_NET_PORTSLEN,"%d",port);
+    memset(&hints,ATM_MEM_ZERO,sizeof(hints));
 
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -136,7 +129,7 @@ atm_net_listen_tcp_raw(int port,
     hints.ai_flags = AI_PASSIVE;
 
     ret = getaddrinfo(bindaddr,
-            port_str, &hints, &servinfo);
+            port_str,&hints,&servinfo);
 
     if (ret != ATM_OK) {
         atm_log_rout(ATM_LOG_ERROR, 
@@ -144,9 +137,9 @@ atm_net_listen_tcp_raw(int port,
         return ATM_NET_ERR_FD;
     }
 
-    for (p = servinfo; p != NULL; p = p->ai_next) {
+    for (p=servinfo; p!=NULL; p=p->ai_next) {
         sockfd = socket(p->ai_family,
-            p->ai_socktype, p->ai_protocol);
+            p->ai_socktype,p->ai_protocol);
 
         if (sockfd == ATM_NET_ERR_FD)
             continue;
@@ -154,7 +147,7 @@ atm_net_listen_tcp_raw(int port,
         if (ATM_OK != ret) goto error;
 
         ret = atm_net_listen_raw(sockfd,
-            p->ai_addr, p->ai_addrlen, backlog);
+            p->ai_addr,p->ai_addrlen,backlog);
         if (ATM_OK != ret) goto error;
 
         goto end;
@@ -183,11 +176,12 @@ end:
 void
 atm_socket_free(void *sock)
 {
-    int ret = 0;
-    atm_socket_t *s = NULL;
+    int ret;
+    atm_socket_t *s;
+
     if (sock != NULL) {
         s = sock;
-        atm_log("free socket..%d", s->fd);
+        atm_log("free socket..%d",s->fd);
         ret = close(s->fd);
         atm_log("free socket ret %d",ret);
         atm_str_free(s->src_ip);
@@ -202,7 +196,7 @@ atm_net_listen_tcp(int port,
 {
     atm_socket_t *res = NULL;
     int s = ATM_NET_ERR_FD;
-    s = atm_net_listen_tcp_raw(port, bindaddr, backlog);
+    s = atm_net_listen_tcp_raw(port,bindaddr,backlog);
     if (s != ATM_NET_ERR_FD) {
        res = atm_net_socket_new(s); 
        res->fd = s;
@@ -214,10 +208,11 @@ atm_net_listen_tcp(int port,
 atm_socket_t *
 atm_net_accept(atm_socket_t *ss)
 {
-    int ret = -1;
-    atm_socket_t * res = NULL;
+    int ret;
+    atm_socket_t *res;
+
     res = atm_net_socket_new(ATM_NET_ERR_FD);
-    ret = atm_net_accept_raw(ss, res);
+    ret = atm_net_accept_raw(ss,res);
     if (ret != ATM_OK) {
         atm_free(res);
         res = NULL;
@@ -231,7 +226,7 @@ atm_net_nonblock(atm_socket_t *s,
         atm_bool_t non_block)
 {
     int fd = s->fd;    
-    return atm_file_nonblock(fd, non_block);
+    return atm_file_nonblock(fd,non_block);
 }
 
 
@@ -265,8 +260,8 @@ atm_net_keepalive(atm_socket_t *s,
     int fd = s->fd;    
     int val = 1;
 
-    if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, 
-                &val, sizeof(val)) == -1) {   
+    if (setsockopt(fd,SOL_SOCKET,SO_KEEPALIVE, 
+                &val,sizeof(val)) == -1) {   
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt SO_KEEPALIVE: %s", 
             strerror(errno));
@@ -282,8 +277,8 @@ atm_net_keepalive(atm_socket_t *s,
 
     /*  Send first probe after interval. */
     val = interval;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE,
-                &val, sizeof(val)) < 0) {
+    if (setsockopt(fd,IPPROTO_TCP,TCP_KEEPIDLE,
+                &val,sizeof(val)) < 0) {
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt TCP_KEEPIDLE: %s\n", 
             strerror(errno));
@@ -297,8 +292,8 @@ atm_net_keepalive(atm_socket_t *s,
      *  an error (see the next setsockopt call). */
     val = interval/3;
     if (val == 0) val = 1;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL,
-                &val, sizeof(val)) < 0) {
+    if (setsockopt(fd,IPPROTO_TCP,TCP_KEEPINTVL,
+                &val,sizeof(val)) < 0) {
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt TCP_KEEPINTVL: %s\n", 
             strerror(errno));
@@ -309,8 +304,8 @@ atm_net_keepalive(atm_socket_t *s,
      *  three we send three ACK
      *  probes without getting a reply. */
     val = 3;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, 
-                &val, sizeof(val)) < 0) {
+    if (setsockopt(fd,IPPROTO_TCP,TCP_KEEPCNT, 
+                &val,sizeof(val)) < 0) {
         atm_log_rout(ATM_LOG_ERROR, 
             "setsockopt TCP_KEEPCNT: %s\n", 
             strerror(errno));

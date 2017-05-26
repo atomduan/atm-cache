@@ -90,7 +90,7 @@ atm_arr_set(atm_arr_t *arr,
     atm_int_t ret = ATM_ERROR;
     atm_uint_t currlen;
     atm_uint_t tsize;
-    uint8_t *d = NULL;
+    uint8_t *d;
 
     if (arr != NULL) {
         currlen = arr->length;
@@ -114,8 +114,8 @@ atm_arr_del(atm_arr_t *arr, atm_uint_t i)
     atm_uint_t tsize;
     atm_uint_t currcap;
     atm_uint_t newcap;
-    void *vn = NULL;
-    void *vo = NULL;
+    void *vn;
+    void *vo;
     uint8_t *d, *s;
     atm_uint_t l = 0;
 

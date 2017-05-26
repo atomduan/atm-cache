@@ -4,16 +4,12 @@
  * */
 static void
 atm_task_notify_handle(void *task); 
-
 static void *
 atm_task_worker_func(void *arg);
-
 static void
 atm_task_worker_init(int nworker);
-
 static atm_task_worker_t *
 atm_task_worker_new();
-
 static void 
 atm_task_worker_free(void *worker);
 
@@ -45,11 +41,11 @@ static atm_uint_t workers_round;
 static void
 atm_task_notify_handle(void *task)
 {
-    atm_task_t *t = task;
-    atm_task_worker_t **wks = NULL;
-    atm_task_worker_t *curr_worker = NULL;
     atm_uint_t worker_nums = 0;
     atm_uint_t wi = 0;
+    atm_task_t *t = task;
+    atm_task_worker_t **wks;
+    atm_task_worker_t *curr_worker;
 
     worker_nums = workers->length;
     if (worker_nums > 0) {
@@ -74,10 +70,11 @@ static void *
 atm_task_worker_func(void *arg)
 {
     void *res = NULL;
-    atm_task_worker_t *worker = NULL;
-    atm_task_t *t = NULL;
+    atm_task_worker_t *worker;
+    atm_task_t *t;
 
     worker = arg;
+    worker->tid = pthread_self();
     atm_log("worker_fuc enter, worker tid[%u]", worker->tid);
     while (worker->active) {
         /* blocking pop hasppens here */
@@ -98,8 +95,8 @@ atm_task_worker_init(int nworker)
     int ret;
     pthread_t tid;
     pthread_attr_t attr;
+    atm_task_worker_t *w;
 
-    atm_task_worker_t *w = NULL;
     workers = atm_arr_new(sizeof(atm_task_worker_t *));
     for (int i=0; i<nworker; ++i) {
         w = atm_task_worker_new();
@@ -110,7 +107,6 @@ atm_task_worker_init(int nworker)
                 atm_task_worker_func,w);
 
             if (ret == ATM_OK) {
-                w->tid = tid;
                 atm_arr_add(workers, &w);
                 continue;
             } else {

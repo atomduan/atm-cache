@@ -4,7 +4,6 @@
  * */
 static atm_blk_t *
 atm_buf_get_rblk(atm_buf_t *buf);
-
 static atm_blk_t *
 atm_buf_get_wblk(atm_buf_t *buf);
 
@@ -17,7 +16,7 @@ static atm_blk_t *
 atm_buf_get_rblk(atm_buf_t *buf)
 {
     atm_blk_t *res = NULL;
-    atm_blk_t *bk = NULL;
+    atm_blk_t *bk;
 
     pthread_mutex_lock(&buf->_mutex);
     bk = atm_list_lpeek(buf->blks);
@@ -31,9 +30,9 @@ atm_buf_get_rblk(atm_buf_t *buf)
             /* peek the new one */
             bk = atm_list_lpeek(buf->blks);
         }
-        /* check wether have new data to read */
-        if (bk->ridx < bk->widx) {
-            res = bk;
+        if (bk != NULL) {
+            /* check wether have new data to read */
+            if (bk->ridx < bk->widx) res = bk;
         }
     }
     pthread_mutex_unlock(&buf->_mutex);
@@ -99,7 +98,7 @@ atm_buf_read_sock(atm_buf_t *buf,
     atm_int_t result = 0;
     atm_int_t total = 0;
     int ret = 0;
-    atm_blk_t *bk = NULL;
+    atm_blk_t *bk;
 
     while (ATM_TRUE) {
         bk = atm_buf_get_wblk(buf);
@@ -129,7 +128,7 @@ atm_buf_write_sock(atm_buf_t *buf,
     atm_int_t result = 0;
     atm_int_t total = 0;
     int ret = 0;
-    atm_blk_t *bk = NULL;
+    atm_blk_t *bk;
 
     while(ATM_TRUE) {
         bk = atm_buf_get_rblk(buf);
@@ -161,11 +160,11 @@ char *
 atm_buf_read_line(atm_buf_t *buf)
 {
     char *res = NULL;
-    atm_list_iter_t *it = NULL;
-    atm_blk_t *bk = NULL;
+    atm_list_iter_t *it;
+    atm_blk_t *bk;
+
     atm_uint_t len = 0;
-    int find_end = 0;
-    
+    atm_int_t find_end = 0;
     it = atm_list_iter_new(buf->blks);
     while ((bk=atm_list_next(it)) != NULL) {
         for (atm_uint_t i=bk->ridx; i<bk->widx; ++i) {
@@ -199,10 +198,10 @@ atm_int_t
 atm_buf_read(atm_buf_t *buf, void *dest, 
         atm_uint_t nbyte)
 {
+    atm_int_t total = 0;
+    atm_blk_t *bk;
     uint8_t *dptr = (uint8_t *)dest;
     atm_int_t rmn = nbyte;
-    atm_int_t total = 0;
-    atm_blk_t *bk = NULL;
 
     while(ATM_TRUE) {
         bk = atm_buf_get_rblk(buf);
@@ -236,7 +235,7 @@ atm_buf_write(atm_buf_t *buf, void *src,
     uint8_t *sptr = (uint8_t *)src;
     atm_int_t rmn = nbyte;
     atm_int_t total = 0;
-    atm_blk_t *bk = NULL;
+    atm_blk_t *bk;
 
     while(ATM_TRUE) {
         bk = atm_buf_get_wblk(buf);

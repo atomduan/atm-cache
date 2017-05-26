@@ -4,17 +4,12 @@
  * */
 static void
 atm_event_notify_handle(void *eop);
-
 static atm_event_op_t *
-atm_event_op_new(atm_event_t *e, 
-        uint32_t mask, atm_uint_t op_type);
-
+atm_event_op_new(atm_event_t *e, uint32_t mask, atm_uint_t op_type);
 static void
 atm_event_op_free(void *eop);
-
 static void
 atm_event_process_ev();
-
 static void
 atm_event_process_events();
 
@@ -98,9 +93,9 @@ atm_event_process_ev(atm_event_t *ev, uint32_t evs)
 static void
 atm_event_process_events()
 {
-    int             ev_count,i = 0;
-    uint32_t        evs = 0; 
-    atm_event_t    *ev = NULL;
+    int             ev_count,i;
+    uint32_t        evs; 
+    atm_event_t    *ev;
 
     ev_count = epoll_wait(ep,event_list,
             (int) nevents,ATM_EVENT_BLOCK);
@@ -126,9 +121,8 @@ atm_event_init()
 {
     /* set up event engine. */
     ep = epoll_create(ATM_EVENT_SIZE);
-    if (event_list) {
-        atm_free(event_list);
-    }
+    /* discard old data */
+    if (event_list) atm_free(event_list);
     nevents = ATM_EVENT_LIST_SIZE;
     event_list = atm_alloc(
         sizeof(struct epoll_event) * nevents);
@@ -181,8 +175,8 @@ atm_event_routine()
 void
 atm_event_add_listen(atm_conn_listen_t *l)
 {
-    int sfd = -1;
-    atm_event_t *le = NULL;
+    int sfd;
+    atm_event_t *le;
     uint32_t events = ATM_EVENT_NONE;
 
     if (l != NULL) {
@@ -203,8 +197,8 @@ atm_event_add_listen(atm_conn_listen_t *l)
 void
 atm_event_add_conn(atm_conn_t *c)
 {
-    int cfd = -1;
-    atm_event_t *ce = NULL;
+    int cfd;
+    atm_event_t *ce;
     uint32_t events = ATM_EVENT_NONE;
 
     if (c != NULL) {
@@ -233,9 +227,9 @@ atm_event_add_conn(atm_conn_t *c)
 void
 atm_event_add_event(atm_event_t *e, uint32_t mask)
 {
-    int fd =-1;
-    int op = 0;
-    int ret = 0;
+    int fd;
+    int op;
+    int ret;
     struct epoll_event ee;
 
     atm_log("add event mask is %u",mask);
@@ -274,9 +268,9 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
 void
 atm_event_del_event(atm_event_t *e, uint32_t unmask)
 {
-    int fd =-1;
-    int op = 0;
-    int ret = -1;
+    int fd;
+    int op;
+    int ret;
     struct epoll_event ee;
 
     atm_log("del event unmask is %u",unmask);

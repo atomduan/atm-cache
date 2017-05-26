@@ -49,14 +49,14 @@ atm_log(char *fmt, ...)
 {
     atm_uint_t size = ATM_LOG_MAXLEN;
     char msg[size];
-    memset(msg, 0, size);
+    memset(msg,ATM_MEM_ZERO,size);
 
     va_list args;
-    va_start(args, fmt);
-    vsnprintf(msg, size, fmt, args);
+    va_start(args,fmt);
+    vsnprintf(msg,size,fmt,args);
     va_end(args);
 
-    atm_log_rout_raw(ATM_LOG_INFO, msg);
+    atm_log_rout_raw(ATM_LOG_INFO,msg);
 }
 
 
@@ -65,11 +65,11 @@ atm_log_rout(atm_uint_t level, char *fmt, ...)
 {
     atm_uint_t size = ATM_LOG_MAXLEN;
     char msg[size];
-    memset(msg, 0, size);
+    memset(msg,ATM_MEM_ZERO,size);
 
     va_list args;
-    va_start(args, fmt);
-    vsnprintf(msg, size, fmt, args);
+    va_start(args,fmt);
+    vsnprintf(msg,size,fmt,args);
     va_end(args);
 
     atm_log_rout_raw(level, msg);

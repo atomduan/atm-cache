@@ -3,8 +3,10 @@
 
 #include <atm_core.h>
 
-
+/*
 #define ATM_DICT_INITIAL_BUCKET_SIZE 256
+*/
+#define ATM_DICT_INITIAL_BUCKET_SIZE 1
 
 
 /* this is a inner type 

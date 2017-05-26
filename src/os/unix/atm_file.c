@@ -4,18 +4,12 @@
  * */
 static void
 atm_pip_handle_recv(atm_event_t *e);
-
 static void 
-atm_pipe_process_msgs(atm_pipe_t *pipe, 
-        char *notify);
-
+atm_pipe_process_msgs(atm_pipe_t *pipe, char *notify);
 static atm_pipe_msg_t *
-atm_pipe_msg_new(void *load,
-        void (*call_back)(void *load));
-
+atm_pipe_msg_new(void *load, void (*call_back)(void *load));
 static void
 atm_pipe_msg_free(void *msg);
-
 
 static atm_T_t ATM_PIPE_MSG_TYPE = {
     NULL,
@@ -35,12 +29,13 @@ static atm_T_t *ATM_PIPE_MSG_T = &ATM_PIPE_MSG_TYPE;
 static void
 atm_pip_handle_recv(atm_event_t *e)
 {
-    int processed = 0;
-    int ret = 0;
+    int processed;
+    int ret;
     char buf[1];
     int recv_fd = e->fd;
     atm_pipe_t *p = e->load;
 
+    processed = 0;
     pthread_mutex_lock(&p->mqlock);
     while (ATM_TRUE) {
         ret = read(recv_fd, buf, 1);
@@ -64,12 +59,13 @@ atm_pipe_process_msgs(atm_pipe_t *pipe,
         char *notify)
 {
     atm_pipe_t *p = pipe;
-    atm_pipe_msg_t *msg = NULL;
+    atm_pipe_msg_t *msg;
     switch (notify[0]) {
         case ATM_PIPE_NCHAR:
             while (ATM_TRUE) {
                 msg=atm_queue_pop(p->mqueue);
                 if (msg == NULL) break;
+                atm_log("pipe_process msg[%p],[%p][%p]",msg,msg->load,msg->call_back);
                 /* whether to dispatch is msg's biz */
                 msg->call_back(msg->load);
                 atm_log("get msg instance from pipe notfy");
@@ -170,7 +166,7 @@ atm_pipe_new()
 void
 atm_pipe_event_init(atm_pipe_t *pipe)
 {
-    atm_event_t *pe = NULL;
+    atm_event_t *pe;
     int events = ATM_EVENT_NONE;
 
     pe = atm_event_new(
@@ -210,13 +206,14 @@ atm_pipe_notify(atm_pipe_t *pipe, void *load,
         void (*call_back)(void *load))
 {
     char buf[1];
-    atm_pipe_t *p = NULL;
-    atm_pipe_msg_t *msg = NULL; 
+    atm_pipe_t *p;
+    atm_pipe_msg_t *msg; 
 
     buf[0] = ATM_PIPE_NCHAR;
     p = pipe;
     msg = atm_pipe_msg_new(load,call_back);
-
+    
+    atm_log("pipe_notify msg[%p],[%p][%p]",msg,msg->load,msg->call_back);
     pthread_mutex_lock(&p->mqlock);
     atm_queue_push(p->mqueue, msg);
     pthread_mutex_unlock(&p->mqlock);

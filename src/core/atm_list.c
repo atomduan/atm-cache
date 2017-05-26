@@ -46,8 +46,12 @@ atm_list_entry_free(void *entry)
 
     atm_list_entry_isol(e);
     if (list->free_type == ATM_FREE_DEEP) {
-        if (v_type != NULL) {
+        if (v_type && v_type->free) {
             v_type->free(e->val);
+        } else {
+            atm_log_rout(ATM_LOG_FATAL,
+                "free is null will FREE_DEEP flag");
+            exit(ATM_ERROR);
         }
     }
     atm_free(e);

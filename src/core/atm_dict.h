@@ -75,5 +75,8 @@ atm_dict_hash(char *input, atm_uint_t inlen);
 uint64_t
 atm_dict_hash_nocase(char *input, atm_uint_t inlen);
 
+void
+atm_dict_clear(atm_dict_t *dict);
+
 
 #endif /* _ATM_DICT_H_INCLUDED_ */

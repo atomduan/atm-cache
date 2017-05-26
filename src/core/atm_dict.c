@@ -4,7 +4,7 @@
  * */
 /* entry type lifecycle */
 static atm_dict_entry_t *
-atm_dict_entry_new(void *dict, void *key, void *val);
+atm_dict_entry_new(void *key, void *val);
 static void *
 atm_dict_entry_spec(void *entry);
 static atm_bool_t
@@ -29,6 +29,8 @@ static atm_uint_t
 atm_dict_hkey(atm_dict_t *dict, void *key);
 static atm_dict_entry_t *
 atm_dict_entry(atm_dict_t *dict, void *key);
+static void
+atm_dict_bucket_clear(atm_dict_bucket_t *bucket);
 
 
 static atm_T_t ATM_DICT_ENTRY_TYPE = {
@@ -47,14 +49,14 @@ static atm_T_t *ATM_DICT_ENTRY_T = &ATM_DICT_ENTRY_TYPE;
  * Private
  * */
 static atm_dict_entry_t *
-atm_dict_entry_new(void *dict, void *key, void *val)
+atm_dict_entry_new(void *key, void *val)
 {
     atm_dict_entry_t *res = NULL;
 
     res = atm_alloc(sizeof(atm_dict_entry_t));
-    res->dict = dict;
     res->key = key;
     res->val = val;
+    res->dict = NULL;
     return res;
 }
 
@@ -159,10 +161,12 @@ atm_dict_entry_free(void *entry)
         dict = e->dict;
         if (dict != NULL) {
             if (dict->free_type == ATM_FREE_DEEP) {
-                if (e->key && dict->k_type) {
+                if (e->key && dict->k_type 
+                        && dict->k_type->free) {
                     dict->k_type->free(e->key);
                 }
-                if (e->val && dict->v_type) {
+                if (e->val && dict->v_type
+                        && dict->v_type->free) {
                     dict->v_type->free(e->val);
                 }
             }
@@ -176,9 +180,15 @@ static atm_dict_bucket_t *
 atm_dict_bucket_new(atm_dict_t *dict)
 {
     atm_dict_bucket_t *res = NULL;
+    atm_list_t *lptr;
 
     res = atm_alloc(sizeof(atm_dict_bucket_t));
     res->dict = dict;
+    /* lptr is part of data structure
+     * so need to set shallow free */
+    lptr = atm_list_new(ATM_DICT_ENTRY_T,
+            ATM_FREE_SHALLOW);
+    res->list = lptr;
     return res;
 }
 
@@ -202,18 +212,16 @@ atm_dict_bucket_free(void *bucket)
     atm_list_t *lptr;
 
     bkt = (atm_dict_bucket_t *) bucket;
-    lptr = bkt->list;
-    if (lptr->free_type == ATM_FREE_DEEP) {
-        /*
-         * container's inner container must be free_deep
-         * or else the top container's free can not triger
-         * the basic val's free action
-         */
-        atm_list_free(lptr);
-    } else {
-        atm_log_rout(ATM_LOG_ERROR,
-            "dict inner list curraput");
-        exit(ATM_ERROR);
+    if (bkt != NULL) {
+        lptr = bkt->list;
+        if (lptr->free_type == ATM_FREE_SHALLOW) {
+            atm_list_free(lptr);
+        } else {
+            atm_log_rout(ATM_LOG_ERROR,
+                "dict inner list curraput");
+            exit(ATM_ERROR);
+        }
+        atm_free(bkt);
     }
 }
 
@@ -244,13 +252,29 @@ atm_dict_entry(atm_dict_t *dict, void *key)
     if (bkt != NULL) {
         list = bkt->list;
         /* create a tmp hint to test */
-        hint = atm_dict_entry_new(dict, key, NULL);
+        hint = atm_dict_entry_new(key, NULL);
         res = (atm_dict_entry_t *)
             atm_list_find(list, hint);
         /* dont forget free hint */
         atm_dict_entry_free(hint);
     }
     return res;
+}
+
+
+static void
+atm_dict_bucket_clear(atm_dict_bucket_t *bucket)
+{
+    atm_dict_bucket_t *bkt;
+    atm_list_t *l;
+    atm_dict_entry_t *e;
+
+    bkt = bucket;
+    if (bkt != NULL) {
+        l = bkt->list;
+        while((e=atm_list_lpop(l)) != NULL)
+            atm_dict_entry_free(e);
+    }
 }
 
 
@@ -311,12 +335,18 @@ atm_dict_free(void *dict)
     atm_dict_bucket_t *bkt;
 
     d = (atm_dict_t *) dict;
-    for (i=0; i<d->bktab_size; ++i) {
-        bkt = d->bktab[i];
-        atm_dict_bucket_free(bkt);
+    if (d != NULL) {
+        /* 1. clear the dict first */
+        atm_dict_clear(d);
+        /* 2. free the structure */
+        for (i=0; i<d->bktab_size; ++i) {
+            bkt = d->bktab[i];
+            if (bkt != NULL)
+                atm_dict_bucket_free(bkt);
+        }
+        atm_free(d->bktab);
+        atm_free(d);
     }
-    atm_free(d->bktab);
-    atm_free(d);
 }
 
 
@@ -363,14 +393,7 @@ atm_dict_set(atm_dict_t *dict, void *key, void *val)
             dict->bktab[hash_key] = bkt;
         }
         lptr = bkt->list;
-        if (lptr == NULL) {
-            /* lptr is part of data structure
-             * so need to set deep free */
-            lptr = atm_list_new(ATM_DICT_ENTRY_T,
-                    ATM_FREE_DEEP);
-            bkt->list = lptr;
-        }
-        new_entry = atm_dict_entry_new(dict, key, val);
+        new_entry = atm_dict_entry_new(key, val);
         new_entry->dict = dict;
         atm_list_push(lptr, new_entry);
         dict->size++;
@@ -390,6 +413,7 @@ atm_dict_del(atm_dict_t *dict, void *key)
         bkt = atm_dict_bucket(dict, key);
         lptr = bkt->list;
         atm_list_del(lptr, entry);
+        atm_dict_entry_free(entry);
         dict->size--;
     }
 }
@@ -406,4 +430,22 @@ uint64_t
 atm_dict_hash_nocase(char *input, atm_uint_t inlen)
 {
     return atm_siphash_nocase(input, inlen);
+}
+
+
+void
+atm_dict_clear(atm_dict_t *dict)
+{
+    atm_uint_t i;
+    atm_dict_t *d;
+    atm_dict_bucket_t *bkt;
+
+    d = dict;
+    if (d != NULL) {
+        for (i=0; i<d->bktab_size; ++i) {
+            bkt = d->bktab[i];
+            if (bkt != NULL)
+                atm_dict_bucket_clear(bkt);
+        }
+    }
 }

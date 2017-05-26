@@ -9,36 +9,40 @@
 #define ATM_DICT_INITIAL_BUCKET_SIZE 1
 
 
-/* this is a inner type
- * so we do not define it in atm_types.h
- * plz do not use it in other file, consciously
- * the global type should be define is atm_types.h Specific Tyes sect
- * */
 typedef struct atm_dict_entry_s     atm_dict_entry_t;
 typedef struct atm_dict_bucket_s    atm_dict_bucket_t;
+typedef struct atm_dict_table_s     atm_dict_table_t;
 
 
 struct atm_dict_s {
     atm_uint_t              free_type;
-    atm_dict_bucket_t     **bktab; //TODO, need const
-    atm_uint_t              bktab_size;
     atm_uint_t              size;
+    atm_dict_table_t       *ht_active;
+    atm_dict_table_t       *ht_backup;
     atm_T_t                *k_type;
     atm_T_t                *v_type;
 };
 
 
+struct atm_dict_table_s {
+    atm_dict_t             *dict;
+    atm_dict_bucket_t     **bktab; //TODO, need const
+    atm_uint_t              bktab_size;
+};
+
+
 struct atm_dict_bucket_s {
-    atm_dict_t    *dict;
+    atm_dict_t             *dict;
+    atm_dict_table_t       *table;
     /* inner list contain dict_entrys */
-    atm_list_t    *list;
+    atm_list_t             *list;
 };
 
 
 struct atm_dict_entry_s {
-    atm_dict_t         *dict;
-    void               *key;
-    void               *val;
+    atm_dict_t  *dict;
+    void   *key;
+    void   *val;
 };
 
 

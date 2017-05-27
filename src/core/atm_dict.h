@@ -28,6 +28,7 @@ struct atm_dict_table_s {
     atm_dict_t             *dict;
     atm_dict_bucket_t     **bktab; //TODO, need const
     atm_uint_t              bktab_size;
+    atm_uint_t              bktab_used;
 };
 
 

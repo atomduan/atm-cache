@@ -16,11 +16,14 @@ typedef struct atm_dict_table_s     atm_dict_table_t;
 
 struct atm_dict_s {
     atm_uint_t              free_type;
-    atm_uint_t              size;
     atm_dict_table_t       *ht_active;
     atm_dict_table_t       *ht_backup;
     atm_T_t                *k_type;
     atm_T_t                *v_type;
+    atm_bool_t              enable_resize;
+    atm_uint_t              rehash_index;
+
+    pthread_rwlock_t        rwlk;
 };
 
 
@@ -29,6 +32,7 @@ struct atm_dict_table_s {
     atm_dict_bucket_t     **bktab; //TODO, need const
     atm_uint_t              bktab_size;
     atm_uint_t              bktab_used;
+    atm_uint_t              size;
 };
 
 
@@ -82,6 +86,15 @@ atm_dict_hash_nocase(char *input, atm_uint_t inlen);
 
 void
 atm_dict_clear(atm_dict_t *dict);
+
+atm_uint_t
+atm_dict_size(atm_dict_t *dict);
+
+void
+atm_dict_resize_enable(atm_dict_t *dict);
+
+void
+atm_dict_resize_disable(atm_dict_t *dict);
 
 
 #endif /* _ATM_DICT_H_INCLUDED_ */

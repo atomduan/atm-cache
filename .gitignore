@@ -6,3 +6,4 @@ build/
 *.log
 Makefile
 *.swp
+.gdb_history

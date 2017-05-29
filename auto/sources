@@ -43,7 +43,8 @@ BUILD_SRCS="src/core/atm_arr.c \
             src/core/atm_siphash.c \
             src/core/atm_str.c \
             src/core/atm_task.c \
-            src/core/atm_time.c"
+            src/core/atm_time.c \
+            src/core/atm_util.c"
 
 BUILD_LIBS=""
 

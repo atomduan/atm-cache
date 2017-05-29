@@ -38,7 +38,7 @@ ${name}:	${name}.o \\
 
 
 ${name}.o:	\$(BUILD_DEPS)
-	\$(CC) -c \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
 
 
 END
@@ -47,7 +47,7 @@ fi
 
 cat <<END >> Makefile
 misc_utils.o:	\$(BUILD_DEPS)
-	\$(CC) -c \$(CFLAGS) \$(BUILD_INCS) -o misc_utils.o misc_utils.c
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o misc_utils.o misc_utils.c
 
 
 END

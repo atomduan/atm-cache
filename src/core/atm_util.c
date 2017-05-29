@@ -15,3 +15,11 @@ atm_util_next_power(atm_uint_t num)
     }
     return res;
 }
+
+
+void
+atm_util_debug_hook(void *arg)
+{
+    atm_log("this is a isolated debug hook\n"
+            "the arg's pointer is %p", arg);
+}

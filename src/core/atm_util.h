@@ -7,4 +7,6 @@
 atm_uint_t
 atm_util_next_power(atm_uint_t num);
 
+void
+atm_util_debug_hook(void *arg);
 #endif /* _ATM_UTIL_H_INCLUDED_ */

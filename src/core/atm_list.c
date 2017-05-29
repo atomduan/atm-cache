@@ -12,6 +12,8 @@ atm_list_entry_isol(atm_list_entry_t * entry);
 static atm_list_entry_t *
 atm_list_find_linear(atm_list_t *list, void *entry);
 static atm_list_entry_t *
+atm_list_find_entry(atm_list_t *list, void *entry);
+static atm_list_entry_t *
 atm_list_lpop_entry(atm_list_t *list);
 static atm_list_entry_t *
 atm_list_rpop_entry(atm_list_t *list);
@@ -90,6 +92,13 @@ atm_list_find_linear(atm_list_t *list, void *entry)
 
 
 static atm_list_entry_t *
+atm_list_find_entry(atm_list_t *list, void *entry)
+{
+    return atm_list_find_linear(list,entry);
+}
+
+
+static atm_list_entry_t *
 atm_list_lpop_entry(atm_list_t *list)
 {
     atm_list_entry_t *res = NULL;
@@ -97,7 +106,6 @@ atm_list_lpop_entry(atm_list_t *list)
     res = list->head;
     if (res != NULL) {
         list->head = res->next;
-        atm_log("lpop ###### res[%p],head[%p],tail[%p]", res,list->head, list->tail);
         if (list->head != NULL) {
             list->head->prev = NULL;
         }
@@ -216,7 +224,7 @@ atm_list_del(atm_list_t *list, void *hint)
     atm_list_entry_t *prev;
     atm_list_entry_t *next;
 
-    entry = atm_list_find(list, hint);
+    entry = atm_list_find_entry(list,hint);
     curr = entry;
     if (entry != NULL) {
         prev = curr->prev;
@@ -252,7 +260,7 @@ atm_list_find(atm_list_t *list, void *hint)
     void *res = NULL;
     atm_list_entry_t *entry;
 
-    entry = atm_list_find_linear(list, hint);
+    entry = atm_list_find_entry(list, hint);
     if (entry != NULL) {
         res = entry->val;
     }

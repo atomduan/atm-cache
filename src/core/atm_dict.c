@@ -6,7 +6,6 @@ static atm_bool_t
 atm_dict_rehash_needed(atm_dict_t *dict);
 static void
 atm_dict_rehash(atm_dict_t *dict);
-
 static atm_bool_t
 atm_dict_table_contains(atm_dict_table_t *table, void *key);
 static atm_bool_t
@@ -23,14 +22,12 @@ static atm_dict_table_t *
 atm_dict_table_new(atm_dict_t *dict, atm_uint_t bsz);
 static void
 atm_dict_table_free(void *table);
-
 static atm_dict_bucket_t *
 atm_dict_bucket_new(atm_dict_table_t *table);
 static atm_dict_bucket_t *
 atm_dict_bucket(atm_dict_table_t *table, void *key);
 static void
 atm_dict_bucket_free(void *bucket);
-
 static atm_dict_entry_t *
 atm_dict_entry(atm_dict_table_t *table, void *key);
 static atm_dict_entry_t *
@@ -47,7 +44,6 @@ static atm_str_t
 atm_dict_entry_str(void *entry);
 static void
 atm_dict_entry_free(void *entry);
-
 static atm_uint_t
 atm_dict_hkey(atm_dict_table_t *table, void *key);
 static atm_uint_t
@@ -66,6 +62,7 @@ static atm_T_t *ATM_DICT_ENTRY_T = &ATM_DICT_ENTRY_TYPE;
 
 
 atm_uint_t  force_resize_ratio = 5;
+atm_uint_t  rehash_loop_time = 1;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -76,10 +73,8 @@ static atm_bool_t
 atm_dict_rehash_needed(atm_dict_t *dict)
 {
     atm_dict_table_t *tb_act;
-    atm_dict_table_t *tb_bkp;
 
     tb_act = dict->ht_active;
-    tb_bkp = dict->ht_backup;
 
     if (tb_act == NULL) {
         atm_log_rout(ATM_LOG_FATAL,
@@ -88,7 +83,7 @@ atm_dict_rehash_needed(atm_dict_t *dict)
     }
 
     if (dict != NULL) {
-        if (tb_bkp != NULL) {
+        if (dict->ht_backup != NULL) {
             return ATM_TRUE;
         } else {
             if (dict->enable_resize) {
@@ -109,7 +104,6 @@ static void
 atm_dict_rehash(atm_dict_t *dict)
 {
     atm_dict_table_t *tb_act;
-    atm_dict_table_t *tb_bkp;
     atm_dict_table_t *tb_tmp;
     atm_dict_bucket_t *bkt;
     atm_uint_t i;
@@ -117,12 +111,11 @@ atm_dict_rehash(atm_dict_t *dict)
     atm_dict_entry_t *e;
 
     tb_act = dict->ht_active;
-    tb_bkp = dict->ht_backup;
 
     if(!atm_dict_rehash_needed(dict))
         return;
 
-    if (tb_bkp == NULL) {
+    if (dict->ht_backup == NULL) {
         if (dict->rehash_index != 0) {
             atm_log_rout(ATM_LOG_FATAL, 
                 "data currapt rehash_index");
@@ -130,13 +123,13 @@ atm_dict_rehash(atm_dict_t *dict)
         }
         atm_uint_t bsz = tb_act->size*2;
         bsz = atm_util_next_power(bsz);
-        tb_bkp = atm_dict_table_new(dict, bsz);
+        dict->ht_backup = atm_dict_table_new(dict, bsz);
     }
 
     if (dict->rehash_index < tb_act->bktab_size) {
-        atm_int_t loop_time = 128;
+        atm_int_t loop_time = rehash_loop_time;
         while (loop_time--) {
-            i = dict->rehash_index++;
+            i = dict->rehash_index;
             if (i == tb_act->bktab_size) 
                 break;
 
@@ -164,17 +157,16 @@ atm_dict_rehash(atm_dict_t *dict)
                 }
             }
 
-
             bkt = tb_act->bktab[i];
+            dict->rehash_index++;
             if (bkt == NULL) 
                 continue;
     
             bl = bkt->list;
             while ((e=atm_list_lpop(bl)) != NULL) {
-                atm_dict_table_push_entry(tb_bkp,e);
+                atm_dict_table_push_entry(dict->ht_backup,e);
                 tb_act->size--;
             }
-            tb_act->bktab[i] = NULL;
             tb_act->bktab_used--;
         }
     } else {
@@ -185,14 +177,18 @@ atm_dict_rehash(atm_dict_t *dict)
 
     /* check whether rehash can finish */
     if (tb_act->size == 0) {
-        if (dict->rehash_index >= tb_act->bktab_size) {
+        if (dict->rehash_index > tb_act->bktab_size) {
             atm_log_rout(ATM_LOG_FATAL, 
-                "data currapt! rehash_index on rehash finish");
+                "data currapt! rehash_index on rehash finish,"
+                "rehash_index[%u], bktab_size[%u]",
+                dict->rehash_index,
+                tb_act->bktab_size);
             exit(ATM_ERROR);
         } else
         if (tb_act->bktab_used != 0) {
             atm_log_rout(ATM_LOG_FATAL, 
-                "data currapt! bktab_used on rehash finish");
+                "data currapt! bktab_used on rehash finish,"
+                "bktab_used[%u]",tb_act->bktab_used);
             exit(ATM_ERROR);
         } else {
            tb_tmp = dict->ht_active; 
@@ -351,8 +347,7 @@ atm_dict_table_free(void *table)
 
     if (table != NULL) {
         t = (atm_dict_table_t *)table;
-        if (t->bktab_used > 0)
-            atm_dict_table_clear(t);
+        atm_dict_table_clear(t);
         atm_free(t->bktab);
         atm_free(t);
     }
@@ -686,9 +681,10 @@ atm_dict_contains(atm_dict_t *dict, void *key)
         pthread_rwlock_rdlock(&dict->rwlk);
         table = dict->ht_active;
         res = atm_dict_table_contains(table,key);
-        if (res == ATM_TRUE) return res;
-        table = dict->ht_backup;
-        res = atm_dict_table_contains(table,key);
+        if (res == ATM_FALSE) {
+            table = dict->ht_backup;
+            res = atm_dict_table_contains(table,key);
+        }
         pthread_rwlock_unlock(&dict->rwlk);
     }
     return res;
@@ -704,9 +700,10 @@ atm_dict_get(atm_dict_t *dict, void *key)
         pthread_rwlock_rdlock(&dict->rwlk);
         table = dict->ht_active;
         res = atm_dict_table_get(table,key);
-        if (res != NULL) return res;
-        table = dict->ht_backup;
-        res = atm_dict_table_get(table,key);
+        if (res == NULL) {
+            table = dict->ht_backup;
+            res = atm_dict_table_get(table,key);
+        }
         pthread_rwlock_unlock(&dict->rwlk);
     }
     return res;

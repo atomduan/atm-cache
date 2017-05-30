@@ -28,7 +28,7 @@ atm_sess_free(void *se);
  * session level: is thread safe in this func
  * application level: have race condition between
  * different sessions*/
-void
+atm_int_t
 atm_sess_process(atm_sess_t *se);
 
 

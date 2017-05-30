@@ -107,7 +107,7 @@ atm_sess_free(void *sess)
 }
 
 
-void
+atm_int_t
 atm_sess_process(atm_sess_t *se)
 {
     atm_str_t   line;
@@ -131,4 +131,5 @@ atm_sess_process(atm_sess_t *se)
         }
         atm_sess_reset(se);
     }
+    return ATM_OK;
 }

@@ -212,7 +212,7 @@ atm_event_add_conn(atm_conn_t *c)
         }
 
         events = EPOLLIN|EPOLLHUP|EPOLLET;
-        atm_log("conn initial events mask %u", events);
+        //atm_log("conn initial events mask %u", events);
         atm_event_add_event(ce, events);
     }
 }
@@ -232,17 +232,17 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
     int ret;
     struct epoll_event ee;
 
-    atm_log("add event mask is %u",mask);
+    //atm_log("add event mask is %u",mask);
     if (e != NULL) {
         fd = e->fd;
         e->events = e->events | mask;
         if (e->events != ATM_EVENT_NONE) {
             if (e->_registed) {
                 op = EPOLL_CTL_MOD;
-                atm_log("add event op is mod");
+                //atm_log("add event op is mod");
             } else {
                 op = EPOLL_CTL_ADD;
-                atm_log("add event op is add");
+                //atm_log("add event op is add");
             }
             ee.events = e->events;
             ee.data.ptr = e;
@@ -253,7 +253,7 @@ atm_event_add_event(atm_event_t *e, uint32_t mask)
                 }
                 break;
             }
-            atm_log("epoll_ctl add ret is %d", ret);
+            //atm_log("epoll_ctl add ret is %d", ret);
             e->_registed = ATM_TRUE;
         }
     }
@@ -273,17 +273,17 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
     int ret;
     struct epoll_event ee;
 
-    atm_log("del event unmask is %u",unmask);
+    //atm_log("del event unmask is %u",unmask);
     if (e != NULL) {
         fd = e->fd;
         e->events = e->events & (~unmask);
         if (e->_registed) {
             if (e->events != ATM_EVENT_NONE) {
                 op = EPOLL_CTL_MOD;
-                atm_log("del event op is mod");
+                //atm_log("del event op is mod");
             } else {
                 op = EPOLL_CTL_DEL;
-                atm_log("del event op is del");
+                //atm_log("del event op is del");
             }
             ee.events = e->events;
             ee.data.ptr = e;
@@ -295,7 +295,7 @@ atm_event_del_event(atm_event_t *e, uint32_t unmask)
                 }
                 break;
             }
-            atm_log("epoll_ctl del ret is %d", ret);
+            //atm_log("epoll_ctl del ret is %d", ret);
 
             if (op == EPOLL_CTL_DEL) {
                 e->_registed = ATM_FALSE;

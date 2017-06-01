@@ -4,8 +4,20 @@
 #include <atm_core.h>
 
 
+typedef enum {
+    sess_init,
+    sess_parsing,
+    sess_process_cmd,
+    sess_finish,
+    sess_error,
+} atm_sess_state;
+
+
 struct atm_sess_s {
+    atm_sess_state state;
+    atm_bool_t   state_continue;
     atm_conn_t  *conn;
+    atm_cmd_t   *cmd;
     atm_int_t    argc;
     atm_str_t   *argv;
 };
@@ -30,6 +42,9 @@ atm_sess_free(void *se);
  * different sessions*/
 atm_int_t
 atm_sess_process(atm_sess_t *se);
+
+void
+atm_sess_reply(atm_conn_t *c, char *m);
 
 
 #endif /* _ATM_SESSION_H_INCLUDED_ */

@@ -90,6 +90,7 @@ typedef struct timespec             atm_time_spec_t;
 typedef struct atm_time_pair_s      atm_time_pair_t;
 typedef struct atm_pipe_s           atm_pipe_t;
 typedef struct atm_queue_s          atm_queue_t;
+typedef struct atm_cmd_s            atm_cmd_t;
 
 
 /*
@@ -106,6 +107,7 @@ typedef struct atm_queue_s          atm_queue_t;
 #include <atm_arr.h>
 #include <atm_blk.h>
 #include <atm_buf.h>
+#include <atm_cmd.h>
 #include <atm_config.h>
 #include <atm_conn.h>
 #include <atm_ctx.h>

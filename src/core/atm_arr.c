@@ -8,7 +8,7 @@ atm_arr_new(atm_uint_t tsize)
 {
     atm_arr_t *res = NULL;
     atm_uint_t capacity = ATM_ARR_INITIAL_LEN;
-    atm_log("atm_arr_new tsize is %u", tsize);
+    //atm_log("atm_arr_new tsize is %u", tsize);
     if (tsize > 0) {
         res = atm_alloc(sizeof(atm_arr_t));
         res->_vals = atm_calloc(capacity, tsize);
@@ -43,7 +43,8 @@ atm_arr_add(atm_arr_t *arr, void *v)
     void *old_ptr = NULL;
     void *new_ptr = NULL;
     if (v != NULL) {
-        atm_uint_t s = arr->length*3 / 2;
+        /*a tricky bug here when arr->capacity = 1*/
+        atm_uint_t s = (arr->length*3/2) + 1;
         if (s > arr->capacity) {
             old_ptr = arr->_vals;
             osz = arr->capacity*arr->tsize;
@@ -52,19 +53,21 @@ atm_arr_add(atm_arr_t *arr, void *v)
             new_ptr = atm_realloc(old_ptr,osz,nsz);
             if (new_ptr != old_ptr) {
                 arr->capacity *= 2;
+                arr->_vals = new_ptr;
             } else {
                 atm_log_rout(ATM_LOG_FATAL,
                     "can not realloc atm_arr, "
                     "atm_realloc(%p,%u,%u)",
                     new_ptr,osz,nsz);
+                exit(ATM_ERROR);
             }
         }
 
         p = (int8_t *)arr->_vals;
         p += (arr->tsize * arr->length);
         memcpy(p, v, arr->tsize);
-        add_index = arr->length;
         arr->length += 1;
+        add_index = arr->length-1;
     }
     return add_index;
 }

@@ -47,21 +47,26 @@ atm_task_notify_handle(void *task)
     atm_task_worker_t **wks;
     atm_task_worker_t *curr_worker;
 
+    atm_log("#####atm_task_notify_handle task recv %p", task);
+
     worker_nums = workers->length;
     if (worker_nums > 0) {
         wi = ++workers_round % worker_nums;
     }
-
+    
     wks = atm_arr_get(workers, wi);
     curr_worker = *wks;
     if (curr_worker == NULL) {
         atm_log_rout(ATM_LOG_FATAL,
-                "can not get curr_worker");
+                "can not get "
+                "curr_worker wi[%lu] "
+                "worker_nums[%lu]",
+                wi,worker_nums);
         exit(1);
     }
     /* push t to worker's blocking queue */
-    atm_log("notified worker queue is %p",
-            curr_worker->blking_tasks);
+    atm_log("#####notified worker queue is %p, task is %p",
+            curr_worker->blking_tasks, task);
     atm_queue_push(curr_worker->blking_tasks, t);
 }
 

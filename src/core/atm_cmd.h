@@ -7,6 +7,7 @@
 struct atm_cmd_s {
     atm_str_t    name;
     atm_int_t  (*func)(atm_sess_t *se);
+    atm_uint_t   argc;
 };
 
 

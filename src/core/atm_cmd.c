@@ -1,4 +1,6 @@
 #include <atm_core.h>
+static atm_str_t
+atm_cmd_para(atm_str_t *argv, atm_uint_t idx);
 static atm_int_t
 atm_cmd_func_get(atm_sess_t *se);
 static atm_int_t
@@ -6,8 +8,8 @@ atm_cmd_func_set(atm_sess_t *se);
 
 
 static atm_cmd_t atm_commands[] = {
-    {"get",atm_cmd_func_get},
-    {"set",atm_cmd_func_set},
+    {"get",atm_cmd_func_get,2},
+    {"set",atm_cmd_func_set,3},
 };
 
 
@@ -17,6 +19,13 @@ static atm_dict_t *atm_cmd_dict;
 /*
  * Private
  * */
+static atm_str_t
+atm_cmd_para(atm_str_t *argv, atm_uint_t idx)
+{
+    return atm_str_new(argv[idx]);
+}
+
+
 static atm_int_t
 atm_cmd_func_set(atm_sess_t *se)
 {
@@ -25,11 +34,12 @@ atm_cmd_func_set(atm_sess_t *se)
     atm_uint_t argc = se->argc;
     atm_str_t *argv = se->argv;
     atm_conn_t *c = se->conn;
+    atm_cmd_t *cmd = se->cmd;
 
-    if (argc == 3) {
-        k = atm_str_new(argv[1]);
-        v = atm_str_new(argv[2]);
-        atm_dict_set(atm_ctx->dt, k, v);
+    if (argc == cmd->argc) {
+        k = atm_cmd_para(argv,1);
+        v = atm_cmd_para(argv,2);
+        atm_dict_set(atm_ctx->cache_dict,k,v);
         atm_sess_reply(c,"Success");
     } else {
         atm_sess_reply(c,"Invalid argc");
@@ -46,17 +56,20 @@ atm_cmd_func_get(atm_sess_t *se)
     atm_uint_t argc = se->argc;
     atm_str_t *argv = se->argv;
     atm_conn_t *c = se->conn;
+    atm_cmd_t *cmd = se->cmd;
     atm_str_t msg;
 
-    if (argc == 2) {
-        k = argv[1];
-        v = atm_dict_get(atm_ctx->dt, k);
+    if (argc == cmd->argc) {
+        k = atm_cmd_para(argv,1);
+        v = atm_dict_get(atm_ctx->cache_dict,k);
         msg = atm_str_cats(v,"\n");
         atm_conn_write_str(c,msg);
         atm_str_free(msg);
     } else {
         atm_sess_reply(c,"Invalid argc");
     }
+    atm_str_free(v);
+    atm_str_free(k);
     return ATM_OK;
 }
 

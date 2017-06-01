@@ -1,2 +1,4 @@
 Changes with atmcache 0.1.0 						12 Apr 2017 
-*) The first public version.
+*) The project created
+Changes with atmcache 0.1.1 						01 Jun 2017 
+*) Prototype with set,get command, dict,epoll and multithread support

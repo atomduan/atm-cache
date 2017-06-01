@@ -194,7 +194,7 @@ atm_list_push(atm_list_t *list, void *val)
     if (list != NULL) {
         entry = atm_list_entry_new(val);
         entry->list = list;
-        atm_log("#####list push add entry %p", entry);
+        //atm_log("#####list push add entry %p", entry);
         /* add the first one */
         if (list->tail == NULL) {
             if (list->head == NULL) {

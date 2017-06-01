@@ -65,6 +65,7 @@ atm_init()
     atm_event_init();
     atm_conn_init();
     atm_task_init();
+    atm_cmd_init();
 }
 
 

@@ -115,7 +115,7 @@ atm_buf_read_sock(atm_buf_t *buf,
         result = total>0 ? total:ret;
         break;
     }
-    atm_log("atm_buf_read_sock r_buf aval[%lu]", buf->aval);
+    //atm_log("atm_buf_read_sock r_buf aval[%lu]", buf->aval);
     return result;
 }
 
@@ -150,7 +150,7 @@ atm_buf_write_sock(atm_buf_t *buf,
         result = total>0 ? total:ret;
         break;
     }
-    atm_log("atm_buf_write_sock w_buf aval[%lu]", buf->aval);
+    //atm_log("atm_buf_write_sock w_buf aval[%lu]", buf->aval);
     return result;
 }
 
@@ -164,14 +164,14 @@ atm_buf_read_line(atm_buf_t *buf)
     atm_blk_t *bk;
 
     atm_uint_t len = 0;
-    atm_int_t find_end = 0;
+    atm_bool_t find_end = ATM_FALSE;
     it = atm_list_iter_new(buf->blks);
     while ((bk=atm_list_next(it)) != NULL) {
         for (atm_uint_t i=bk->ridx; i<bk->widx; ++i) {
             uint8_t b = bk->head[i];
             if (!find_end) {
                 if (b == '\r' || b == '\n') {
-                    find_end = 1;
+                    find_end = ATM_TRUE;
                 }
                 len++;
             } else {
@@ -186,7 +186,7 @@ atm_buf_read_line(atm_buf_t *buf)
 
 start_build:
     atm_list_iter_free(it);
-    if (len > 0) {
+    if (len > 0 && find_end) {
         res = atm_alloc(len+1);
         atm_buf_read(buf,res,len);
     }
@@ -223,7 +223,7 @@ atm_buf_read(atm_buf_t *buf, void *dest,
         }
         break;
     }
-    atm_log("atm_buf_read r_buf aval[%lu]", buf->aval);
+    //atm_log("atm_buf_read r_buf aval[%lu]", buf->aval);
     return total;
 }
 
@@ -254,6 +254,6 @@ atm_buf_write(atm_buf_t *buf, void *src,
         }
         break;
     }
-    atm_log("atm_buf_write w_buf aval[%lu]", buf->aval);
+    //atm_log("atm_buf_write w_buf aval[%lu]", buf->aval);
     return total;
 }

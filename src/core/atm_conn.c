@@ -3,7 +3,7 @@
  * Private
  * */
 static void
-atm_conn_free_check(atm_conn_t *c);
+atm_conn_free_check(atm_conn_t *c, atm_bool_t *flag);
 static void
 atm_conn_free_notify();
 static atm_int_t
@@ -50,7 +50,7 @@ static pthread_mutex_t _mutex_free = PTHREAD_MUTEX_INITIALIZER;
  * Private
  * */
 static void
-atm_conn_free_check(atm_conn_t *conn)
+atm_conn_free_check(atm_conn_t *conn, atm_bool_t *flag)
 {
     atm_conn_t *c = conn;
     /* TODO, volative can  discard compile optz? how to check it*/
@@ -59,14 +59,14 @@ atm_conn_free_check(atm_conn_t *conn)
     pthread_mutex_lock(&c->_mutex);
     if (e->active == ATM_FALSE) {
         pthread_mutex_lock(&_mutex_free);
-            c->on_read = ATM_FALSE;
+            *flag = ATM_FALSE;
             atm_conn_free_notify();
             /* make sure the _mutex will not be destoried
              * by the free conn func, is exsit*/
             pthread_mutex_unlock(&c->_mutex);
         pthread_mutex_unlock(&_mutex_free);
     } else {
-        c->on_read = ATM_FALSE;
+        *flag = ATM_FALSE;
         pthread_mutex_unlock(&c->_mutex);
     }
 }
@@ -222,11 +222,12 @@ atm_conn_task_read(atm_task_t *t)
         ret = atm_conn_task_read_raw(conn);
         if ((ret ==-1 && errno!=EAGAIN) || ret == 0) {
             atm_log("conn_task_read->ev inact");
-            /* SAFE_FREE_TAG */
             atm_conn_inactive(conn, &conn->on_read);
             return ATM_ERROR;
         } else {
-            atm_sess_process(se);
+            ret = atm_sess_process(se);
+            if (ret == ATM_ERROR)
+                atm_conn_inactive(conn, &conn->on_read);
         }
     }
 
@@ -236,7 +237,7 @@ atm_conn_task_read(atm_task_t *t)
         atm_event_add_notify(e,ATM_EVENT_READ);
     }
 
-    atm_conn_free_check(conn);
+    atm_conn_free_check(conn,&conn->on_read);
     return ATM_OK;
 }
 
@@ -269,13 +270,12 @@ atm_conn_task_write(atm_task_t *t)
     e = conn->event;
     w_buf = conn->w_buf;
 
-    atm_log("atm_conn_task_write enter");
+    atm_log("#####atm_conn_task_write enter task %p", t);
     while (ATM_FALSE != e->active) {
         wreqs = conn->write_reqs;
         ret = atm_conn_task_write_raw(conn);
         if (ret ==-1 && errno!=EAGAIN) {
             atm_log("atm_conn_task_write inact");
-            /* SAFE_FREE_TAG */
             atm_conn_inactive(conn, &conn->on_write);
             return ATM_ERROR;
         } else if (ret == 0) {
@@ -294,7 +294,7 @@ atm_conn_task_write(atm_task_t *t)
         }
     }
 
-    atm_conn_free_check(conn);
+    atm_conn_free_check(conn,&conn->on_write);
     return ATM_OK;
 }
 
@@ -407,7 +407,6 @@ atm_conn_handle_read(atm_event_t *conn_event)
 
     if (conn_event != NULL) {
         conn = conn_event->load;
-        /* SAFE_FREE_TAG */
         pthread_mutex_lock(&conn->_mutex);
         if (conn_event->active) {
             atm_event_del_event(conn_event, ATM_EVENT_READ);
@@ -432,7 +431,6 @@ atm_conn_handle_write(atm_event_t *conn_event)
 
     if (conn_event != NULL) {
         conn = conn_event->load;
-        /* SAFE_FREE_TAG */
         pthread_mutex_lock(&conn->_mutex);
         if (conn_event->active) {
             atm_event_del_event(conn_event, ATM_EVENT_WRITE);
@@ -441,6 +439,7 @@ atm_conn_handle_write(atm_event_t *conn_event)
                         conn,
                         atm_conn_task_write);
                 atm_task_dispatch(task);
+                atm_log("########write_task dispatch %p", task);
                 conn->on_write = ATM_TRUE;
             }
         }
@@ -498,6 +497,15 @@ atm_conn_listen_free(void *listen)
 }
 
 
+atm_int_t
+atm_conn_read(atm_conn_t *c,
+        void *dest, atm_uint_t nbyte)
+{
+    atm_buf_t *r_buf = c->r_buf;
+    return atm_buf_read(r_buf,dest,nbyte);
+}
+
+
 atm_str_t
 atm_conn_read_line(atm_conn_t *c)
 {
@@ -519,7 +527,6 @@ atm_conn_write(atm_conn_t *c,
     atm_buf_t *w_buf;
 
     if (c != NULL) {
-        atm_log("atm_conn_write enter");
         w_buf = c->w_buf;
         atm_buf_write(w_buf,src,nbyte);
         atm_conn_write_notify(c);

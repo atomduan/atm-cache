@@ -44,6 +44,10 @@ atm_conn_free(void *conn);
 void
 atm_conn_listen_free(void *listen);
 
+atm_int_t
+atm_conn_read(atm_conn_t *c,
+        void *dest, atm_uint_t nbyte);
+
 atm_str_t
 atm_conn_read_line(atm_conn_t *c);
 

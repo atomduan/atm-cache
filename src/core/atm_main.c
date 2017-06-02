@@ -8,33 +8,12 @@ static void
 atm_service();
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
-static void
-atm_ctx_init();
-
-
-static atm_ctx_t atm_ctx_type;
-
-
-/*
- * Public
- * */
-atm_ctx_t *atm_ctx = &atm_ctx_type;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
  * */
-static void
-atm_ctx_init()
-{
-    atm_ctx->cache_dict = atm_dict_new(
-            ATM_STR_T,
-            ATM_STR_T,
-            ATM_FREE_DEEP);
-}
-
-
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv)
 {
@@ -56,10 +35,10 @@ void
 atm_init()
 {
     atm_log("atm_init enter......");
-    atm_ctx_init();
-    atm_config_init();
-    atm_sig_init();
     atm_dict_init();
+    atm_ctx_init();
+    atm_sig_init();
+    atm_config_init();
     atm_event_init();
     atm_conn_init();
     atm_task_init();

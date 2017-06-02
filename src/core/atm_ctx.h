@@ -12,4 +12,7 @@ struct atm_ctx_s {
     atm_uint_t      initial_memory_usage;
 };
 
+void
+atm_ctx_init();
+
 #endif /* _ATM_CTX_H_INCLUDED_ */

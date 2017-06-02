@@ -114,6 +114,12 @@ atm_config_process(atm_str_t conf_str)
         } else
         if (atm_str_eqs(pname,"maxmemory") && psize==2) {
             config->maxmemory = atm_util_memtoll(props[1],NULL);
+        } else
+        if (atm_str_eqs(pname,"workernum") && psize==2) {
+            config->workernum = atoi(props[1]);
+            if (config->workernum < 1) {
+                errmsg = "Invalid max clients limit"; goto loaderr;
+            }
         }
 
         atm_str_split_free(props);

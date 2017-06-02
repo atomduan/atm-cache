@@ -35,6 +35,7 @@ BUILD_SRCS="src/core/atm_arr.c \
             src/core/atm_cmd.c \
             src/core/atm_config.c \
             src/core/atm_conn.c \
+            src/core/atm_ctx.c \
             src/core/atm_dict.c \
             src/core/atm_event.c \
             src/core/atm_list.c \

@@ -336,9 +336,10 @@ static int
 atm_conn_listen_tcp()
 {
     /* TODO: need to fetch from config */
-    atm_int_t port = 8088;
+    atm_config_t *conf = atm_ctx->config;
+    atm_int_t port = conf->port;
     char *bindaddr = "0.0.0.0";
-    int backlog = 1024;
+    int backlog = conf->tcpbacklog;
 
     atm_socket_t *ss;
     atm_conn_listen_t *tcpl;

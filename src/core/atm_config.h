@@ -24,6 +24,8 @@ struct atm_config_s {
     atm_int_t   loglevel;
     /* Memory */
     atm_ulong_t maxmemory;      /* Max number of memory bytes to use */
+    /* Tasks */
+    atm_int_t   workernum;
 };
 
 void

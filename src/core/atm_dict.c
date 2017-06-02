@@ -545,7 +545,7 @@ atm_dict_entry_str(void *entry)
             }
         }
     }
-    res = atm_str_cat(ks,vs);
+    res = atm_str_cat_dup(ks,vs);
     atm_str_free(ks);
     atm_str_free(vs);
     return res;

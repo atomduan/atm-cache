@@ -28,14 +28,8 @@ atm_sess_chstat(atm_sess_t *se,
 static atm_int_t
 atm_sess_reset(atm_sess_t *se)
 {
-    atm_str_t *t = NULL;
     if (se != NULL) {
-        if (se->argv != NULL) {
-            for (t=se->argv;*t!=NULL;t++) {
-                atm_str_free(*t);
-            }
-            atm_free(se->argv);
-        }
+        atm_str_split_free(se->argv);
         se->argc = 0;
         se->argv = NULL;
         se->cmd = NULL;
@@ -76,7 +70,7 @@ atm_sess_parsing(atm_sess_t *se)
     if (line != NULL) {
         atm_log("sess_proc %s", line);
         atm_uint_t len = atm_str_len(line);
-        argv = atm_str_split(line,len);
+        argv = atm_str_split(line,' ',len);
         if (argv != NULL) {
             atm_str_t *t = NULL;
             for (t=argv, argc=0; *t!=NULL; t++) {
@@ -163,12 +157,10 @@ atm_sess_process(atm_sess_t *se)
 void
 atm_sess_reply(atm_conn_t *c, char *m)
 {
-    atm_str_t s;
     atm_str_t msg;
 
-    s = atm_str_new(m);
-    msg = atm_str_cats(s,"\n");
+    msg = atm_str_new(m);
+    msg = atm_str_cats(msg,"\n");
     atm_conn_write_str(c,msg);
-    atm_str_free(s);
     atm_str_free(msg);
 }

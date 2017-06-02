@@ -6,10 +6,10 @@
 extern atm_ctx_t *atm_ctx;
 
 struct atm_ctx_s {
-    /* General */
+    pid_t           pid;
     atm_config_t   *config;
-    /* Cache dict */
     atm_dict_t     *cache_dict;
+    atm_uint_t      initial_memory_usage;
 };
 
 #endif /* _ATM_CTX_H_INCLUDED_ */

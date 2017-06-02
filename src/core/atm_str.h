@@ -9,7 +9,7 @@
 
 extern atm_T_t *ATM_STR_T;
 
-typedef struct atm_str_hdr_s    atm_str_hdr;
+typedef struct atm_str_hdr_s    atm_str_hdr_t;
 struct __attribute__ ((__packed__)) atm_str_hdr_s {
     atm_uint_t  cap;
     atm_uint_t  len;
@@ -53,8 +53,8 @@ atm_str_eqs(atm_str_t str1, char *s);
 atm_str_t
 atm_str_fmt(char *fmt,...);
 
-char *
-atm_str_mtrim(char *s);
+atm_str_t
+atm_str_trim(atm_str_t str, const char *cset);
 
 atm_str_t
 atm_str_ptr(void *p);
@@ -63,10 +63,31 @@ atm_str_t
 atm_str_cats(atm_str_t dest, char *s);
 
 atm_str_t
+atm_str_cats_dup(atm_str_t dest, char *s);
+
+atm_str_t
 atm_str_cat(atm_str_t dest, atm_str_t src);
 
+atm_str_t
+atm_str_cat_dup(atm_str_t dest, atm_str_t src);
+
 atm_str_t *
-atm_str_split(char *s, int len);
+atm_str_split(char *s, char sep, int len);
+
+atm_int_t
+atm_str_split_size(atm_str_t *argv);
+
+void
+atm_str_split_free(atm_str_t *argv);
+
+void
+atm_str_setlen(atm_str_t str, atm_uint_t len);
+
+atm_str_t
+atm_str_tolower(atm_str_t str);
+
+atm_str_t
+atm_str_toupper(atm_str_t str);
 
 
 #endif /* _ATM_STRING_H_INCLUDED_ */

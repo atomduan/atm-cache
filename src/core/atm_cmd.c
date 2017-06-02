@@ -39,6 +39,7 @@ atm_cmd_func_set(atm_sess_t *se)
     if (cmd->arity < 0 || argc == cmd->arity) {
         k = atm_cmd_para(argv,1);
         v = atm_cmd_para(argv,2);
+        atm_log("cmd_func_set k[%s],v[%s]",k,v);
         atm_dict_set(atm_ctx->cache_dict,k,v);
         atm_sess_reply(c,"Success");
     } else {
@@ -62,7 +63,8 @@ atm_cmd_func_get(atm_sess_t *se)
     if (cmd->arity < 0 || argc == cmd->arity) {
         k = atm_cmd_para(argv,1);
         v = atm_dict_get(atm_ctx->cache_dict,k);
-        msg = atm_str_cats(v,"\n");
+        atm_log("cmd_func_get k[%s],v[%s]",k,v);
+        msg = atm_str_cats_dup(v,"\n");
         atm_conn_write_str(c,msg);
         atm_str_free(msg);
     } else {

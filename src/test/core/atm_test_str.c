@@ -31,28 +31,28 @@ atm_test_str_split()
 
     a = " a    b  d s \"   'a'   \"   kkk  k";
     atm_log("strim org is: %s", a);
-    b = atm_str_split(a, strlen(a));
+    b = atm_str_split(a,' ',strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
         atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "a";
     atm_log("strim org is: %s", a);
-    b = atm_str_split(a, strlen(a));
+    b = atm_str_split(a,' ',strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
         atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "         ";
     atm_log("strim org is: %s", a);
-    b = atm_str_split(a, strlen(a));
+    b = atm_str_split(a,' ',strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
         atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }
 
     a = "";
     atm_log("strim org is: %s", a);
-    b = atm_str_split(a, strlen(a));
+    b = atm_str_split(a,' ',strlen(a));
     for (;b!=NULL && *b!=NULL; b++) {
         atm_log("strim res len: %d, val: %s", atm_str_len(*b), *b);
     }

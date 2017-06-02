@@ -3,27 +3,27 @@
 
 #include <atm_core.h>
 
-#define ATM_CONFIG_BINDADDR_MAX 16
+#define ATM_CONFIG_MAXBINDADDR 16
+#define ATM_CONFIG_MAXLINE 1024
 
 struct atm_config_s {
-    /* General */
-    pid_t pid;                          /* Main process pid. */
-    atm_str_t configfile;               /* Absolute config file path, or NULL */
-    atm_str_t executable;               /* Absolute executable file path. */
-    atm_str_t *exec_argv;               /* Executable argv vector (copy). */
-    atm_str_t pidfile;                  /* PID file path */
-    atm_uint_t initial_memory_usage;    /* Bytes used after initialization. */
-    atm_bool_t always_show_logo;        /* Show logo even for non-stdout logging. */
+    atm_str_t   configfile;     /* Absolute config file path, or NULL */
+    atm_str_t   pidfile;        /* PID file path */
+    atm_int_t   daemonize;
+
     /* Networking */
-    int port;                           /* TCP listening port */
-    int tcp_backlog;                    /* TCP listen() backlog */
-    atm_str_t bindaddr[ATM_CONFIG_BINDADDR_MAX];
-    int bindaddr_count;                 /* Number of addresses in server.bindaddr[] */
-    int tcpkeepalive;                   /* Set SO_KEEPALIVE if non-zero. */
+    atm_str_t  *bindaddr;
+    atm_uint_t  bindaddr_count; /* Number of addresses in server.bindaddr[] */
+    atm_int_t   port;           /* TCP listening port */
+    atm_int_t   tcpbacklog;     /* TCP listen() backlog */
+    atm_int_t   maxidletime;
+    atm_int_t   tcpkeepalive;   /* Set SO_KEEPALIVE if non-zero. */
+    atm_int_t   maxclients;     /* Max number of simultaneous clients */
+
     /* Logging */
-    atm_str_t logfile;                  /* Path of log file */
-    atm_uint_t maxclients;              /* Max number of simultaneous clients */
-    atm_ulong_t maxmemory;              /* Max number of memory bytes to use */
+    atm_int_t   loglevel;
+    /* Memory */
+    atm_ulong_t maxmemory;      /* Max number of memory bytes to use */
 };
 
 void

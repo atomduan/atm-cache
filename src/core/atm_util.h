@@ -7,10 +7,10 @@
 atm_uint_t
 atm_util_next_power(atm_uint_t num);
 
-void
-atm_util_debug_hook(void *arg);
+atm_long_t
+atm_util_memtoll(const char *p, int *err);
 
 char *
-atm_debug_hexdump(void *ptr, size_t len);
+atm_util_hexdump(void *ptr, size_t len);
 
 #endif /* _ATM_UTIL_H_INCLUDED_ */

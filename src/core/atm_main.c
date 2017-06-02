@@ -12,7 +12,7 @@ static void
 atm_ctx_init();
 
 
-static atm_ctx_t    atm_ctx_type;
+static atm_ctx_t atm_ctx_type;
 
 
 /*

@@ -91,6 +91,7 @@ typedef struct atm_time_pair_s      atm_time_pair_t;
 typedef struct atm_pipe_s           atm_pipe_t;
 typedef struct atm_queue_s          atm_queue_t;
 typedef struct atm_cmd_s            atm_cmd_t;
+typedef struct atm_config_s         atm_config_t;
 
 
 /*

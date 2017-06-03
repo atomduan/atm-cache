@@ -62,7 +62,7 @@ atm_task_notify_handle(void *task)
                 "curr_worker wi[%lu] "
                 "worker_nums[%lu]",
                 wi,worker_nums);
-        exit(1);
+        exit(ATM_ERROR);
     }
     /* push t to worker's blocking queue */
     atm_log("#####notified worker queue is %p, task is %p",
@@ -97,13 +97,13 @@ atm_task_worker_func(void *arg)
 static void
 atm_task_worker_init(int nworker)
 {
-    int ret;
+    int ret,i;
     pthread_t tid;
     pthread_attr_t attr;
     atm_task_worker_t *w;
 
     workers = atm_arr_new(sizeof(atm_task_worker_t *));
-    for (int i=0; i<nworker; ++i) {
+    for (i=0; i<nworker; ++i) {
         w = atm_task_worker_new();
         if (w != NULL) {
             w->active = ATM_TRUE;
@@ -170,7 +170,8 @@ atm_task_worker_free(void *worker)
 void
 atm_task_init()
 {
-    int nworker = 10;
+    atm_config_t *conf = atm_ctx->config;
+    int nworker = conf->workernum;
     /* workers init */
     atm_task_worker_init(nworker);
     /* dispatch pipe init*/

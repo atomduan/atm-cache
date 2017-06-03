@@ -8,8 +8,8 @@ atm_cmd_func_set(atm_sess_t *se);
 
 
 static atm_cmd_t atm_commands[] = {
-    {"get",atm_cmd_func_get,2},
-    {"set",atm_cmd_func_set,3},
+    {"get",atm_cmd_func_get, 2},
+    {"set",atm_cmd_func_set,-3},
 };
 
 
@@ -31,14 +31,15 @@ atm_cmd_func_set(atm_sess_t *se)
 {
     atm_str_t k;
     atm_str_t v;
-    atm_uint_t argc = se->argc;
+    atm_int_t argc = se->argc;
     atm_str_t *argv = se->argv;
     atm_conn_t *c = se->conn;
     atm_cmd_t *cmd = se->cmd;
 
-    if (argc == cmd->argc) {
+    if (cmd->arity < 0 || argc == cmd->arity) {
         k = atm_cmd_para(argv,1);
         v = atm_cmd_para(argv,2);
+        atm_log("cmd_func_set k[%s],v[%s]",k,v);
         atm_dict_set(atm_ctx->cache_dict,k,v);
         atm_sess_reply(c,"Success");
     } else {
@@ -53,16 +54,17 @@ atm_cmd_func_get(atm_sess_t *se)
 {
     atm_str_t k;
     atm_str_t v;
-    atm_uint_t argc = se->argc;
+    atm_int_t argc = se->argc;
     atm_str_t *argv = se->argv;
     atm_conn_t *c = se->conn;
     atm_cmd_t *cmd = se->cmd;
     atm_str_t msg;
 
-    if (argc == cmd->argc) {
+    if (cmd->arity < 0 || argc == cmd->arity) {
         k = atm_cmd_para(argv,1);
         v = atm_dict_get(atm_ctx->cache_dict,k);
-        msg = atm_str_cats(v,"\n");
+        atm_log("cmd_func_get k[%s],v[%s]",k,v);
+        msg = atm_str_cats_dup(v,"\n");
         atm_conn_write_str(c,msg);
         atm_str_free(msg);
     } else {

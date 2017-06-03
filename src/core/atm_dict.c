@@ -483,7 +483,7 @@ atm_dict_entry_match(void *entry, void *hint)
     if (e == NULL || hint == NULL) {
         atm_log_rout(ATM_LOG_FATAL,
                 "atm_dict_entry_match:"
-                "entry carrupted should not NULL");
+                "entry corrupted should not NULL");
         exit(ATM_ERROR);
     } else {
         k_t = e->dict->k_type;
@@ -545,7 +545,7 @@ atm_dict_entry_str(void *entry)
             }
         }
     }
-    res = atm_str_cat(ks,vs);
+    res = atm_str_cat_dup(ks,vs);
     atm_str_free(ks);
     atm_str_free(vs);
     return res;

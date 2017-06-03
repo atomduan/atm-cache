@@ -37,6 +37,7 @@ typedef int8_t              atm_bool_t;
 
 /* int64_t or int32_t */
 typedef int32_t             atm_int_t;
+
 /* In 64 system same to: size_t and unsigned long int
  * In 32 system: same to: size_t and unsigned int
  */
@@ -60,7 +61,7 @@ typedef char               *atm_str_t;
  * Non Primitive Data types define
  */
 /* General Type For Container New */
-typedef struct atm_T_s      atm_T_t;
+typedef struct atm_T_s atm_T_t;
 struct atm_T_s {
     void              *spec;
     atm_bool_t      (* match)(void *v1, void *v2);
@@ -70,10 +71,11 @@ struct atm_T_s {
     void            (* free)(void *v);
 };
 
-/* Specific Container Types */
+/* Specific Free Types */
 #define ATM_FREE_SHALLOW    0
 #define ATM_FREE_DEEP       1
 
+/* Specific Container Types */
 typedef struct atm_list_s           atm_list_t;
 typedef struct atm_list_iter_s      atm_list_iter_t;
 typedef struct atm_dict_s           atm_dict_t;
@@ -91,6 +93,7 @@ typedef struct atm_time_pair_s      atm_time_pair_t;
 typedef struct atm_pipe_s           atm_pipe_t;
 typedef struct atm_queue_s          atm_queue_t;
 typedef struct atm_cmd_s            atm_cmd_t;
+typedef struct atm_config_s         atm_config_t;
 
 
 /*
@@ -125,8 +128,6 @@ typedef struct atm_cmd_s            atm_cmd_t;
 #ifdef ATM_UNIT_TEST
 #include <atm_unit_test.h>
 #endif
-
-
 
 
 #endif /* _ATM_CORE_H_INCLUDED_ */

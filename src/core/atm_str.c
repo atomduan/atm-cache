@@ -2,14 +2,16 @@
 /*
  * Private
  * */
+static char *
+atm_str_mtrim(char *s);
 static atm_str_t
 atm_str_grow(atm_str_t str, atm_uint_t need);
 static atm_uint_t
 atm_str_size(atm_uint_t slen);
-static atm_str_hdr *
+static atm_str_hdr_t *
 atm_str_get_hdr(atm_str_t str);
 static atm_str_t
-atm_str_get_str(atm_str_hdr *hdr);
+atm_str_get_str(atm_str_hdr_t *hdr);
 
 
 static atm_T_t ATM_STR_TYPE = {
@@ -32,12 +34,27 @@ atm_T_t *ATM_STR_T = &ATM_STR_TYPE;
 /*
  * Private
  * */
+static char *
+atm_str_mtrim(char *s)
+{
+    char *res = NULL;
+    atm_int_t len;
+
+    if (s != NULL) {
+        len = strlen(s);
+        res = atm_alloc(len+1);
+        memcpy(res,s,len);
+    }
+    return res;
+}
+
+
 static atm_str_t
 atm_str_grow(atm_str_t str, atm_uint_t need)
 {
     atm_str_t res = NULL;
-    atm_str_hdr *hdr;
-    atm_str_hdr *newhdr;
+    atm_str_hdr_t *hdr;
+    atm_str_hdr_t *newhdr;
     atm_uint_t hdrlen;
     atm_uint_t avail;
     atm_uint_t newsz;
@@ -48,7 +65,7 @@ atm_str_grow(atm_str_t str, atm_uint_t need)
             hdr = atm_str_get_hdr(str);
             avail = hdr->cap - hdr->len;
             if (avail < need) {
-                hdrlen = sizeof(atm_str_hdr);
+                hdrlen = sizeof(atm_str_hdr_t);
                 newlen = hdr->len + need;
                 newsz = atm_str_size(hdrlen+newlen+1);
                 newhdr = atm_alloc(newsz);
@@ -83,28 +100,28 @@ atm_str_size(atm_uint_t slen)
 }
 
 
-static atm_str_hdr *
+static atm_str_hdr_t *
 atm_str_get_hdr(atm_str_t str)
 {
     void *res = NULL;
     atm_uint_t hdrlen;
 
     if (str != NULL) {
-        hdrlen = sizeof(atm_str_hdr);
+        hdrlen = sizeof(atm_str_hdr_t);
         res = ((uint8_t *)str) - hdrlen;
     }
-    return (atm_str_hdr *)res;
+    return (atm_str_hdr_t *)res;
 }
 
 
 static atm_str_t
-atm_str_get_str(atm_str_hdr *hdr)
+atm_str_get_str(atm_str_hdr_t *hdr)
 {
     void *res = NULL;
     atm_uint_t hdrlen;
 
     if (hdr != NULL) {
-        hdrlen = sizeof(atm_str_hdr);
+        hdrlen = sizeof(atm_str_hdr_t);
         res = ((uint8_t *)hdr) + hdrlen;
     }
     return (atm_str_t)res;
@@ -118,14 +135,14 @@ atm_str_t
 atm_str_dup(atm_str_t str)
 {
     atm_str_t res = NULL;
-    atm_str_hdr *hdr;
-    atm_str_hdr *newhdr;
+    atm_str_hdr_t *hdr;
+    atm_str_hdr_t *newhdr;
     atm_uint_t hdrlen;
     atm_uint_t size;
 
     if (str != NULL) {
         hdr = atm_str_get_hdr(str);
-        hdrlen = sizeof(atm_str_hdr);
+        hdrlen = sizeof(atm_str_hdr_t);
         size = hdrlen+hdr->cap+1;
         newhdr = atm_alloc(size);
         memcpy(newhdr, hdr, size);
@@ -139,14 +156,14 @@ atm_str_t
 atm_str_new(char *str)
 {
     atm_str_t res = NULL;
-    atm_str_hdr *ash;
+    atm_str_hdr_t *ash;
     atm_uint_t hdrlen;
     atm_uint_t size;
     atm_uint_t slen;
 
     if (str != NULL) {
         slen = strlen(str);
-        hdrlen = sizeof(atm_str_hdr);
+        hdrlen = sizeof(atm_str_hdr_t);
         size = atm_str_size(hdrlen+slen+1);
         ash = atm_alloc(size);
         ash->cap = size-hdrlen-1;
@@ -209,7 +226,7 @@ void
 atm_str_free(void *str)
 {
     atm_str_t s;
-    atm_str_hdr *hdr;
+    atm_str_hdr_t *hdr;
 
     s = (atm_str_t) str;
     hdr = atm_str_get_hdr(s);
@@ -222,14 +239,14 @@ atm_uint_t
 atm_str_len(atm_str_t str)
 {
     atm_uint_t res = 0;
-    atm_str_hdr *h;
+    atm_str_hdr_t *h;
     atm_uint_t hdrlen;
     void *tmp;
 
     if (str != NULL) {
-        hdrlen = sizeof(atm_str_hdr);
+        hdrlen = sizeof(atm_str_hdr_t);
         tmp = ((uint8_t *)str) - hdrlen;
-        h = (atm_str_hdr *)tmp;
+        h = (atm_str_hdr_t *)tmp;
         res = h->len;
     }
     return res;
@@ -240,8 +257,8 @@ atm_bool_t
 atm_str_eq(atm_str_t str1, atm_str_t str2)
 {
     atm_bool_t res = ATM_FALSE;
-    res = atm_str_cmp(str1, str2);
-    return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
+    res = !atm_str_cmp(str1, str2);
+    return res;
 }
 
 
@@ -252,9 +269,9 @@ atm_str_eqs(atm_str_t str1, char *s)
     atm_str_t str2;
 
     str2 = atm_str_new(s);
-    res = atm_str_cmp(str1, str2);
+    res = !atm_str_cmp(str1, str2);
     atm_str_free(str2);
-    return res==ATM_CMP_EQ?ATM_TRUE:ATM_FALSE;
+    return res;
 }
 
 
@@ -277,18 +294,22 @@ atm_str_fmt(char *fmt,...)
 }
 
 
-char *
-atm_str_mtrim(char *s)
+atm_str_t
+atm_str_trim(atm_str_t str, const char *cset)
 {
-    char *res = NULL;
-    atm_int_t len;
-
-    if (s != NULL) {
-        len = strlen(s);
-        res = atm_alloc(len+1);
-        memcpy(res,s,len);
-    }
-    return res;
+    atm_str_t s = str;
+    char *start, *end, *sp, *ep;
+    size_t len;
+    
+    sp = start = s;
+    ep = end = s+atm_str_len(s)-1;
+    while (sp<=end && strchr(cset,*sp)) sp++;
+    while (ep>sp && strchr(cset,*ep)) ep--;
+    len = (sp>ep) ? 0 : ((ep-sp)+1);/*TODO, pointer - pointer is what??*/
+    if (s!=sp) memmove(s,sp,len);
+    s[len] = '\0';
+    atm_str_setlen(s,len);
+    return s;
 }
 
 
@@ -302,9 +323,26 @@ atm_str_ptr(void *p)
 atm_str_t
 atm_str_cats(atm_str_t dest, char *src)
 {
+    atm_uint_t slen;
+    atm_str_hdr_t *h;
+
+    if (src != NULL) {
+        slen = strlen(src);
+        dest = atm_str_grow(dest,slen);
+        h = atm_str_get_hdr(dest);
+        h->len += slen;
+        strcat(dest, src);
+    }
+    return dest;
+}
+
+
+atm_str_t
+atm_str_cats_dup(atm_str_t dest, char *src)
+{
     atm_str_t dup = NULL;
     atm_uint_t slen;
-    atm_str_hdr *h;
+    atm_str_hdr_t *h;
 
     dup = atm_str_dup(dest);
     if (src != NULL) {
@@ -321,9 +359,26 @@ atm_str_cats(atm_str_t dest, char *src)
 atm_str_t
 atm_str_cat(atm_str_t dest, atm_str_t src)
 {
+    atm_uint_t slen;
+    atm_str_hdr_t *h;
+
+    if (src != NULL) {
+        slen = atm_str_len(src);
+        dest = atm_str_grow(dest,slen);
+        h = atm_str_get_hdr(dest);
+        h->len += slen;
+        strcat(dest, src);
+    }
+    return dest;
+}
+
+
+atm_str_t
+atm_str_cat_dup(atm_str_t dest, atm_str_t src)
+{
     atm_str_t dup = NULL;
     atm_uint_t slen;
-    atm_str_hdr *h;
+    atm_str_hdr_t *h;
 
     dup = atm_str_dup(dest);
     if (src != NULL) {
@@ -338,7 +393,7 @@ atm_str_cat(atm_str_t dest, atm_str_t src)
 
 
 atm_str_t *
-atm_str_split(char *s, int len)
+atm_str_split(char *s, char sep, int len)
 {
     atm_str_t *res = NULL;
     char *p = s;
@@ -392,7 +447,7 @@ atm_str_split(char *s, int len)
                     qty = *p;
                     inq++;
                 }
-                if (isspace(*p)) {
+                if (*p == sep) {
                     if (trb == 0) {
                         /* reload a new t */
                         if (strlen(t)>0) {
@@ -436,4 +491,74 @@ atm_str_split(char *s, int len)
     atm_free(sl);
 
     return res;
+}
+
+
+atm_int_t
+atm_str_split_size(atm_str_t *argv)
+{
+    atm_int_t size = 0;
+    atm_str_t *t = NULL;
+    if (argv != NULL) {
+        for (t=argv;*t!=NULL;t++) size++;
+    }
+    return size;
+}
+
+
+void
+atm_str_split_free(atm_str_t *argv)
+{
+    atm_str_t *t = NULL;
+    if (argv != NULL) {
+        for (t=argv;*t!=NULL;t++) {
+            atm_str_free(*t);
+        }
+        atm_free(argv);
+    }
+}
+
+
+void
+atm_str_setlen(atm_str_t str, atm_uint_t len)
+{
+    atm_str_hdr_t *hdr;
+    if (str != NULL) {
+        hdr = atm_str_get_hdr(str);
+        hdr->len = len;
+    }
+}
+
+
+atm_str_t
+atm_str_tolower(atm_str_t str)
+{
+    int offset = 'a'-'A';
+    int len;
+    int i;
+    if (str != NULL) {
+        len = atm_str_len(str);
+        for (i=0; i<len; i++) {
+            if (str[i]>='A' && str[i]<='Z')
+                str[i] += offset;
+        }
+    }
+    return str;
+}
+
+
+atm_str_t
+atm_str_toupper(atm_str_t str)
+{
+    int offset = 'a'-'A';
+    int len;
+    int i;
+    if (str != NULL) {
+        len = atm_str_len(str);
+        for (i=0; i<len; i++) {
+            if (str[i]>='a' && str[i]<='z')
+                str[i] -= offset;
+        }
+    }
+    return str;
 }

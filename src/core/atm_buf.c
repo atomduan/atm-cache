@@ -7,6 +7,9 @@ atm_buf_get_rblk(atm_buf_t *buf);
 static atm_blk_t *
 atm_buf_get_wblk(atm_buf_t *buf);
 
+/* new line chars */
+static char *nlcs = "\r\n";
+
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
@@ -162,25 +165,26 @@ atm_buf_read_line(atm_buf_t *buf)
     char *res = NULL;
     atm_list_iter_t *it;
     atm_blk_t *bk;
+    atm_uint_t i;
 
     atm_uint_t len = 0;
+    atm_uint_t strlen = 0;
     atm_bool_t find_end = ATM_FALSE;
+
     it = atm_list_iter_new(buf->blks);
     while ((bk=atm_list_next(it)) != NULL) {
-        for (atm_uint_t i=bk->ridx; i<bk->widx; ++i) {
-            uint8_t b = bk->head[i];
+        for (i=bk->ridx; i<bk->widx; ++i) {
             if (!find_end) {
-                if (b == '\r' || b == '\n') {
+                if (strchr(nlcs,bk->head[i])) {
                     find_end = ATM_TRUE;
-                }
-                len++;
-            } else {
-                if (b == '\r' || b == '\n') {
-                    len++;
                 } else {
-                    goto start_build;
+                    strlen++;
                 }
+            } else 
+            if (strchr(nlcs,bk->head[i])==NULL) {
+                goto start_build;
             }
+            len++;
         }
     }
 
@@ -189,6 +193,8 @@ start_build:
     if (len > 0 && find_end) {
         res = atm_alloc(len+1);
         atm_buf_read(buf,res,len);
+        /* trim the end \r\n chars*/
+        memset(res+strlen,ATM_MEM_ZERO,len-strlen);
     }
     return res;
 }

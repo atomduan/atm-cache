@@ -65,14 +65,22 @@ atm_config_process(atm_str_t conf_str)
         } else
         if (atm_str_eqs(pname,"bind")) {
             int j, addresses = psize-1;
+            atm_str_t baddr;
             if (addresses > ATM_CONFIG_MAXBINDADDR) {
                 errmsg = "Too many bind addresses specified"; goto loaderr;
             }
-            config->bindaddr = atm_alloc(
+            if (addresses > 0) {
+                config->bindaddr = atm_alloc(
                     sizeof(atm_str_t *)*ATM_CONFIG_MAXBINDADDR + 1);
-            for (j = 0; j < addresses; j++)
-                config->bindaddr[j] = atm_str_dup(props[j+1]);
-            config->bindaddr_count = addresses;
+                for (j = 0; j < addresses; j++) {
+                    baddr = atm_str_dup(props[j+1]);
+                    baddr = atm_str_trim(baddr," \t\r\n\"");
+                    config->bindaddr[j] = baddr;
+                }
+                config->bindaddr_count = addresses;
+            } else {
+                errmsg = "Invalid bind param"; goto loaderr;
+            }
         } else
         if (atm_str_eqs(pname,"port") && psize==2) {
             config->port = atoi(props[1]);

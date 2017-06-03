@@ -335,37 +335,49 @@ atm_conn_listen_new(atm_socket_t *ss)
 static int
 atm_conn_listen_tcp()
 {
-    /* TODO: need to fetch from config */
     atm_config_t *conf = atm_ctx->config;
     atm_int_t port = conf->port;
-    char *bindaddr = "0.0.0.0";
     int backlog = conf->tcpbacklog;
-
     atm_socket_t *ss;
     atm_conn_listen_t *tcpl;
 
-    ss = atm_net_listen_tcp(port,
-            bindaddr, backlog);
+    int ret;
+    atm_uint_t j;
+    atm_str_t bindaddr;
+    atm_str_t defaultbind;
 
-    int ret = -1;
-    if (ss != NULL) {
-        ret = atm_net_nonblock(ss, ATM_TRUE);
-        if (ret != ATM_OK) goto error;
-        tcpl = atm_conn_listen_new(ss);
-        /* register listen fd to epoll */
-        atm_event_add_listen(tcpl);
-    } else {
-        atm_log_rout(ATM_LOG_ERROR,
-            "atm_conn_listen_tcp, ss NULL "
-            "errno: %s",strerror(errno));
-        goto error;
+    /* set default */
+    if(conf->bindaddr_count==0) {
+        if (conf->bindaddr == NULL) {
+            defaultbind = atm_str_new("0.0.0.0");
+            conf->bindaddr = &defaultbind;
+            conf->bindaddr_count = 1;
+        } else {
+            atm_log_rout(ATM_LOG_FATAL, "bindaddr corrupted");
+            exit(ATM_ERROR);
+        }
     }
+
+    /* one bindaddr setup begin */
+    for (j=0;j<conf->bindaddr_count;j++) {
+        bindaddr = conf->bindaddr[j];
+        ss = atm_net_listen_tcp(port,
+                bindaddr, backlog);
+        if (ss != NULL) {
+            ret = atm_net_nonblock(ss, ATM_TRUE);
+            if (ret != ATM_OK) continue;
+            tcpl = atm_conn_listen_new(ss);
+            /* register listen fd to epoll */
+            atm_event_add_listen(tcpl);
+        } else {
+            atm_log_rout(ATM_LOG_ERROR,
+                "atm_conn_listen_tcp, ss NULL "
+                "errno: %s",strerror(errno));
+        }
+    }
+    /* one bindaddr setup end */
+
     return ATM_OK;
-error:
-    atm_log_rout(ATM_LOG_ERROR,
-        "atm_conn_listen_tcp, "
-        "errno: %s",strerror(errno));
-    return ATM_ERROR;
 }
 
 

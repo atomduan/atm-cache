@@ -21,6 +21,7 @@ BUILD_DEPS="src/core/atm_core.h \
             src/core/atm_event.h \
             src/core/atm_list.h \
             src/core/atm_log.h \
+            src/core/atm_obj.h \
             src/core/atm_queue.h \
             src/core/atm_sess.h \
             src/core/atm_siphash.h \
@@ -41,6 +42,7 @@ BUILD_SRCS="src/core/atm_arr.c \
             src/core/atm_list.c \
             src/core/atm_log.c \
             src/core/atm_main.c \
+            src/core/atm_obj.c \
             src/core/atm_queue.c \
             src/core/atm_sess.c \
             src/core/atm_siphash.c \

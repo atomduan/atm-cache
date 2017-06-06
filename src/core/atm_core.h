@@ -94,6 +94,7 @@ typedef struct atm_pipe_s           atm_pipe_t;
 typedef struct atm_queue_s          atm_queue_t;
 typedef struct atm_cmd_s            atm_cmd_t;
 typedef struct atm_config_s         atm_config_t;
+typedef struct atm_obj_s            atm_obj_t;
 
 
 /*
@@ -118,6 +119,7 @@ typedef struct atm_config_s         atm_config_t;
 #include <atm_event.h>
 #include <atm_list.h>
 #include <atm_log.h>
+#include <atm_obj.h>
 #include <atm_queue.h>
 #include <atm_sess.h>
 #include <atm_siphash.h>

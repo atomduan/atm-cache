@@ -33,13 +33,14 @@ static void
 atm_log_rout_raw(atm_uint_t lv, char *msg)
 {
     atm_str_t now;
-
+    /* TODO, the performance will be impacted drastically */
     now = atm_time_strftime_now();
     if (msg != NULL) {
         printf("[%s] %s : %s\n",atm_log_lvstr(lv),now,msg);
     } else {
         printf("Invalid msg for logger\n");
     }
+    /* TODO, the performance will be impacted drastically */
     atm_str_free(now);
 }
 

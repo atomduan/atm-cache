@@ -32,11 +32,15 @@ atm_log_lvstr(atm_uint_t level)
 static void
 atm_log_rout_raw(atm_uint_t lv, char *msg)
 {
+    atm_str_t now;
+
+    now = atm_time_strftime_now();
     if (msg != NULL) {
-        printf("[%s]:%s\n",atm_log_lvstr(lv),msg);
+        printf("[%s] %s : %s\n",atm_log_lvstr(lv),now,msg);
     } else {
         printf("Invalid msg for logger\n");
     }
+    atm_str_free(now);
 }
 
 

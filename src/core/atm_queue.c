@@ -83,12 +83,14 @@ void
 atm_queue_free(void *queue)
 {
     atm_queue_t *q = queue;
-    atm_list_free(q->vals);
-    if (q->blk_type == ATM_QUEUE_BLOCK) {
-        pthread_cond_destroy(&q->qready);
-        pthread_mutex_destroy(&q->qlock);
+    if (q != NULL) {
+        atm_list_free(q->vals);
+        if (q->blk_type == ATM_QUEUE_BLOCK) {
+            pthread_cond_destroy(&q->qready);
+            pthread_mutex_destroy(&q->qlock);
+        }
+        atm_free(q);
     }
-    atm_free(q);
 }
 
 

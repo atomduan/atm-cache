@@ -24,5 +24,8 @@ atm_time_mval(atm_time_pair_t *tp);
 void
 atm_time_mono(atm_time_spec_t *ts);
 
+atm_str_t
+atm_time_strftime_now();
+
 
 #endif /* _ATM_TIME_H_INCLUDED_ */

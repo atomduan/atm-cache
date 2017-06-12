@@ -71,3 +71,18 @@ atm_time_mono(atm_time_spec_t *ts)
     clock_gettime(
         CLOCK_MONOTONIC_COARSE, ts);
 }
+
+
+atm_str_t
+atm_time_strftime_now()
+{
+    atm_str_t res;
+    char buf[64];
+    char tstr[128];
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    strftime(buf,sizeof(buf),"%F %H:%M:%S",localtime(&tv.tv_sec));
+    snprintf(tstr,sizeof(tstr),"%s.%-3ld",buf,tv.tv_usec/1000);
+    res = atm_str_new(tstr);
+    return res;
+}

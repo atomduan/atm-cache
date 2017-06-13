@@ -2,23 +2,63 @@
 /*
  * Private
  * */
+static int
+atm_config_parse_options(int argc, char **argv);
 static atm_bool_t
 atm_config_yesnotoi(char *s);
 static void
 atm_config_process(atm_str_t conf_str);
-static atm_str_t
+static void
 atm_config_path();
 static void
 atm_config_load();
 
 
-static atm_config_t *config;
+atm_config_t *atm_config;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
  * */
+static int
+atm_config_parse_options(int argc, char **argv) 
+{
+    int i;
+    int lastarg;
+    int exit_status = ATM_ERROR;
+
+    for (i = 1; i < argc; i++) {
+        lastarg = (i == (argc-1));
+
+        if (!strcmp(argv[i],"-f")) {
+            if (lastarg) goto invalid;
+            atm_config->configfile = atm_str_new(argv[++i]);
+        } else if (!strcmp(argv[i],"--help")) {
+            exit_status = 0;
+            goto usage;
+        } else {
+            if (argv[i][0] == '-') goto invalid;
+            return i;
+        }
+    }
+
+    return i;
+
+invalid:
+    printf(
+"\n"
+"Error: Invalid option \"%s\" or option argument missing\n\n", argv[i]);
+
+usage:
+    printf(
+"Usage: %s [-f <config file path>]\n\n"
+"   -f <config file path>        Config file path\n\n",
+    basename(argv[0]));
+    exit(exit_status);
+}
+
+
 static atm_bool_t
 atm_config_yesnotoi(char *s)
 {
@@ -55,11 +95,11 @@ atm_config_process(atm_str_t conf_str)
         pname = atm_str_tolower(props[0]);
 
         if (atm_str_eqs(pname,"pidfile") && psize==2) {
-            config->pidfile = atm_str_dup(props[1]);
+            atm_config->pidfile = atm_str_dup(props[1]);
         } else
         if (atm_str_eqs(pname,"daemonize") && psize==2) {
-            config->daemonize = atm_config_yesnotoi(props[1]);
-            if (config->daemonize == -1) {
+            atm_config->daemonize = atm_config_yesnotoi(props[1]);
+            if (atm_config->daemonize == -1) {
                 errmsg = "arguments must yes or no"; goto loaderr;
             }
         } else
@@ -70,62 +110,62 @@ atm_config_process(atm_str_t conf_str)
                 errmsg = "Too many bind addresses specified"; goto loaderr;
             }
             if (addresses > 0) {
-                config->bindaddr = atm_alloc(
+                atm_config->bindaddr = atm_alloc(
                     sizeof(atm_str_t *)*ATM_CONFIG_MAXBINDADDR + 1);
                 for (j = 0; j < addresses; j++) {
                     baddr = atm_str_dup(props[j+1]);
                     baddr = atm_str_trim(baddr," \t\r\n\"");
-                    config->bindaddr[j] = baddr;
+                    atm_config->bindaddr[j] = baddr;
                 }
-                config->bindaddr_count = addresses;
+                atm_config->bindaddr_count = addresses;
             } else {
                 errmsg = "Invalid bind param"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"port") && psize==2) {
-            config->port = atoi(props[1]);
-            if (config->port < 0 || config->port > 65535) {
+            atm_config->port = atoi(props[1]);
+            if (atm_config->port < 0 || atm_config->port > 65535) {
                 errmsg = "Invalid port"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"tcpbacklog") && psize==2) {
-            config->tcpbacklog = atoi(props[1]);
-            if (config->tcpbacklog < 0) {
+            atm_config->tcpbacklog = atoi(props[1]);
+            if (atm_config->tcpbacklog < 0) {
                 errmsg = "Invalid tcpbacklog value"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"timeout") && psize==2) {
-            config->maxidletime = atoi(props[1]);
-            if (config->maxidletime < 0) {
+            atm_config->maxidletime = atoi(props[1]);
+            if (atm_config->maxidletime < 0) {
                 errmsg = "Invalid timeout value"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"tcpkeepalive") && psize==2) {
-            config->tcpkeepalive = atoi(props[1]);
-            if (config->tcpkeepalive < 0) {
+            atm_config->tcpkeepalive = atoi(props[1]);
+            if (atm_config->tcpkeepalive < 0) {
                 errmsg = "Invalid tcp-keepalive value"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"maxclients") && psize==2) {
-            config->maxclients = atoi(props[1]);
-            if (config->maxclients < 1) {
+            atm_config->maxclients = atoi(props[1]);
+            if (atm_config->maxclients < 1) {
                 errmsg = "Invalid max clients limit"; goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"loglevel") && psize==2) {
-            config->loglevel = atoi(props[1]);
-            if (config->loglevel < 0 || config->loglevel > ATM_LOG_FATAL) {
+            atm_config->loglevel = atoi(props[1]);
+            if (atm_config->loglevel < 0 || atm_config->loglevel > ATM_LOG_FATAL) {
                 errmsg = "Invalid log level. "
                       "Must be one of debug, verbose, notice, warning";
                 goto loaderr;
             }
         } else
         if (atm_str_eqs(pname,"maxmemory") && psize==2) {
-            config->maxmemory = atm_util_memtoll(props[1],NULL);
+            atm_config->maxmemory = atm_util_memtoll(props[1],NULL);
         } else
         if (atm_str_eqs(pname,"workernum") && psize==2) {
-            config->workernum = atoi(props[1]);
-            if (config->workernum < 1) {
+            atm_config->workernum = atoi(props[1]);
+            if (atm_config->workernum < 1) {
                 errmsg = "Invalid max clients limit"; goto loaderr;
             }
         }
@@ -145,14 +185,16 @@ loaderr:
 }
 
 
-static atm_str_t
+static void 
 atm_config_path()
 {
-    atm_str_t res = NULL;
-    res = atm_str_new("/home/juntaoduan/Workspace"
-            "/atm-cache/atm-cache"
-            "/config/atmcache.conf");
-    return res;
+    atm_str_t conf_path;
+    if (atm_config->configfile == NULL) {
+        conf_path = atm_str_new("/home/juntaoduan/Workspace"
+                "/atm-cache/atm-cache"
+                "/config/atmcache.conf");
+        atm_config->configfile = conf_path;
+    }
 }
 
 
@@ -164,9 +206,10 @@ atm_config_load()
     atm_str_t conf;
     atm_str_t conf_path;
 
-    conf = atm_str_new("");
-    conf_path = atm_config_path();
+    atm_config_path();
+    conf_path = atm_config->configfile;
 
+    conf = atm_str_new("");
     if (conf_path != NULL) {
         FILE *fp;
         if((fp = fopen(conf_path,"r"))==NULL) {
@@ -178,7 +221,6 @@ atm_config_load()
             conf = atm_str_cats(conf,buf);
         }
         fclose(fp);
-        config->configfile = conf_path;
     }
     atm_config_process(conf);
     atm_str_free(conf);
@@ -189,9 +231,9 @@ atm_config_load()
  * Public
  * */
 void
-atm_config_init()
+atm_config_init(int argc, char **argv)
 {
-    config = atm_alloc(sizeof(atm_config_t));
-    atm_ctx->config = config;
+    atm_config = atm_alloc(sizeof(atm_config_t));
+    atm_config_parse_options(argc,argv);
     atm_config_load();
 }

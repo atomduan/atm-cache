@@ -2,12 +2,12 @@
 /*
  * Private
  * */
-static void
-atm_init();
-static void
-atm_service();
 static atm_bool_t
 atm_test_in_test_mod(int argc, char **argv);
+static void
+atm_init(int argc, char **argv);
+static void
+atm_service();
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -28,17 +28,13 @@ atm_test_in_test_mod(int argc, char **argv)
 }
 
 
-/*
- * Public
- * */
-void
-atm_init()
+static void
+atm_init(int argc, char **argv)
 {
-    atm_log("atm_init enter......");
+    atm_config_init(argc,argv);
     atm_dict_init();
     atm_ctx_init();
     atm_sig_init();
-    atm_config_init();
     atm_event_init();
     atm_conn_init();
     atm_task_init();
@@ -46,7 +42,7 @@ atm_init()
 }
 
 
-void
+static void
 atm_service()
 {
     atm_log("atm_service enter......");
@@ -57,7 +53,7 @@ atm_service()
 
 
 int
-main(int argc,  char **argv)
+main(int argc, char **argv)
 {
     if (atm_test_in_test_mod(argc, argv)) {
 #ifdef ATM_UNIT_TEST
@@ -68,8 +64,7 @@ main(int argc,  char **argv)
                 "please configure it before building");
 #endif
     } else {
-        atm_log("Enter in serv mode ......");
-        atm_init();
+        atm_init(argc,argv);
         atm_service();
     }
     return ATM_OK;

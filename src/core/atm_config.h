@@ -6,6 +6,8 @@
 #define ATM_CONFIG_MAXBINDADDR 16
 #define ATM_CONFIG_MAXLINE 1024
 
+extern atm_config_t *atm_config;
+
 struct atm_config_s {
     atm_str_t   configfile;     /* Absolute config file path, or NULL */
     atm_str_t   pidfile;        /* PID file path */
@@ -29,6 +31,6 @@ struct atm_config_s {
 };
 
 void
-atm_config_init();
+atm_config_init(int argc, char **argv);
 
 #endif /* _ATM_CONFIG_H_INCLUDED_ */

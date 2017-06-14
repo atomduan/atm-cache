@@ -2,8 +2,8 @@
 cat << END >> $ATM_MAKEFILE
 
 $ATM_JEMALLOC/lib/libjemalloc.a:
-	(cd $ATM_JEMALLOC && \$(MAKE) CFLAGS="\$(JEMALLOC_CFLAGS)" \\
-	LDFLAGS="\$(JEMALLOC_LDFLAGS)" \\
+	(cd $ATM_JEMALLOC && \$(MAKE) CFLAGS="${JEMALLOC_CFLAGS}" \\
+	LDFLAGS="${JEMALLOC_LDFLAGS}" \\
 	lib/libjemalloc.a)
 
 END

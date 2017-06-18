@@ -2,8 +2,8 @@
 /*
  * Private
  * */
-static int
-atm_config_parse_options(int argc, char **argv);
+static atm_int_t
+atm_config_parse_arg(int argc, char **argv);
 static atm_bool_t
 atm_config_yesnotoi(char *s);
 static void
@@ -11,7 +11,7 @@ atm_config_process(atm_str_t conf_str);
 static void
 atm_config_path();
 static void
-atm_config_load();
+atm_config_load_file();
 
 
 atm_config_t *atm_config;
@@ -21,29 +21,28 @@ atm_config_t *atm_config;
 /*
  * Private
  * */
-static int
-atm_config_parse_options(int argc, char **argv) 
+static atm_int_t
+atm_config_parse_arg(int argc, char **argv) 
 {
     int i;
     int lastarg;
     int exit_status = ATM_ERROR;
 
-    for (i = 1; i < argc; i++) {
+    for (i = 1; i < argc; ++i) {
         lastarg = (i == (argc-1));
 
         if (!strcmp(argv[i],"-f")) {
             if (lastarg) goto invalid;
             atm_config->configfile = atm_str_new(argv[++i]);
         } else if (!strcmp(argv[i],"--help")) {
-            exit_status = 0;
+            exit_status = ATM_OK;
             goto usage;
         } else {
             if (argv[i][0] == '-') goto invalid;
-            return i;
+            return ATM_OK;
         }
     }
-
-    return i;
+    return ATM_OK; 
 
 invalid:
     printf(
@@ -189,17 +188,17 @@ static void
 atm_config_path()
 {
     atm_str_t conf_path;
-    if (atm_config->configfile == NULL) {
+    if (atm_str_isempty(atm_config->configfile)) {
         conf_path = atm_str_new("/home/juntaoduan/Workspace"
                 "/atm-cache/atm-cache"
-                "/config/atmcache.conf");
+                "fconfig/atmcache.conf");
         atm_config->configfile = conf_path;
     }
 }
 
 
 static void
-atm_config_load()
+atm_config_load_file()
 {
     atm_uint_t bsz = ATM_CONFIG_MAXLINE+1;
     char buf[bsz];
@@ -234,6 +233,6 @@ void
 atm_config_init(int argc, char **argv)
 {
     atm_config = atm_alloc(sizeof(atm_config_t));
-    atm_config_parse_options(argc,argv);
-    atm_config_load();
+    atm_config_parse_arg(argc,argv);
+    atm_config_load_file();
 }

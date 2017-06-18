@@ -1,0 +1,53 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+if ! [ -d asm ]; then
+    mkdir asm
+fi
+
+name="$1"
+name=${name:-misc.c}
+name=$(echo $name | sed 's/\.c//g')
+name=$(echo $name | sed 's/\.//g')
+
+rm Makefile
+
+cat <<END > Makefile
+CC = gcc -S
+CFLAGS = -c -pipe -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror
+
+LINK = \$(CC)
+
+BUILD_DEPS = misc_utils.h
+
+BUILD_INCS = -I ./ \\
+	-I ../../../src/os/unix/linux \\
+	-I ../../../build \\
+	-I ../../../deps/jemalloc/include/jemalloc
+
+END
+
+cat <<END >> Makefile
+${name}.s:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${name}.s ${name}.c
+
+END
+
+cat <<END >> Makefile
+.PHONY:clean
+clean:
+	rm -rf *.o *.bin asm/*.* *.s
+END
+
+make clean
+
+if ! [ -d "../../../build" ]; then
+    (cd ../../../; ./configure)
+fi
+
+make
+
+cp *.s asm/

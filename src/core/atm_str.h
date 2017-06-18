@@ -89,5 +89,8 @@ atm_str_tolower(atm_str_t str);
 atm_str_t
 atm_str_toupper(atm_str_t str);
 
+atm_bool_t
+atm_str_isempty(atm_str_t str);
+
 
 #endif /* _ATM_STRING_H_INCLUDED_ */

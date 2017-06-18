@@ -1,7 +1,6 @@
 # C extensions
 *.so
 *.o
-*.s
 *.bin
 build/
 *.log

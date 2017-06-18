@@ -179,6 +179,7 @@ atm_siphash(char *input, atm_uint_t inlen)
 #endif
 }
 
+
 uint64_t
 atm_siphash_nocase(char *input, atm_uint_t inlen)
 {

@@ -562,3 +562,15 @@ atm_str_toupper(atm_str_t str)
     }
     return str;
 }
+
+
+atm_bool_t
+atm_str_isempty(atm_str_t str)
+{
+    atm_bool_t res = ATM_TRUE;
+    if (str != NULL) {
+        if (atm_str_len(str)>0) 
+            res = ATM_FALSE;
+    }
+    return res;
+}

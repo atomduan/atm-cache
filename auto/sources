@@ -103,10 +103,12 @@ BUILD_DEPS="$BUILD_DEPS \
             src/os/unix/atm_atomic.h \
             src/os/unix/atm_file.h \
             src/os/unix/atm_net.h \
+            src/os/unix/atm_pipe.h \
             src/os/unix/atm_sig.h"
 
 BUILD_SRCS="$BUILD_SRCS \
             src/os/unix/atm_alloc.c \
             src/os/unix/atm_file.c \
             src/os/unix/atm_net.c \
+            src/os/unix/atm_pipe.c \
             src/os/unix/atm_sig.c"

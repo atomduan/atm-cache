@@ -48,6 +48,9 @@
 #include <crypt.h>
 #include <sys/utsname.h>        /* uname() */
 
+/* use of dirname */
+#include <libgen.h>
+
 #include <dlfcn.h>
 
 #include <atm_auto_config.h>

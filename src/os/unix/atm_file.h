@@ -3,41 +3,22 @@
 
 #include <atm_core.h>
 
-#define ATM_PIPE_NCHAR 'a'
+#define ATM_FILE_UNKNOWN    0
+#define ATM_FILE_REG        1
+#define ATM_FILE_DIR        2
 
-struct atm_pipe_s {
-    int                 recv_fd;
-    int                 sent_fd;
-    atm_queue_t*        mqueue;
-    pthread_mutex_t     mqlock;
-    /* if epoll is using for msging */
-    atm_event_t*        event;
-};
-
-typedef struct {
-    void       *load;
-    void      (*call_back)(void *load);
-} atm_pipe_msg_t;
 
 atm_int_t
-atm_file_nonblock(int fd,
-        atm_bool_t nblk);
+atm_file_nonblock(int fd, atm_bool_t nblk);
 
-atm_pipe_t *
-atm_pipe_new();
+atm_str_t
+atm_file_exe_path();
 
-/*
- * trust event process to epoll
- */
-void
-atm_pipe_event_init(atm_pipe_t *pipe);
+atm_bool_t
+atm_file_find(char *dir, char *file_name, int type);
 
-void
-atm_pipe_free(void *pipe);
-
-void
-atm_pipe_notify(atm_pipe_t *pipe, void *load,
-        void (*call_back)(void *load));
+atm_str_t
+atm_file_path_append(char *parent, char *file);
 
 
 #endif /* _ATM_FILE_H_INCLUDED_ */

@@ -6,13 +6,17 @@ int main(int argc, char **argv)
 {
     char *bp = argv[0];
     char *dn = dirname(bp);
-    char buf[100];
+    char buf[PATH_MAX];
     int ret;
 
-    printf("dir name is %s\n", dn);
-    ret = readlink(bp,buf,sizeof(buf));
+    printf("PATH MAX is %d\n", PATH_MAX);
+    printf("argv[0] dir is %s\n", dn);
+
+    ret = readlink("/proc/self/exe",buf,sizeof(buf));
     if (ret == -1) {
         printf("readlink error [%s]\n", strerror(errno));
+    } else {
+        buf[ret] = '\0';
     }
-    printf("readlink name is %s\n", buf);
+    printf("%s\n", buf);
 }

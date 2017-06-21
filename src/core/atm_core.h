@@ -105,6 +105,7 @@ typedef struct atm_obj_s            atm_obj_t;
 #include <atm_alloc.h>
 #include <atm_atomic.h>
 #include <atm_file.h>
+#include <atm_pipe.h>
 #include <atm_net.h>
 #include <atm_sig.h>
 

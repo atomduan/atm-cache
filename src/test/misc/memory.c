@@ -17,7 +17,7 @@
  */
 int main(int argc, char **argv)
 {
-    int count = 10000;
+    int count = 1;
     int shmid;
     void *p;
     void *s;

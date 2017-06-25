@@ -77,7 +77,8 @@ BUILD_DEPS="$BUILD_DEPS \
             src/test/core/atm_test_event.h \
             src/test/core/atm_test_siphash.h \
             src/test/core/atm_test_str.h \
-            src/test/core/atm_test_time.h"
+            src/test/core/atm_test_time.h \
+            src/test/os/atm_test_file.h"
 
 BUILD_SRCS="$BUILD_SRCS \
             src/test/atm_unit_test.c \
@@ -86,7 +87,8 @@ BUILD_SRCS="$BUILD_SRCS \
             src/test/core/atm_test_event.c \
             src/test/core/atm_test_siphash.c \
             src/test/core/atm_test_str.c \
-            src/test/core/atm_test_time.c"
+            src/test/core/atm_test_time.c \
+            src/test/os/atm_test_file.c"
 fi
 
 

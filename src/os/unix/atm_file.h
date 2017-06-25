@@ -20,5 +20,8 @@ atm_file_find(char *dir, char *file_name, int type);
 atm_str_t
 atm_file_path_append(char *parent, char *file);
 
+void
+atm_file_traverse(char *file, void (*func)(char *file));
+
 
 #endif /* _ATM_FILE_H_INCLUDED_ */

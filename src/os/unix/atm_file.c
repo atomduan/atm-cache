@@ -101,3 +101,31 @@ atm_file_path_append(char *parent, char *file)
     res = atm_str_cats(res,file);
     return res;
 }
+
+
+void
+atm_file_traverse(char *file, void (*func)(char *file))
+{
+    struct dirent *fe = NULL;
+    atm_str_t nextfile;
+    DIR *d;
+
+    if ((d = opendir(file)) != NULL) {
+        while ((fe=readdir(d)) != NULL) {
+            if (strcmp(fe->d_name,".") == 0 
+                    || strcmp(fe->d_name,"..") == 0) {
+                continue;
+            } else {
+                nextfile = atm_file_path_append(file,fe->d_name);
+                if(fe->d_type == DT_REG) {
+                    if (func != NULL)
+                        (*func)(nextfile);
+                } else if(fe->d_type == DT_DIR) {
+                    atm_file_traverse(nextfile,func);
+                }
+                atm_str_free(nextfile);
+            }
+        }
+        closedir(d);
+    }
+}

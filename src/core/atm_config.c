@@ -188,41 +188,35 @@ static void
 atm_config_path()
 {
     atm_str_t exe_path;
-    atm_str_t exe_dir;
     atm_str_t conf_path;
-    atm_str_t conf_dir;
-    atm_str_t parent;
-    atm_str_t parent_conf_dir;
+    char *exe_dir;
+    char buf[PATH_MAX];
+    int n;
 
     if (atm_str_isempty(atm_config->configfile)) {
         exe_path = atm_file_exe_path();
         exe_dir = dirname(exe_path);
-        conf_dir = atm_file_path_append(exe_dir,"config");
 
-        if (atm_file_find(conf_dir,"atmcache.conf",ATM_FILE_REG)) {
-            conf_path = atm_file_path_append(conf_dir,"atmcache.conf");
-        } else {
-            parent = atm_file_path_append(exe_dir,"..");
-            parent_conf_dir = atm_file_path_append(parent,"config");
-            if (atm_file_find(parent_conf_dir,
-                        "atmcache.conf",ATM_FILE_REG)) {
-                conf_path = atm_file_path_append(
-                        parent_conf_dir,"atmcache.conf");
-            }
+        n = sprintf(buf,"config/%s.conf",ATM_BINARY_NAME);
+        buf[n] = '\0';
+        conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
+        if (conf_path == NULL) {
+            n = sprintf(buf,"../config/%s.conf",ATM_BINARY_NAME);
+            buf[n] = '\0';
+            conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
         }
+
         if (atm_str_isempty(conf_path)) {
-            atm_log_rout(ATM_LOG_FATAL,"can not locate atmcache.conf");
+            atm_log_rout(ATM_LOG_FATAL,
+                    "can not locate %s.conf",
+                    ATM_BINARY_NAME);
             exit(ATM_ERROR);
         }
         atm_config->configfile = conf_path;
     }
 
-    atm_str_free(conf_dir);
-    atm_str_free(exe_path);
     atm_str_free(conf_path);
-    atm_str_free(conf_dir);
-    atm_str_free(parent);
-    atm_str_free(parent_conf_dir);
+    atm_str_free(exe_path);
 }
 
 

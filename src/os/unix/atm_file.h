@@ -14,7 +14,7 @@ atm_file_nonblock(int fd, atm_bool_t nblk);
 atm_str_t
 atm_file_exe_path();
 
-atm_bool_t
+atm_str_t
 atm_file_find(char *dir, char *file_name, int type);
 
 atm_str_t

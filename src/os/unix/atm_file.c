@@ -79,27 +79,15 @@ atm_file_exe_path()
 }
 
 
-atm_bool_t
+atm_str_t
 atm_file_find(char *dir, char *file_name, int type)
 {
-    atm_bool_t res = ATM_FALSE;
-    struct stat statbuf;
-    struct dirent *dirp;
+    atm_str_t res = NULL;
     atm_str_t file_path;
 
-    DIR *dp;
-
-    if (lstat(dir,&statbuf) == 0) {
-        if (S_ISDIR(statbuf.st_mode)) {
-            dp = opendir(dir);
-            while ((dirp=readdir(dp)) != NULL) {
-                if (strcmp(dirp->d_name,file_name) == 0) {
-                    file_path = atm_file_path_append(dir,file_name); 
-                    int t = atm_file_get_type(file_path);
-                    res = (t == type);
-                }
-            }
-        }
+    file_path = atm_file_path_append(dir,file_name); 
+    if (atm_file_get_type(file_path) == type) {
+        res = file_path;    
     }
     return res;
 }

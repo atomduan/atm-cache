@@ -21,7 +21,7 @@ atm_str_t
 atm_file_path_append(char *parent, char *file);
 
 void
-atm_file_traverse(char *file, void (*func)(char *file));
+atm_file_traverse(char *file,atm_file_callback cb,void *argv);
 
 
 #endif /* _ATM_FILE_H_INCLUDED_ */

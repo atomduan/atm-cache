@@ -98,6 +98,13 @@ typedef struct atm_obj_s            atm_obj_t;
 
 
 /*
+ * Function type define
+ */
+typedef void 
+(*atm_file_callback)(char *,void *) ;
+
+
+/*
  * -------------- Dep headers --------------
  */
 #include <atm_util.h>

@@ -1,11 +1,11 @@
 #include <atm_core.h>
 
 static void
-atm_test_file_func(char *file);
+atm_test_file_func(char *file,void *argv);
 
 /* -------------IMPL-------------- */
 static void
-atm_test_file_func(char *file)
+atm_test_file_func(char *file,void *argv)
 {
     printf("file is : %s\n",file);
 }
@@ -35,6 +35,6 @@ atm_test_file_traverse()
     atm_file_traverse("/home/juntaoduan/"
             "Workspace/atm-cache/"
             "atm-cache/src",
-             atm_test_file_func);
+             atm_test_file_func,NULL);
     return res;
 }

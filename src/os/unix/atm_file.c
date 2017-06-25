@@ -104,7 +104,7 @@ atm_file_path_append(char *parent, char *file)
 
 
 void
-atm_file_traverse(char *file, void (*func)(char *file))
+atm_file_traverse(char *file,atm_file_callback cb,void *argv)
 {
     struct dirent *fe = NULL;
     atm_str_t nextfile;
@@ -117,11 +117,10 @@ atm_file_traverse(char *file, void (*func)(char *file))
                 continue;
             } else {
                 nextfile = atm_file_path_append(file,fe->d_name);
-                if(fe->d_type == DT_REG) {
-                    if (func != NULL)
-                        (*func)(nextfile);
-                } else if(fe->d_type == DT_DIR) {
-                    atm_file_traverse(nextfile,func);
+                if(fe->d_type == DT_DIR) {
+                    atm_file_traverse(nextfile,cb,argv);
+                } else {
+                    if (cb != NULL) (*cb)(nextfile,argv);
                 }
                 atm_str_free(nextfile);
             }

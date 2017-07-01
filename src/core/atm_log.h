@@ -15,11 +15,14 @@
 #define ATM_LOG_MAXLEN   1024
 
 
-void
-atm_log_init();
+int
+atm_log_parse_level(char *lv);
 
 void
 atm_log(char *fmt, ...);
+
+void
+atm_log_err(char *fmt, ...);
 
 void
 atm_log_rout(atm_uint_t lv, char *fmt, ...);

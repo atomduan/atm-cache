@@ -91,7 +91,8 @@ atm_config_process(atm_str_t conf_str)
         if (l[0]=='#'||l[0]=='\0') continue;
         props = atm_str_split(l,' ',atm_str_len(l));
         psize = atm_str_split_size(props);
-        pname = atm_str_tolower(props[0]);
+        atm_str_tolower(props[0]);
+        pname = props[0];
 
         if (atm_str_eqs(pname,"pidfile") && psize==2) {
             atm_config->pidfile = atm_str_dup(props[1]);
@@ -152,10 +153,10 @@ atm_config_process(atm_str_t conf_str)
             }
         } else
         if (atm_str_eqs(pname,"loglevel") && psize==2) {
-            atm_config->loglevel = atoi(props[1]);
+            atm_config->loglevel = atm_log_parse_level(props[1]);
             if (atm_config->loglevel < 0 || atm_config->loglevel > ATM_LOG_FATAL) {
-                errmsg = "Invalid log level. "
-                      "Must be one of debug, verbose, notice, warning";
+                errmsg = "Invalid log level, accepted options are: "
+                      "off all debug info warn error fatal";
                 goto loaderr;
             }
         } else
@@ -175,8 +176,7 @@ atm_config_process(atm_str_t conf_str)
     return;
 
 loaderr:
-    atm_log_rout(ATM_LOG_FATAL,
-            "\n*** FATAL CONFIG FILE ERROR ***\n"
+    atm_log_err("\n*** FATAL CONFIG FILE ERROR ***\n"
             "Reading the configuration file, at line %d\n"
             ">>> '%s'\n"
             "%s\n",line_num,lines[line_num],errmsg);
@@ -207,8 +207,7 @@ atm_config_path()
         }
 
         if (atm_str_isempty(conf_path)) {
-            atm_log_rout(ATM_LOG_FATAL,
-                    "can not locate %s.conf",
+            atm_log_err("can not locate %s.conf",
                     ATM_BINARY_NAME);
             exit(ATM_ERROR);
         }
@@ -235,8 +234,7 @@ atm_config_load_file()
     if (conf_path != NULL) {
         FILE *fp;
         if((fp = fopen(conf_path,"r"))==NULL) {
-            atm_log_rout(ATM_LOG_FATAL,
-                "can not open config file[%s]",conf_path);
+            atm_log_err("can not open config file[%s]",conf_path);
             exit(ATM_ERROR);
         }
         while(fgets(buf,bsz,fp) != NULL) {

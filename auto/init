@@ -53,10 +53,10 @@ rmobj:
 .PHONY:build
 build:
 	\$(MAKE) -f $ATM_MAKEFILE
-install:
+install:	build
 	\$(MAKE) -f $ATM_MAKEFILE install
-test:	build
-	build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX} test
+test:	install
+	$ATM_PREFIX/$ATM_BIN_PATH test
 END
 
 if [ -z "$ATM_GROUP" ]; then

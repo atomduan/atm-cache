@@ -530,7 +530,7 @@ atm_str_setlen(atm_str_t str, atm_uint_t len)
 }
 
 
-atm_str_t
+void
 atm_str_tolower(atm_str_t str)
 {
     int offset = 'a'-'A';
@@ -543,11 +543,10 @@ atm_str_tolower(atm_str_t str)
                 str[i] += offset;
         }
     }
-    return str;
 }
 
 
-atm_str_t
+void
 atm_str_toupper(atm_str_t str)
 {
     int offset = 'a'-'A';
@@ -560,7 +559,6 @@ atm_str_toupper(atm_str_t str)
                 str[i] -= offset;
         }
     }
-    return str;
 }
 
 

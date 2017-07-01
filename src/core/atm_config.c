@@ -197,11 +197,11 @@ atm_config_path()
         exe_path = atm_file_exe_path();
         exe_dir = dirname(exe_path);
 
-        n = sprintf(buf,"config/%s.conf",ATM_BINARY_NAME);
+        n = sprintf(buf,"%s",ATM_CONF_PATH);
         buf[n] = '\0';
         conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
         if (conf_path == NULL) {
-            n = sprintf(buf,"../config/%s.conf",ATM_BINARY_NAME);
+            n = sprintf(buf,"../%s",ATM_CONF_PATH);
             buf[n] = '\0';
             conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
         }

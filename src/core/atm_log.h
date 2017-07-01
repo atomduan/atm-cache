@@ -14,6 +14,10 @@
 
 #define ATM_LOG_MAXLEN   1024
 
+
+void
+atm_log_init();
+
 void
 atm_log(char *fmt, ...);
 

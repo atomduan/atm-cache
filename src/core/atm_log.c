@@ -2,6 +2,10 @@
 /*
  * Private
  * */
+static const char *
+atm_log_get_path(atm_uint_t type);
+static const char *
+atm_log_lvstr(atm_uint_t level);
 static void
 atm_log_rout_raw(atm_uint_t lv, char *msg);
 
@@ -15,6 +19,19 @@ static const char * ATM_LOG_LV_ENUM[] = {
     "ERROR",
     "FATAL",
 };
+
+
+/* ---------------------IMPLEMENTATIONS--------------------------- */
+/*
+ * Private
+ * */
+static const char *
+atm_log_get_path(atm_uint_t type)
+{
+    /* TODO Impl */
+    char *res = NULL;
+    return res;
+}
 
 
 static const char *
@@ -45,10 +62,17 @@ atm_log_rout_raw(atm_uint_t lv, char *msg)
 }
 
 
-/* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Public
  * */
+void
+atm_log_init()
+{
+    /* TODO impl */
+    atm_log_get_path(1);
+}
+
+
 void
 atm_log(char *fmt, ...)
 {

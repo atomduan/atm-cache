@@ -31,6 +31,7 @@ atm_test_in_test_mod(int argc, char **argv)
 static void
 atm_init(int argc, char **argv)
 {
+    atm_log_init();
     atm_config_init(argc,argv);
     atm_dict_init();
     atm_ctx_init();

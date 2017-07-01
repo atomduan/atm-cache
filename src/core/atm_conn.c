@@ -556,3 +556,10 @@ atm_conn_write_str(atm_conn_t *c, atm_str_t s)
         atm_conn_write(c,s,len);
     }
 }
+
+
+void
+atm_conn_client(char *addr, int port)
+{
+    //TODO, not implemented
+}

@@ -24,6 +24,7 @@ struct atm_config_s {
 
     /* Logging */
     atm_int_t   loglevel;
+    atm_str_t   logfile;
     /* Memory */
     atm_ulong_t maxmemory;      /* Max number of memory bytes to use */
     /* Tasks */

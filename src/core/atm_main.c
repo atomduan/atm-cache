@@ -44,7 +44,8 @@ atm_service_init()
 static void
 atm_service()
 {
-    atm_log("atm_service enter......");
+    printf("atm_service started......! \n"
+           "more info can be check in logs......\n");
     for (;;) {
         atm_event_routine();
     }
@@ -55,14 +56,16 @@ int
 main(int argc, char **argv)
 {
     atm_config_init(argc,argv);
+    atm_log_init();
 
     if (atm_test_in_test_mod(argc, argv)) {
 #ifdef ATM_UNIT_TEST
-        atm_log("Enter in test mode ......");
+        printf("Enter in test mode ......! \n"
+               "please check info in logs......\n");
         atm_test_suit(argc, argv);
 #else
-        atm_log("ATM_UNIT_TEST macro has not been set "
-                "please configure it before building");
+        printf("ATM_UNIT_TEST macro has not been set "
+               "please configure it before building......\n");
 #endif
     } else {
         atm_service_init();

@@ -567,8 +567,13 @@ atm_str_isempty(atm_str_t str)
 {
     atm_bool_t res = ATM_TRUE;
     if (str != NULL) {
-        if (atm_str_len(str)>0) 
-            res = ATM_FALSE;
+        if (atm_str_len(str)>0) {
+            if (!strcmp(str,"\"\"") || !strcmp(str,"''")) {
+                res = ATM_TRUE;
+            } else {
+                res = ATM_FALSE;
+            }
+        }
     }
     return res;
 }

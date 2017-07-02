@@ -15,6 +15,9 @@
 #define ATM_LOG_MAXLEN   1024
 
 
+void
+atm_log_init();
+
 int
 atm_log_parse_level(char *lv);
 

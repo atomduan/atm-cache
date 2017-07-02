@@ -3,7 +3,7 @@
  * Private
  * */
 static const char *
-atm_log_lvstr(atm_uint_t level);
+atm_log_strlv(atm_uint_t level);
 static void
 atm_log_rout_raw(atm_uint_t lv, char *msg);
 
@@ -18,13 +18,15 @@ static const char * ATM_LOG_LV_ENUM[] = {
     "FATAL",
 };
 
+static FILE *logpath = NULL;
+static FILE *errpath = NULL;
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Private
  * */
 static const char *
-atm_log_lvstr(atm_uint_t level)
+atm_log_strlv(atm_uint_t level)
 {
     atm_uint_t lvs_size = 0;
     lvs_size = sizeof(ATM_LOG_LV_ENUM)/sizeof(char *);
@@ -45,11 +47,62 @@ atm_log_rout_raw(atm_uint_t lv, char *msg)
     if (msg != NULL) {
         if (llv && lv) {
             if (llv <= lv) {
-                printf("[%s] %s : %s\n",atm_log_lvstr(lv),now,msg);
+                if (!logpath) {
+                    fprintf(stdout,"[%s] %s : %s\n",
+                        atm_log_strlv(lv),now,msg);
+                    fflush(stdout);
+                } else {
+                    fprintf(logpath,"[%s] %s : %s\n",
+                        atm_log_strlv(lv),now,msg);
+                    fflush(logpath);
+                }
             }
         }
     }
     atm_str_free(now);
+}
+
+
+/*
+ * Public
+ * */
+void
+atm_log_init()
+{
+    int n;
+    atm_str_t exepath;
+    char *exedir;
+
+    atm_str_t logfile;
+    char buf[PATH_MAX];
+
+    atm_str_t logpath_str;
+    atm_str_t errpath_str;
+
+    logfile = atm_config->logfile;
+    exepath = atm_file_exe_path();
+    exedir = dirname(exepath);
+
+    if (!logpath && !atm_str_isempty(logfile)) {
+        n = sprintf(buf,"../logs/%s",logfile);
+        buf[n] = '\0';
+        logpath_str = atm_file_path_append(exedir,buf);
+        logpath = fopen(logpath_str, "a+");
+        atm_str_free(logpath_str);
+    }
+
+#ifdef ATM_ERROR_LOG_PATH
+    if (!errpath && !atm_str_isempty(ATM_ERROR_LOG_PATH)) {
+        memset(buf,0,PATH_MAX);
+        n = sprintf(buf,"../%s",ATM_ERROR_LOG_PATH);
+        buf[n] = '\0';
+        errpath_str = atm_file_path_append(exedir,buf);
+        errpath = fopen(errpath_str, "a+");
+        atm_str_free(errpath_str);
+    }
+#endif
+
+    atm_str_free(exepath);
 }
 
 
@@ -106,8 +159,12 @@ atm_log_err(char *fmt, ...)
 
     now = atm_time_strftime_now();
     if (msg != NULL) {
-        fprintf(stderr,"%s : %s\n",now,msg);
-        atm_log_fflush();
+        if (!errpath) {
+            fprintf(stderr,"%s : %s\n",now,msg);
+            atm_log_fflush();
+        } else {
+            fprintf(errpath,"%s : %s\n",now,msg);
+        }
     }
     atm_str_free(now);
 }

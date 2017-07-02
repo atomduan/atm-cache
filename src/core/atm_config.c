@@ -160,6 +160,9 @@ atm_config_process(atm_str_t conf_str)
                 goto loaderr;
             }
         } else
+        if (atm_str_eqs(pname,"logfile") && psize==2) {
+            atm_config->logfile = atm_str_dup(props[1]);
+        } else
         if (atm_str_eqs(pname,"maxmemory") && psize==2) {
             atm_config->maxmemory = atm_util_memtoll(props[1],NULL);
         } else
@@ -197,14 +200,9 @@ atm_config_path()
         exe_path = atm_file_exe_path();
         exe_dir = dirname(exe_path);
 
-        n = sprintf(buf,"%s",ATM_CONF_PATH);
+        n = sprintf(buf,"../%s",ATM_CONF_PATH);
         buf[n] = '\0';
         conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
-        if (conf_path == NULL) {
-            n = sprintf(buf,"../%s",ATM_CONF_PATH);
-            buf[n] = '\0';
-            conf_path = atm_file_find(exe_dir,buf,ATM_FILE_REG);
-        }
 
         if (atm_str_isempty(conf_path)) {
             atm_log_err("can not locate %s.conf",

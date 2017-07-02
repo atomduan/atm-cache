@@ -58,5 +58,8 @@ atm_conn_write(atm_conn_t *c,
 void
 atm_conn_write_str(atm_conn_t *c, atm_str_t s);
 
+void
+atm_conn_client(char *addr, int port);
+
 
 #endif /* _ATM_CONN_H_INCLUDED_ */

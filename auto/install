@@ -1,16 +1,18 @@
 #!/bin/sh
 #convert relative path to absolute path for installation
-ATM_CONF_PREFIX=`dirname $ATM_PREFIX/$ATM_CONF_PATH`
 cat << END                                                    >> $ATM_MAKEFILE
 install:	build $ATM_INSTALL_PERL_MODULES
 	test -d '$ATM_PREFIX' || mkdir -p '$ATM_PREFIX'
-	test -d '`dirname "$ATM_PREFIX/$ATM_SBIN_PATH"`' || mkdir -p '`dirname "$ATM_PREFIX/$ATM_SBIN_PATH"`'
-	test ! -f '$ATM_PREFIX/$ATM_SBIN_PATH' || mv '$ATM_PREFIX/$ATM_SBIN_PATH' '$ATM_PREFIX/$ATM_SBIN_PATH.old'
-	cp $ATM_BUILD/$ATM_BINARY_NAME '$ATM_PREFIX/$ATM_SBIN_PATH'
-	test -d '$ATM_CONF_PREFIX' || mkdir -p '$ATM_CONF_PREFIX'
+
+	test -d '$ATM_PREFIX/bin' || mkdir -p '$ATM_PREFIX/bin'
+	test ! -f '$ATM_PREFIX/$ATM_BIN_PATH' || mv '$ATM_PREFIX/$ATM_BIN_PATH' '$ATM_PREFIX/$ATM_BIN_PATH.old'
+	cp '$ATM_BUILD/$ATM_BINARY_NAME$ATM_BINARY_SUFFIX' '$ATM_PREFIX/$ATM_BIN_PATH'
+
+	test -d '$ATM_PREFIX/config' || mkdir -p '$ATM_PREFIX/config'
 	test -f '$ATM_PREFIX/$ATM_CONF_PATH' || cp config/$ATM_BINARY_NAME.conf '$ATM_PREFIX/$ATM_CONF_PATH'
-	cp conf/$ATM_BINARY_NAME.conf '$ATM_CONF_PREFIX/$ATM_BINARY_NAME.conf.default'
-	test -d '`dirname "$ATM_PREFIX/$ATM_PID_PATH"`' || mkdir -p '`dirname "$ATM_PREFIX/$ATM_PID_PATH"`'
+	cp 'config/$ATM_BINARY_NAME.conf' '$ATM_PREFIX/$ATM_CONF_PATH.template'
+
+	test -d '$ATM_PREFIX/logs' || mkdir -p '$ATM_PREFIX/logs'
 END
 
 if test -n "$ATM_ERROR_LOG_PATH"; then

@@ -3,6 +3,7 @@
 *.o
 *.bin
 build/
+smoke/
 *.log
 Makefile
 *.swp

@@ -83,10 +83,10 @@ atm_str_split_free(atm_str_t *argv);
 void
 atm_str_setlen(atm_str_t str, atm_uint_t len);
 
-atm_str_t
+void
 atm_str_tolower(atm_str_t str);
 
-atm_str_t
+void
 atm_str_toupper(atm_str_t str);
 
 atm_bool_t

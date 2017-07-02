@@ -53,10 +53,10 @@ rmobj:
 .PHONY:build
 build:
 	\$(MAKE) -f $ATM_MAKEFILE
-install:
+install:	build
 	\$(MAKE) -f $ATM_MAKEFILE install
-test:	build
-	build/${ATM_BINARY_NAME}${ATM_BINARY_SUFFIX} test
+test:	install
+	$ATM_PREFIX/$ATM_BIN_PATH test
 END
 
 if [ -z "$ATM_GROUP" ]; then
@@ -86,8 +86,7 @@ have=ATM_USER value="\"$ATM_USER\"" . auto/define
 have=ATM_GROUP value="\"$ATM_GROUP\"" . auto/define
 have=ATM_BUILD value="\"$ATM_BUILD\"" . auto/define
 have=ATM_PREFIX value="\"$ATM_PREFIX/\"" . auto/define
-have=ATM_CONF_PREFIX value="\"$ATM_CONF_PREFIX/\"" . auto/define
-have=ATM_SBIN_PATH value="\"$ATM_SBIN_PATH\"" . auto/define
+have=ATM_BIN_PATH value="\"$ATM_BIN_PATH\"" . auto/define
 have=ATM_CONF_PATH value="\"$ATM_CONF_PATH\"" . auto/define
 have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
 have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define

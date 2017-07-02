@@ -22,41 +22,56 @@ static int
 atm_net_accept_raw(atm_socket_t *ssock,
         atm_socket_t *csock)
 {
-    int fd;
-    struct sockaddr_in *s;
-    struct sockaddr_storage sa;
-    socklen_t salen;
-    int port;
     int ss;
 
+    struct sockaddr_storage sa;
+    socklen_t salen;
     salen = sizeof(struct sockaddr_storage);
-    ss = ssock->fd;
+
+    int fd;
+    struct sockaddr_in *s;
+    int port;
     char ip[ATM_NET_IPSLEN];
+
     atm_uint_t ip_len = sizeof(ip);
 
+
+    /* accept connection */
+    ss = ssock->fd;
     while(ATM_TRUE) {
         fd = accept(ss,(struct sockaddr*)&sa,&salen);
-        if (fd == ATM_NET_ERR_FD) {
-            if (errno == EINTR) {
-                continue;
-            }
-        }
+        if (fd == ATM_NET_ERR_FD)
+            if (errno == EINTR) continue;
         break;
     }
-
     if (fd == ATM_NET_ERR_FD)
         return ATM_ERROR;
 
-    atm_log("accept raw fd accept is %d", fd);
+    /* local ip and port config*/
+    /* we can also use getpeername to accquire the peer's info */
     if (sa.ss_family == AF_INET) {
         s = (struct sockaddr_in *)&sa;
         inet_ntop(AF_INET,(void *)&(s->sin_addr),ip,ip_len);
         port = ntohs(s->sin_port);
-        atm_log("Accept: %s:%d", ip, port);
         csock->src_ip = atm_str_new(ip);
         csock->src_port = port;
     }
+
+    /* local ip and port config */
+    memset(&sa, 0, salen);
+    getsockname(fd,(struct sockaddr*)&sa, &salen);
+    if (sa.ss_family == AF_INET) {
+        s = (struct sockaddr_in *)&sa;
+        inet_ntop(AF_INET,(void *)&(s->sin_addr),ip,ip_len);
+        port = ntohs(s->sin_port);
+        csock->dst_ip = atm_str_new(ip);
+        csock->dst_port = port;
+    }
+
     csock->fd = fd;
+    atm_log("Connection setup src[%s/%d] --> dst[%s/%d]:",
+            csock->src_ip,csock->src_port,
+            csock->dst_ip,csock->dst_port);
     return ATM_OK;
 }
 

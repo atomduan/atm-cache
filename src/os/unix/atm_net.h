@@ -13,8 +13,8 @@ struct atm_socket_s {
     int         fd;
     atm_str_t   src_ip;
     int         src_port;
-    atm_str_t   dest_ip;
-    int         dest_port;
+    atm_str_t   dst_ip;
+    int         dst_port;
 };
 
 

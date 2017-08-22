@@ -18,6 +18,9 @@ static atm_T_t ATM_BLK_TYPE = {
 atm_T_t *ATM_BLK_T = &ATM_BLK_TYPE;
 
 
+//static atm_list_t *blk_pool;
+
+
 /* ---------------------IMPLEMENTATIONS--------------------------- */
 /*
  * Public

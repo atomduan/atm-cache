@@ -34,6 +34,7 @@ atm_service_init()
     atm_dict_init();
     atm_ctx_init();
     atm_sig_init();
+    atm_blk_init();
     atm_event_init();
     atm_conn_init();
     atm_task_init();

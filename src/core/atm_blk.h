@@ -19,6 +19,10 @@ struct atm_blk_s {
 };
 
 
+void
+atm_blk_init();
+
+
 atm_blk_t *
 atm_blk_new();
 

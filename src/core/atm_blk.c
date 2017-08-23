@@ -2,6 +2,8 @@
 /*
  * Private
  * */
+static void
+atm_blk_reset(atm_blk_t *block);
 static atm_bool_t
 atm_blk_pool_release(atm_blk_t *block);
 static atm_blk_t *
@@ -34,12 +36,27 @@ static atm_list_t *blk_pool = NULL;
 /*
  * Private
  * */
+static void
+atm_blk_reset(atm_blk_t *block)
+{
+    if (block != NULL) {
+        block->ridx = 0;
+        block->widx = 0;
+    }
+}
+
+
 static atm_bool_t
 atm_blk_pool_release(atm_blk_t *block)
 {
+    //TODO must thread safe
     atm_bool_t res = ATM_FALSE;
-    if (blk_pool == NULL) 
+    if (blk_pool == NULL) {
         res = ATM_FALSE;
+    } else {
+        atm_blk_reset(block);
+        atm_list_push(blk_pool, block);
+    }
     return res;
 }
 
@@ -47,9 +64,10 @@ atm_blk_pool_release(atm_blk_t *block)
 static atm_blk_t *
 atm_blk_pool_fetch()
 {
+    //TODO must thread safe
     atm_blk_t *res = NULL;
     if (blk_pool != NULL) {
-        //TODO need implements
+        res = atm_list_lpop(blk_pool);
     }
     return res;
 }
@@ -84,6 +102,14 @@ atm_blk_free_raw(void *block)
 /*
  * Public
  * */
+void
+atm_blk_init()
+{
+    blk_pool = atm_list_new(ATM_BLK_T,
+            ATM_FREE_SHALLOW);
+}
+
+
 atm_blk_t *
 atm_blk_new()
 {

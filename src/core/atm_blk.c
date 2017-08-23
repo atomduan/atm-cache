@@ -50,15 +50,17 @@ atm_blk_reset(atm_blk_t *block)
 static atm_bool_t
 atm_blk_pool_release(atm_blk_t *block)
 {
-    //TODO must thread safe
     atm_bool_t res = ATM_FALSE;
-    if (blk_pool == NULL) {
-        res = ATM_FALSE;
-    } else {
+    if (blk_pool != NULL) {
         atm_blk_reset(block);
-        pthread_mutex_lock(&bp_lock);
-        atm_list_push(blk_pool, block);
-        pthread_mutex_unlock(&bp_lock);
+        if (blk_pool->size < ATM_BLK_POOL_THRESHOLD) {
+            pthread_mutex_lock(&bp_lock);
+            if (blk_pool->size < ATM_BLK_POOL_THRESHOLD) {
+                atm_list_push(blk_pool, block);
+                res = ATM_TRUE;
+            }
+            pthread_mutex_unlock(&bp_lock);
+        }
     }
     return res;
 }
@@ -67,7 +69,6 @@ atm_blk_pool_release(atm_blk_t *block)
 static atm_blk_t *
 atm_blk_pool_fetch()
 {
-    //TODO must thread safe
     atm_blk_t *res = NULL;
     if (blk_pool != NULL) {
         pthread_mutex_lock(&bp_lock);

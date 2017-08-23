@@ -30,6 +30,7 @@ atm_T_t *ATM_BLK_T = &ATM_BLK_TYPE;
 
 
 static atm_list_t *blk_pool = NULL;
+static pthread_mutex_t bp_lock;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -55,7 +56,9 @@ atm_blk_pool_release(atm_blk_t *block)
         res = ATM_FALSE;
     } else {
         atm_blk_reset(block);
+        pthread_mutex_lock(&bp_lock);
         atm_list_push(blk_pool, block);
+        pthread_mutex_unlock(&bp_lock);
     }
     return res;
 }
@@ -67,7 +70,9 @@ atm_blk_pool_fetch()
     //TODO must thread safe
     atm_blk_t *res = NULL;
     if (blk_pool != NULL) {
+        pthread_mutex_lock(&bp_lock);
         res = atm_list_lpop(blk_pool);
+        pthread_mutex_unlock(&bp_lock);
     }
     return res;
 }
@@ -107,6 +112,7 @@ atm_blk_init()
 {
     blk_pool = atm_list_new(ATM_BLK_T,
             ATM_FREE_SHALLOW);
+    pthread_mutex_init(&bp_lock, NULL);
 }
 
 

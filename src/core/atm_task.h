@@ -3,6 +3,9 @@
 
 #include <atm_core.h>
 
+#define ATM_TASK_WORK_ENABLE    0
+#define ATM_TASK_WORK_DISABLE   1
+#define ATM_TASK_WORK_RETIRED   2
 
 struct atm_task_s {
     atm_bool_t          active;
@@ -15,6 +18,7 @@ typedef struct {
     atm_queue_t        *blking_tasks;
     atm_bool_t          active;
     pthread_t           tid;
+    atm_int_t           status;
 } atm_task_worker_t;
 
 void

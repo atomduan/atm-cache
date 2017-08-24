@@ -138,6 +138,7 @@ atm_task_worker_new()
                 ATM_QUEUE_BLOCK);
     res->active = ATM_FALSE;
     res->tid = 0;
+    res->status = ATM_TASK_WORK_ENABLE;
     return res;
 }
 

@@ -34,6 +34,7 @@ static atm_T_t *ATM_TASK_T = &ATM_TASK_TYPE;
 /* worker list define */
 static atm_arr_t *workers;
 static atm_uint_t workers_round;
+static pthread_mutex_t worker_lock;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -45,11 +46,13 @@ atm_task_get_active_worker()
 {
     atm_task_worker_t *res = NULL;
 
+    atm_task_worker_t **wks;
     atm_task_worker_t *worker;
+    atm_task_worker_t *wtmp;
     atm_arr_t *workers_tmp;
     atm_uint_t worker_nums = 0;
     atm_uint_t wi = 0;
-    int i = 0;
+    atm_uint_t i = 0;
 
     worker_nums = workers->length;
     if (worker_nums > 0) {
@@ -59,11 +62,24 @@ atm_task_get_active_worker()
     worker = *wks;
 
     if (worker->status == ATM_TASK_WORK_RETIRED) {
+        /*
+         * theoretically, there should be only one 
+         * exec path which is same to epoll
+         */
+        pthread_mutex_lock(&worker_lock);
         /*triger retired worker recycling*/
-        atm_arr_t *workers_tmp = atm_arr_new(sizeof(atm_task_worker_t *));
+        workers_tmp = atm_arr_new(sizeof(atm_task_worker_t *));
         for (i=0; i<workers->length; ++i) {
-            
+            wtmp = atm_arr_get(workers, i); 
+            if (wtmp->status != ATM_TASK_WORK_RETIRED) {
+                atm_arr_add(workers_tmp, wtmp);
+            } else {
+                atm_task_worker_free(wtmp);
+            }
         }
+        atm_arr_free(workers);
+        workers = workers_tmp; 
+        pthread_mutex_unlock(&worker_lock);
     }
 
     if (worker == NULL) {
@@ -83,7 +99,6 @@ static void
 atm_task_notify_handle(void *task)
 {
     atm_task_t *t = task;
-    atm_task_worker_t **wks;
     atm_task_worker_t *curr_worker;
 
     atm_log("#####atm_task_notify_handle task recv %p", task);
@@ -113,7 +128,7 @@ atm_task_worker_func(void *arg)
             atm_task_free(t);
         } else {
             /* set worker to retired */
-            if (worker->status == ATM_TASK_WORK_POSITIVE) {
+            if (worker->status == ATM_TASK_WORK_PASSIVE) {
                 worker->status = ATM_TASK_WORK_RETIRED;
                 break;
             }
@@ -207,6 +222,7 @@ atm_task_init()
     notify_pipe = atm_pipe_new();
     /* trust pipe event manage to epoll */
     atm_pipe_event_init(notify_pipe);
+    pthread_mutex_init(&worker_lock, NULL);
 }
 
 

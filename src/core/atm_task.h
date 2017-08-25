@@ -4,7 +4,7 @@
 #include <atm_core.h>
 
 #define ATM_TASK_WORK_ACTIVE    0
-#define ATM_TASK_WORK_POSITIVE  1
+#define ATM_TASK_WORK_PASSIVE   1
 #define ATM_TASK_WORK_RETIRED   2
 
 struct atm_task_s {

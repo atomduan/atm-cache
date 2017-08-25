@@ -3,8 +3,8 @@
 
 #include <atm_core.h>
 
-#define ATM_TASK_WORK_ENABLE    0
-#define ATM_TASK_WORK_DISABLE   1
+#define ATM_TASK_WORK_ACTIVE    0
+#define ATM_TASK_WORK_POSITIVE  1
 #define ATM_TASK_WORK_RETIRED   2
 
 struct atm_task_s {
@@ -16,7 +16,6 @@ struct atm_task_s {
 typedef struct {
     /* blocking queue */
     atm_queue_t        *blking_tasks;
-    atm_bool_t          active;
     pthread_t           tid;
     atm_int_t           status;
 } atm_task_worker_t;

@@ -2,6 +2,8 @@
 /*
  * Private
  * */
+static atm_task_worker_t *
+atm_task_get_active_worker();
 static void
 atm_task_notify_handle(void *task);
 static void *
@@ -38,25 +40,33 @@ static atm_uint_t workers_round;
 /*
  * Private
  * */
-static void
-atm_task_notify_handle(void *task)
+static atm_task_worker_t *
+atm_task_get_active_worker()
 {
+    atm_task_worker_t *res = NULL;
+
+    atm_task_worker_t *worker;
+    atm_arr_t *workers_tmp;
     atm_uint_t worker_nums = 0;
     atm_uint_t wi = 0;
-    atm_task_t *t = task;
-    atm_task_worker_t **wks;
-    atm_task_worker_t *curr_worker;
-
-    atm_log("#####atm_task_notify_handle task recv %p", task);
+    int i = 0;
 
     worker_nums = workers->length;
     if (worker_nums > 0) {
         wi = ++workers_round % worker_nums;
     }
-    
     wks = atm_arr_get(workers, wi);
-    curr_worker = *wks;
-    if (curr_worker == NULL) {
+    worker = *wks;
+
+    if (worker->status == ATM_TASK_WORK_RETIRED) {
+        /*triger retired worker recycling*/
+        atm_arr_t *workers_tmp = atm_arr_new(sizeof(atm_task_worker_t *));
+        for (i=0; i<workers->length; ++i) {
+            
+        }
+    }
+
+    if (worker == NULL) {
         atm_log_rout(ATM_LOG_FATAL,
                 "can not get "
                 "curr_worker wi[%lu] "
@@ -64,6 +74,20 @@ atm_task_notify_handle(void *task)
                 wi,worker_nums);
         exit(ATM_ERROR);
     }
+
+    res = worker;
+    return res;
+}
+
+static void
+atm_task_notify_handle(void *task)
+{
+    atm_task_t *t = task;
+    atm_task_worker_t **wks;
+    atm_task_worker_t *curr_worker;
+
+    atm_log("#####atm_task_notify_handle task recv %p", task);
+    curr_worker = atm_task_get_active_worker();
     /* push t to worker's blocking queue */
     atm_log("#####notified worker queue is %p, task is %p",
             curr_worker->blking_tasks, task);
@@ -81,15 +105,20 @@ atm_task_worker_func(void *arg)
     worker = arg;
     worker->tid = pthread_self();
     atm_log("worker_fuc enter, worker tid[%u]", worker->tid);
-    while (worker->active) {
+    while (worker->status != ATM_TASK_WORK_RETIRED) {
         /* blocking pop hasppens here */
         t = atm_queue_pop(worker->blking_tasks);
         if (t != NULL) {
             t->run(t);
             atm_task_free(t);
+        } else {
+            /* set worker to retired */
+            if (worker->status == ATM_TASK_WORK_POSITIVE) {
+                worker->status = ATM_TASK_WORK_RETIRED;
+                break;
+            }
         }
     }
-    atm_task_worker_free(worker);
     return res;
 }
 
@@ -106,7 +135,7 @@ atm_task_worker_init(int nworker)
     for (i=0; i<nworker; ++i) {
         w = atm_task_worker_new();
         if (w != NULL) {
-            w->active = ATM_TRUE;
+            w->status = ATM_TASK_WORK_ACTIVE;
             pthread_attr_init(&attr);
             ret = pthread_create(&tid,&attr,
                 atm_task_worker_func,w);
@@ -115,7 +144,7 @@ atm_task_worker_init(int nworker)
                 atm_arr_add(workers, &w);
                 continue;
             } else {
-                w->active = ATM_FALSE;
+                w->status = ATM_TASK_WORK_RETIRED;
                 atm_log_rout(ATM_LOG_ERROR,
                     "task create worker fail");
                 atm_task_worker_free(w);
@@ -136,9 +165,8 @@ atm_task_worker_new()
                 ATM_TASK_T,
                 ATM_FREE_DEEP,
                 ATM_QUEUE_BLOCK);
-    res->active = ATM_FALSE;
+    res->status = ATM_TASK_WORK_ACTIVE;
     res->tid = 0;
-    res->status = ATM_TASK_WORK_ENABLE;
     return res;
 }
 
@@ -149,7 +177,7 @@ atm_task_worker_free(void *worker)
     pthread_t curr_thread = pthread_self();
     atm_task_worker_t *w = worker;
     if (w->tid != 0) {
-        w->active = ATM_FALSE;
+        w->status = ATM_TASK_WORK_RETIRED;
         /*
          * if the worker not kill him self
          * it should wait for working thread to finish

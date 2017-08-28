@@ -2,8 +2,6 @@
 /*
  * Private
  * */
-static void
-atm_task_disable_worker(atm_task_worker_t *worker);
 static atm_task_worker_t *
 atm_task_get_active_worker();
 static void
@@ -43,16 +41,6 @@ static pthread_mutex_t worker_lock;
 /*
  * Private
  * */
-static void
-atm_task_disable_worker(atm_task_worker_t *worker)
-{
-    if (worker != NULL) {
-        if (worker->status == ATM_TASK_WORK_ACTIVE) {
-            worker->status = ATM_TASK_WORK_PASSIVE;
-        }
-    }
-}
-
 static atm_task_worker_t *
 atm_task_get_active_worker()
 {
@@ -268,5 +256,15 @@ atm_task_dispatch(atm_task_t *task)
             notify_pipe,
             task,
             atm_task_notify_handle);
+    }
+}
+
+void
+atm_task_disable_worker(atm_task_worker_t *worker)
+{
+    if (worker != NULL) {
+        if (worker->status == ATM_TASK_WORK_ACTIVE) {
+            worker->status = ATM_TASK_WORK_PASSIVE;
+        }
     }
 }

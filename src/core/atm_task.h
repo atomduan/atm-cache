@@ -32,5 +32,8 @@ atm_task_free(void *task);
 void
 atm_task_dispatch(atm_task_t *task);
 
+void
+atm_task_disable_worker(atm_task_worker_t *worker);
+
 
 #endif /* _ATM_TASK_H_INCLUDED_ */

@@ -8,7 +8,6 @@
 #define ATM_TASK_WORK_RETIRED   2
 
 struct atm_task_s {
-    atm_bool_t          active;
     void               *load;
     atm_int_t         (*run)(atm_task_t *self);
 };

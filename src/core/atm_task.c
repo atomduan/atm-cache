@@ -95,6 +95,7 @@ atm_task_get_active_worker()
     return res;
 }
 
+
 static void
 atm_task_notify_handle(void *task)
 {

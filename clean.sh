@@ -4,4 +4,7 @@ cd $project_path
 if [ -d "./smoke" ]; then
     rm -r ./smoke
 fi
-make clean
+
+if [ -d "./build" ] || [ -f "./Makefile" ]; then
+    make clean
+fi

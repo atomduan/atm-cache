@@ -29,21 +29,16 @@ class atmsocket:
 
     def send(self, msg):
         totalsent = 0
-        while totalsent < MSGLEN:
+        while totalsent < len(msg):
             sent = self.sock.send(msg[totalsent:])
             if sent == 0:
-                raise RuntimeError("socket connection broken")
+                break
             totalsent = totalsent + sent
 
     def receive(self):
         chunks = []
-        bytes_recd = 0
-        while bytes_recd < MSGLEN:
-            chunk = self.sock.recv(min(MSGLEN - bytes_recd, 2048))
-            if chunk == '':
-                raise RuntimeError("socket connection broken")
-            chunks.append(chunk)
-            bytes_recd = bytes_recd + len(chunk)
+        chunk = self.sock.recv(2048)
+        chunks.append(chunk)
         return ''.join(chunks)
 
 
@@ -51,7 +46,7 @@ def main(argv):
     sc = atmsocket()
     sc.connect("127.0.0.1", 8088);
     while True:
-        sc.send("set abc 123");
+        sc.send("set abc 123\n");
         print sc.receive();
     
 

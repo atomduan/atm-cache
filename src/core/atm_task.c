@@ -2,12 +2,14 @@
 /*
  * Private
  * */
+static atm_uint_t
+atm_task_worker_load(atm_task_worker_t *w);
 static atm_bool_t 
 atm_task_del_worker();
 static atm_bool_t
 atm_task_add_worker();
 static atm_uint_t
-atm_task_work_load();
+atm_task_load();
 static atm_task_worker_t *
 atm_task_get_active_worker();
 static void
@@ -47,6 +49,17 @@ static pthread_mutex_t worker_lock;
 /*
  * Private
  * */
+static atm_uint_t
+atm_task_worker_load(atm_task_worker_t *worker)
+{
+    atm_uint_t res;
+    atm_queue_t *q;
+    q = worker->blking_tasks;
+    res = atm_queue_size(q);
+    return res;
+}
+
+
 static atm_bool_t 
 atm_task_del_worker()
 {
@@ -110,23 +123,19 @@ atm_task_add_worker()
 
 
 static atm_uint_t
-atm_task_work_load()
+atm_task_load()
 {    
     atm_uint_t i = 0;
     atm_task_worker_t *worker;
     atm_uint_t ts = 0;
     atm_uint_t ws = 0;
-    atm_queue_t *q;
-    atm_uint_t s;
 
     for (i=0; i<workers->length; ++i) {
         worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
         if (worker != NULL) {
             if (worker->status == ATM_TASK_WORK_ACTIVE) {
                 ws++;
-                q = worker->blking_tasks;
-                s = atm_queue_size(q);
-                ts += s;
+                ts += atm_task_worker_load(worker);
             }
         }
     }
@@ -341,7 +350,7 @@ atm_task_dispatch(atm_task_t *task)
 void
 atm_task_moniter()
 {
-    atm_int_t load = atm_task_work_load();
+    atm_int_t load = atm_task_load();
     if (load > ATM_TASK_HIGH_LOAD_THRESHOLD) {
         atm_task_add_worker();
     } else 

@@ -112,7 +112,25 @@ atm_task_add_worker()
 static atm_uint_t
 atm_task_work_load()
 {    
-    return 0;
+    atm_uint_t i = 0;
+    atm_task_worker_t *worker;
+    atm_uint_t ts = 0;
+    atm_uint_t ws = 0;
+    atm_queue_t *q;
+    atm_uint_t s;
+
+    for (i=0; i<workers->length; ++i) {
+        worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
+        if (worker != NULL) {
+            if (worker->status == ATM_TASK_WORK_ACTIVE) {
+                ws++;
+                q = worker->blking_tasks;
+                s = atm_queue_size(q);
+                ts += s;
+            }
+        }
+    }
+    return ts/ws;
 }
 
 

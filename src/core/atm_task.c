@@ -2,6 +2,12 @@
 /*
  * Private
  * */
+static atm_bool_t 
+atm_task_del_worker();
+static atm_bool_t
+atm_task_add_worker();
+static atm_uint_t
+atm_task_work_load();
 static atm_task_worker_t *
 atm_task_get_active_worker();
 static void
@@ -41,6 +47,75 @@ static pthread_mutex_t worker_lock;
 /*
  * Private
  * */
+static atm_bool_t 
+atm_task_del_worker()
+{
+    atm_bool_t res = ATM_FALSE;
+    atm_uint_t i = 0;
+    atm_task_worker_t *worker;
+    atm_config_t *conf = atm_ctx->config;
+    /*
+     * TODO a urgly implementation
+     */
+    atm_uint_t nworker = (atm_uint_t)conf->workernum;
+
+    if (workers->length <= nworker)
+        return res;
+
+    pthread_mutex_lock(&worker_lock);
+    for (i=0; i<workers->length; ++i) {
+        worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
+        if (worker != NULL) {
+            if (worker->status == ATM_TASK_WORK_ACTIVE) {
+                worker->status = ATM_TASK_WORK_PASSIVE;
+                res = ATM_TRUE;
+                break;
+            }
+        }
+    }
+    pthread_mutex_unlock(&worker_lock);
+    return res;
+}
+
+
+static atm_bool_t 
+atm_task_add_worker()
+{
+    atm_bool_t res = ATM_FALSE;
+    int ret;
+    pthread_t tid;
+    pthread_attr_t attr;
+    atm_task_worker_t *w;
+
+    pthread_mutex_lock(&worker_lock);
+    w = atm_task_worker_new();
+    if (w != NULL) {
+        w->status = ATM_TASK_WORK_ACTIVE;
+        pthread_attr_init(&attr);
+        ret = pthread_create(&tid,&attr,
+            atm_task_worker_func,w);
+        if (ret == ATM_OK) {
+            atm_arr_add(workers, &w);
+            res = ATM_TRUE;
+        } else {
+            w->status = ATM_TASK_WORK_RETIRED;
+            atm_log_rout(ATM_LOG_ERROR,
+                "task create worker fail");
+            atm_task_worker_free(w);
+        }
+    }
+    pthread_mutex_unlock(&worker_lock);
+    return res;
+}
+
+
+static atm_uint_t
+atm_task_work_load()
+{    
+    return 0;
+}
+
+
 static atm_task_worker_t *
 atm_task_get_active_worker()
 {
@@ -142,31 +217,10 @@ atm_task_worker_func(void *arg)
 static void
 atm_task_worker_init(int nworker)
 {
-    int ret,i;
-    pthread_t tid;
-    pthread_attr_t attr;
-    atm_task_worker_t *w;
-
+    int i = 0;
     workers = atm_arr_new(sizeof(atm_task_worker_t *));
     for (i=0; i<nworker; ++i) {
-        w = atm_task_worker_new();
-        if (w != NULL) {
-            w->status = ATM_TASK_WORK_ACTIVE;
-            pthread_attr_init(&attr);
-            ret = pthread_create(&tid,&attr,
-                atm_task_worker_func,w);
-
-            if (ret == ATM_OK) {
-                atm_arr_add(workers, &w);
-                continue;
-            } else {
-                w->status = ATM_TASK_WORK_RETIRED;
-                atm_log_rout(ATM_LOG_ERROR,
-                    "task create worker fail");
-                atm_task_worker_free(w);
-                continue;
-            }
-        }
+        atm_task_add_worker();
     }
 }
 
@@ -260,22 +314,20 @@ atm_task_dispatch(atm_task_t *task)
     }
 }
 
-void
-atm_task_disable_worker(atm_task_worker_t *worker)
-{
-    if (worker != NULL) {
-        if (worker->status == ATM_TASK_WORK_ACTIVE) {
-            worker->status = ATM_TASK_WORK_PASSIVE;
-        }
-    }
-}
-
 
 /*
  * should be invoked periodically
+ * should be garenteed thread-safe and
+ * run excludely from atm_task_get_active_worker func
  */
 void
 atm_task_moniter()
 {
-
+    atm_int_t load = atm_task_work_load();
+    if (load > ATM_TASK_HIGH_LOAD_THRESHOLD) {
+        atm_task_add_worker();
+    } else 
+    if (load < ATM_TASK_LOW_LOAD_THRESHOLD) {
+        atm_task_del_worker();
+    }
 }

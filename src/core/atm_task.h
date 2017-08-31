@@ -7,6 +7,9 @@
 #define ATM_TASK_WORK_PASSIVE   1
 #define ATM_TASK_WORK_RETIRED   2
 
+#define ATM_TASK_HIGH_LOAD_THRESHOLD    10
+#define ATM_TASK_LOW_LOAD_THRESHOLD    3
+
 struct atm_task_s {
     void               *load;
     atm_int_t         (*run)(atm_task_t *self);
@@ -32,12 +35,6 @@ atm_task_free(void *task);
 void
 atm_task_dispatch(atm_task_t *task);
 
-void
-atm_task_disable_worker(atm_task_worker_t *worker);
-
-/*
- * should be invoked periodically
- */
 void
 atm_task_moniter();
 

@@ -130,6 +130,7 @@ atm_task_load()
     atm_uint_t ts = 0;
     atm_uint_t ws = 0;
 
+    pthread_mutex_lock(&worker_lock);
     for (i=0; i<workers->length; ++i) {
         worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
         if (worker != NULL) {
@@ -139,6 +140,7 @@ atm_task_load()
             }
         }
     }
+    pthread_mutex_unlock(&worker_lock);
     return ts/ws;
 }
 

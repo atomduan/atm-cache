@@ -41,7 +41,7 @@ atm_log_rout_raw(atm_uint_t lv, char *msg)
 {
     atm_uint_t llv;
     atm_str_t now;
-    
+
     llv = atm_config->loglevel;
     now = atm_time_strftime_now();
     if (msg != NULL) {
@@ -119,7 +119,7 @@ atm_log_parse_level(char *lv)
         size = sizeof(ATM_LOG_LV_ENUM)/sizeof(char *);
         for (i=0; i<size; i++) {
             if (!strcmp(slv,ATM_LOG_LV_ENUM[i])) {
-                res = i; 
+                res = i;
                 break;
             }
         }
@@ -151,7 +151,7 @@ atm_log_err(char *fmt, ...)
     atm_str_t now;
     char msg[size];
     memset(msg,ATM_MEM_ZERO,size);
-    
+
     va_list args;
     va_start(args,fmt);
     vsnprintf(msg,size,fmt,args);

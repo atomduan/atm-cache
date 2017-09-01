@@ -180,7 +180,7 @@ atm_buf_read_line(atm_buf_t *buf)
                 } else {
                     strlen++;
                 }
-            } else 
+            } else
             if (strchr(nlcs,bk->head[i])==NULL) {
                 goto start_build;
             }

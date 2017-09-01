@@ -38,7 +38,7 @@ atm_ctx_callback_loop()
         cbks = atm_ctx->bg_routine;
         if (cbks != NULL) {
             for (i=0; i<cbks->length; ++i) {
-                func = atm_arr_get(cbks, i); 
+                func = atm_arr_get(cbks, i);
                 if (func != NULL) (*func)();
             }
         }

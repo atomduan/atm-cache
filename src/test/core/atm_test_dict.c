@@ -61,12 +61,12 @@ atm_test_dict_contains()
     atm_dict_set(dt, k, v);
 
     if (atm_dict_contains(dt, k2)) {
-        res = ATM_TEST_FAIL; 
+        res = ATM_TEST_FAIL;
         goto fin;
     }
 
     if (!atm_dict_contains(dt, k)) {
-        res = ATM_TEST_FAIL; 
+        res = ATM_TEST_FAIL;
         goto fin;
     }
 fin:
@@ -85,7 +85,7 @@ atm_test_dict_get()
     atm_str_t v = atm_str_new("foo--value");
     atm_dict_set(dt,k,v);
     if (!atm_dict_get(dt,k)) {
-        res = ATM_TEST_FAIL; 
+        res = ATM_TEST_FAIL;
         goto fin;
     }
 
@@ -133,16 +133,16 @@ atm_test_dict_remove()
     atm_str_t k = atm_str_new("foo");
     atm_str_t v = atm_str_new("foo--value");
     atm_dict_set(dt, k, v);
-    
+
     if (!atm_dict_get(dt,k)) {
-        res = ATM_TEST_FAIL; 
+        res = ATM_TEST_FAIL;
         goto fin;
     }
 
     atm_dict_del(dt,k);
 
     if (atm_dict_get(dt,k)) {
-        res = ATM_TEST_FAIL; 
+        res = ATM_TEST_FAIL;
         goto fin;
     }
 

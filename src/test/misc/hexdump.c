@@ -16,7 +16,7 @@ atm_util_hexdump(void *ptr, size_t len)
     *s++ = '0';
     *s++ = 'x';
     for (i=0; i<len; i++) {
-        int b = p[i]; 
+        int b = p[i];
         *s++ = hexdict[(b & 0x000000f0)>>4];
         *s++ = hexdict[(b & 0x0000000f)];
     }

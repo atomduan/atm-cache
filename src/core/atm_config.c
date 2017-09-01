@@ -22,7 +22,7 @@ atm_config_t *atm_config;
  * Private
  * */
 static atm_int_t
-atm_config_parse_arg(int argc, char **argv) 
+atm_config_parse_arg(int argc, char **argv)
 {
     int i;
     int lastarg;
@@ -42,7 +42,7 @@ atm_config_parse_arg(int argc, char **argv)
             return ATM_OK;
         }
     }
-    return ATM_OK; 
+    return ATM_OK;
 
 invalid:
     printf(
@@ -61,8 +61,8 @@ usage:
 static atm_bool_t
 atm_config_yesnotoi(char *s)
 {
-    if(!strcasecmp(s,"yes")) return 1; 
-    else 
+    if(!strcasecmp(s,"yes")) return 1;
+    else
     if(!strcasecmp(s,"no")) return 0;
     else return -1;
 }
@@ -75,7 +75,7 @@ atm_config_process(atm_str_t conf_str)
     atm_str_t *lines;
     atm_str_t *ls;
     atm_str_t l;
-    int conf_len, line_num; 
+    int conf_len, line_num;
 
     atm_str_t errmsg;
     atm_str_t *props;
@@ -187,7 +187,7 @@ loaderr:
 }
 
 
-static void 
+static void
 atm_config_path()
 {
     atm_str_t exe_path;

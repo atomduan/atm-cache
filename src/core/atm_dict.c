@@ -2,7 +2,7 @@
 /*
  * Private
  * */
-static atm_bool_t 
+static atm_bool_t
 atm_dict_rehash_needed(atm_dict_t *dict);
 static void
 atm_dict_rehash(atm_dict_t *dict);
@@ -69,7 +69,7 @@ atm_uint_t  rehash_loop_time = 1;
 /*
  * Private
  * */
-static atm_bool_t 
+static atm_bool_t
 atm_dict_rehash_needed(atm_dict_t *dict)
 {
     atm_dict_table_t *tb_act;
@@ -117,7 +117,7 @@ atm_dict_rehash(atm_dict_t *dict)
 
     if (dict->ht_backup == NULL) {
         if (dict->rehash_index != 0) {
-            atm_log_rout(ATM_LOG_FATAL, 
+            atm_log_rout(ATM_LOG_FATAL,
                 "data currapt rehash_index");
             exit(ATM_ERROR);
         }
@@ -130,12 +130,12 @@ atm_dict_rehash(atm_dict_t *dict)
         atm_int_t loop_time = rehash_loop_time;
         while (loop_time--) {
             i = dict->rehash_index;
-            if (i == tb_act->bktab_size) 
+            if (i == tb_act->bktab_size)
                 break;
 
             if (tb_act->bktab_used == 0) {
                 if (tb_act->size != 0) {
-                    atm_log_rout(ATM_LOG_FATAL, 
+                    atm_log_rout(ATM_LOG_FATAL,
                         "data currapt! in rehash end,"
                         "size [%lu]",
                         tb_act->size);
@@ -147,7 +147,7 @@ atm_dict_rehash(atm_dict_t *dict)
 
             if (tb_act->size == 0) {
                 if (tb_act->bktab_size != 0) {
-                    atm_log_rout(ATM_LOG_FATAL, 
+                    atm_log_rout(ATM_LOG_FATAL,
                         "data currapt! in rehash end,"
                         "bktab_size [%lu]",
                         tb_act->bktab_size);
@@ -159,9 +159,9 @@ atm_dict_rehash(atm_dict_t *dict)
 
             bkt = tb_act->bktab[i];
             dict->rehash_index++;
-            if (bkt == NULL) 
+            if (bkt == NULL)
                 continue;
-    
+
             bl = bkt->list;
             while ((e=atm_list_lpop(bl)) != NULL) {
                 atm_dict_table_push_entry(dict->ht_backup,e);
@@ -170,7 +170,7 @@ atm_dict_rehash(atm_dict_t *dict)
             tb_act->bktab_used--;
         }
     } else {
-        atm_log_rout(ATM_LOG_FATAL, 
+        atm_log_rout(ATM_LOG_FATAL,
             "data currapt! in rehash loop prechecking");
         exit(ATM_ERROR);
     }
@@ -178,7 +178,7 @@ atm_dict_rehash(atm_dict_t *dict)
     /* check whether rehash can finish */
     if (tb_act->size == 0) {
         if (dict->rehash_index > tb_act->bktab_size) {
-            atm_log_rout(ATM_LOG_FATAL, 
+            atm_log_rout(ATM_LOG_FATAL,
                 "data currapt! rehash_index on rehash finish,"
                 "rehash_index[%u], bktab_size[%u]",
                 dict->rehash_index,
@@ -186,12 +186,12 @@ atm_dict_rehash(atm_dict_t *dict)
             exit(ATM_ERROR);
         } else
         if (tb_act->bktab_used != 0) {
-            atm_log_rout(ATM_LOG_FATAL, 
+            atm_log_rout(ATM_LOG_FATAL,
                 "data currapt! bktab_used on rehash finish,"
                 "bktab_used[%u]",tb_act->bktab_used);
             exit(ATM_ERROR);
         } else {
-           tb_tmp = dict->ht_active; 
+           tb_tmp = dict->ht_active;
            dict->ht_active = dict->ht_backup;
            dict->ht_backup = NULL;
            dict->rehash_index = 0;
@@ -563,7 +563,7 @@ atm_dict_entry_free(void *entry)
         dict = e->dict;
         if (dict != NULL) {
             if (dict->free_type == ATM_FREE_DEEP) {
-                if (e->key && dict->k_type 
+                if (e->key && dict->k_type
                         && dict->k_type->free) {
                     dict->k_type->free(e->key);
                 }
@@ -604,7 +604,7 @@ atm_dict_init()
 
 
 atm_dict_t *
-atm_dict_new(atm_T_t *k_type, atm_T_t *v_type, 
+atm_dict_new(atm_T_t *k_type, atm_T_t *v_type,
         atm_uint_t f_type)
 {
     atm_uint_t bsz = ATM_DICT_INITIAL_BUCKET_SIZE;
@@ -653,7 +653,7 @@ atm_dict_str(void *dict)
 void
 atm_dict_free(void *dict)
 {
-    /* TODO how free this obj safely in multithread condition 
+    /* TODO how free this obj safely in multithread condition
      * a safely free enviroment should be provided by the caller's!*/
     atm_dict_t *d;
     atm_dict_table_t *table;
@@ -714,7 +714,7 @@ void
 atm_dict_set(atm_dict_t *dict, void *key, void *val)
 {
     atm_dict_table_t *table;
-    
+
     if (dict != NULL) {
         pthread_rwlock_wrlock(&dict->rwlk);
         if (dict->ht_backup != NULL)
@@ -777,7 +777,7 @@ atm_dict_clear(atm_dict_t *dict)
         atm_dict_table_clear(d->ht_backup);
         /* free the backup */
         atm_dict_table_free(d->ht_backup);
-        d->ht_backup = NULL; 
+        d->ht_backup = NULL;
         d->rehash_index = 0;
         pthread_rwlock_unlock(&dict->rwlk);
     }

@@ -100,9 +100,9 @@ typedef struct atm_obj_s            atm_obj_t;
 /*
  * Function type define
  */
-typedef void 
+typedef void
 (*atm_file_callback)(char *,void *) ;
-typedef void 
+typedef void
 (*atm_ctx_callback)() ;
 
 

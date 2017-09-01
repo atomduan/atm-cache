@@ -300,7 +300,7 @@ atm_str_trim(atm_str_t str, const char *cset)
     atm_str_t s = str;
     char *start, *end, *sp, *ep;
     size_t len;
-    
+
     sp = start = s;
     ep = end = s+atm_str_len(s)-1;
     while (sp<=end && strchr(cset,*sp)) sp++;

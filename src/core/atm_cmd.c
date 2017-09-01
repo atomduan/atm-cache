@@ -107,7 +107,7 @@ atm_cmd_getcmd(atm_str_t name)
 {
     atm_cmd_t *res = NULL;
     if (atm_cmd_dict != NULL) {
-        res = atm_dict_get(atm_cmd_dict,name); 
+        res = atm_dict_get(atm_cmd_dict,name);
         if (res != NULL)
             atm_log("####cmd hit........");
     }

@@ -59,7 +59,7 @@ atm_obj_hash(void *v)
     uint64_t res = 0;
     atm_obj_t *o = v;
     if (o && o->v_type && o->v_type->hash){
-        res = o->v_type->hash(o->value); 
+        res = o->v_type->hash(o->value);
     }
     return res;
 }
@@ -71,7 +71,7 @@ atm_obj_compare(void *v1, void *v2)
     atm_int_t res = 0;
     atm_obj_t *o1 = v1;
     atm_obj_t *o2 = v2;
-    if (o1 && o2 
+    if (o1 && o2
             && o1->v_type && o2->v_type
             && o1->v_type == o2->v_type) {
         void *val1 = o1->value;
@@ -88,7 +88,7 @@ atm_obj_str(void *v)
     atm_str_t res = NULL;
     atm_obj_t *o = v;
     if (o && o->v_type && o->v_type->str){
-        res = o->v_type->str(o->value); 
+        res = o->v_type->str(o->value);
     }
     return res;
 }
@@ -100,7 +100,7 @@ atm_obj_free(void *v)
     atm_obj_t *o = v;
     if (o != NULL) {
         if (o->v_type && o->v_type->free){
-            o->v_type->free(o->value); 
+            o->v_type->free(o->value);
         }
         atm_free(o);
     }

@@ -13,7 +13,7 @@
  * SHR is share memory
  * Others is mem alloc from malloc etc
  *
- * RES is pure physical mem 
+ * RES is pure physical mem
  */
 int main(int argc, char **argv)
 {

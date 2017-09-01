@@ -4,7 +4,7 @@
  * */
 static atm_uint_t
 atm_task_worker_load(atm_task_worker_t *w);
-static atm_bool_t 
+static atm_bool_t
 atm_task_del_worker();
 static atm_bool_t
 atm_task_add_worker();
@@ -60,7 +60,7 @@ atm_task_worker_load(atm_task_worker_t *worker)
 }
 
 
-static atm_bool_t 
+static atm_bool_t
 atm_task_del_worker()
 {
     atm_bool_t res = ATM_FALSE;
@@ -77,7 +77,7 @@ atm_task_del_worker()
 
     pthread_mutex_lock(&worker_lock);
     for (i=0; i<workers->length; ++i) {
-        worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
+        worker = (atm_task_worker_t *)atm_arr_get(workers, i);
         if (worker != NULL) {
             if (worker->status == ATM_TASK_WORK_ACTIVE) {
                 worker->status = ATM_TASK_WORK_PASSIVE;
@@ -91,7 +91,7 @@ atm_task_del_worker()
 }
 
 
-static atm_bool_t 
+static atm_bool_t
 atm_task_add_worker()
 {
     atm_bool_t res = ATM_FALSE;
@@ -124,7 +124,7 @@ atm_task_add_worker()
 
 static atm_uint_t
 atm_task_load()
-{    
+{
     atm_uint_t i = 0;
     atm_task_worker_t *worker;
     atm_uint_t ts = 0;
@@ -132,7 +132,7 @@ atm_task_load()
 
     pthread_mutex_lock(&worker_lock);
     for (i=0; i<workers->length; ++i) {
-        worker = (atm_task_worker_t *)atm_arr_get(workers, i); 
+        worker = (atm_task_worker_t *)atm_arr_get(workers, i);
         if (worker != NULL) {
             if (worker->status == ATM_TASK_WORK_ACTIVE) {
                 ws++;
@@ -167,14 +167,14 @@ atm_task_get_active_worker()
 
     if (worker->status == ATM_TASK_WORK_RETIRED) {
         /*
-         * theoretically, there should be only one 
+         * theoretically, there should be only one
          * exec path which is same to epoll
          */
         pthread_mutex_lock(&worker_lock);
         /*triger retired worker recycling*/
         workers_tmp = atm_arr_new(sizeof(atm_task_worker_t *));
         for (i=0; i<workers->length; ++i) {
-            wtmp = atm_arr_get(workers, i); 
+            wtmp = atm_arr_get(workers, i);
             if (wtmp->status != ATM_TASK_WORK_RETIRED) {
                 atm_arr_add(workers_tmp, wtmp);
             } else {
@@ -182,7 +182,7 @@ atm_task_get_active_worker()
             }
         }
         atm_arr_free(workers);
-        workers = workers_tmp; 
+        workers = workers_tmp;
         pthread_mutex_unlock(&worker_lock);
     }
 
@@ -356,7 +356,7 @@ atm_task_moniter()
     atm_int_t load = atm_task_load();
     if (load > ATM_TASK_HIGH_LOAD_THRESHOLD) {
         atm_task_add_worker();
-    } else 
+    } else
     if (load < ATM_TASK_LOW_LOAD_THRESHOLD) {
         atm_task_del_worker();
     }

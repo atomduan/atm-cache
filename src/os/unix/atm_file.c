@@ -14,8 +14,8 @@ atm_file_get_type(char *file)
     struct stat statbuf;
     if (lstat(file, &statbuf) == 0) {
         switch(statbuf.st_mode & S_IFMT) {
-            case S_IFREG: return ATM_FILE_REG; 
-            case S_IFDIR: return ATM_FILE_DIR; 
+            case S_IFREG: return ATM_FILE_REG;
+            case S_IFDIR: return ATM_FILE_DIR;
             break;
         }
     }
@@ -85,9 +85,9 @@ atm_file_find(char *dir, char *file_name, int type)
     atm_str_t res = NULL;
     atm_str_t file_path;
 
-    file_path = atm_file_path_append(dir,file_name); 
+    file_path = atm_file_path_append(dir,file_name);
     if (atm_file_get_type(file_path) == type) {
-        res = file_path;    
+        res = file_path;
     }
     return res;
 }
@@ -112,7 +112,7 @@ atm_file_traverse(char *file,atm_file_callback cb,void *argv)
 
     if ((d = opendir(file)) != NULL) {
         while ((fe=readdir(d)) != NULL) {
-            if (strcmp(fe->d_name,".") == 0 
+            if (strcmp(fe->d_name,".") == 0
                     || strcmp(fe->d_name,"..") == 0) {
                 continue;
             } else {

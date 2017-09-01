@@ -3,6 +3,7 @@
  * Public
  * */
 atm_ctx_t *atm_ctx;
+atm_uint_t loop_count;
 
 
 /* ---------------------IMPLEMENTATIONS--------------------------- */
@@ -24,4 +25,22 @@ atm_ctx_init()
      * register system level call back functions
      */
     atm_arr_add(atm_ctx->bg_routine, atm_task_moniter);
+    loop_count = 0;
+}
+
+void
+atm_ctx_callback_loop()
+{
+    atm_uint_t i = 0;
+    atm_arr_t *cbks;
+    atm_ctx_callback func;
+    if (atm_ctx!=NULL && ++loop_count%10000==0) {
+        cbks = atm_ctx->bg_routine;
+        if (cbks != NULL) {
+            for (i=0; i<cbks->length; ++i) {
+                func = atm_arr_get(cbks, i); 
+                if (func != NULL) (*func)();
+            }
+        }
+    }
 }

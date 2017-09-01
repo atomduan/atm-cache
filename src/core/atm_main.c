@@ -48,7 +48,10 @@ atm_service()
     printf("atm_service started......! \n"
            "more info can be check in logs......\n");
     for (;;) {
+        //event driven routine
         atm_event_routine();
+        //backgroud sync service routine, should be efficient!
+        atm_ctx_callback_loop();
     }
 }
 

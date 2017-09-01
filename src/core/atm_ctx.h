@@ -24,4 +24,6 @@ struct atm_ctx_s {
 void
 atm_ctx_init();
 
+void
+atm_ctx_callback_loop();
 #endif /* _ATM_CTX_H_INCLUDED_ */

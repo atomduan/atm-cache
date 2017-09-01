@@ -10,6 +10,15 @@ struct atm_ctx_s {
     atm_config_t   *config;
     atm_dict_t     *cache_dict;
     atm_uint_t      initial_memory_usage;
+    /*
+     * the service level daemon service
+     * call back should be register here
+     * suck as atm_task_monitor
+     * this array will be pooled
+     * by the main event loop
+     * TODO, need implemented
+     */
+    atm_arr_t      *bg_routine;
 };
 
 void

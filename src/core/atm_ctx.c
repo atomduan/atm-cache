@@ -19,4 +19,9 @@ atm_ctx_init()
             ATM_OBJ_T,
             ATM_OBJ_T,
             ATM_FREE_DEEP);
+    atm_ctx->bg_routine = atm_arr_new(sizeof(atm_ctx_callback));
+    /*
+     * register system level call back functions
+     */
+    atm_arr_add(atm_ctx->bg_routine, atm_task_moniter);
 }

@@ -348,6 +348,7 @@ atm_task_dispatch(atm_task_t *task)
  * should be invoked periodically
  * should be garenteed thread-safe and
  * run excludely from atm_task_get_active_worker func
+ * should be the type of atm_ctx_callback
  */
 void
 atm_task_moniter()

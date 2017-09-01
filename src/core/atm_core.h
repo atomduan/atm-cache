@@ -102,6 +102,8 @@ typedef struct atm_obj_s            atm_obj_t;
  */
 typedef void 
 (*atm_file_callback)(char *,void *) ;
+typedef void 
+(*atm_ctx_callback)() ;
 
 
 /*

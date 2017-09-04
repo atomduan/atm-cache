@@ -13,6 +13,7 @@ BUILD_DEPS="src/core/atm_core.h \
             src/core/atm_arr.h \
             src/core/atm_blk.h \
             src/core/atm_buf.h \
+            src/core/atm_client.h \
             src/core/atm_cmd.h \
             src/core/atm_config.h \
             src/core/atm_conn.h \
@@ -33,6 +34,7 @@ BUILD_DEPS="src/core/atm_core.h \
 BUILD_SRCS="src/core/atm_arr.c \
             src/core/atm_blk.c \
             src/core/atm_buf.c \
+            src/core/atm_client.c \
             src/core/atm_cmd.c \
             src/core/atm_config.c \
             src/core/atm_conn.c \

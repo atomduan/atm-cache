@@ -122,6 +122,7 @@ typedef void
 #include <atm_blk.h>
 #include <atm_buf.h>
 #include <atm_cmd.h>
+#include <atm_client.h>
 #include <atm_config.h>
 #include <atm_conn.h>
 #include <atm_ctx.h>

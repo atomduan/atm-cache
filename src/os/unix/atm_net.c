@@ -340,7 +340,7 @@ atm_net_connect(const char *addr, int port,
 {
     int res = 0, ret;
     char _port[6];
-    struct addrinfo hints, *servinfo;
+    struct addrinfo hints, *servinfo, *p;
 
     snprintf(_port, 6, "%d", port);
     memset(&hints, 0, sizeof(hints));
@@ -352,6 +352,18 @@ atm_net_connect(const char *addr, int port,
             return ATM_ERROR;
         }
     };
-    //TODO need implemented
+    for (p=servinfo; p!=NULL; p=p->ai_next) {
+        if ((res=socket(p->ai_family,p->ai_socktype,p->ai_protocol))==-1)
+            continue;
+        if (connect(res,p->ai_addr,p->ai_addrlen)==-1) {
+            goto error;
+        };
+        goto end;
+    }
+error:
+    res = ATM_ERROR;
+end:
+    //TODO, why we need to free it by hand??
+    freeaddrinfo(servinfo);
     return res;
 }

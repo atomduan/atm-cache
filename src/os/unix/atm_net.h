@@ -40,5 +40,8 @@ int
 atm_net_keepalive(atm_socket_t *s,
         int interval);
 
+int
+atm_net_connect(const char *addr, int port,
+        const struct timeval *timeout);
 
 #endif /* _ATM_SOCKET_H_INCLUDED_ */

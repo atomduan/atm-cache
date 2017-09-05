@@ -332,3 +332,26 @@ atm_net_keepalive(atm_socket_t *s,
 #endif /* ATM_LINUX */
     return ATM_OK;
 }
+
+
+int
+atm_net_connect(const char *addr, int port,
+        const struct timeval *timeout)
+{
+    int res = 0, ret;
+    char _port[6];
+    struct addrinfo hints, *servinfo;
+
+    snprintf(_port, 6, "%d", port);
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    if((ret=getaddrinfo(addr,_port,&hints,&servinfo)) != 0){
+        hints.ai_family = AF_INET6;
+        if((ret=getaddrinfo(addr,_port,&hints,&servinfo)) != 0){
+            return ATM_ERROR;
+        }
+    };
+    //TODO need implemented
+    return res;
+}

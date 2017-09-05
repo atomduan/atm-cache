@@ -339,7 +339,7 @@ int
 atm_net_connect(const char *addr, int port,
         const struct timeval *timeout)
 {
-    int res = 0, ret;
+    int res = ATM_NET_ERR_FD, ret;
     char _port[6];
     struct addrinfo hints, *servinfo, *p;
 
@@ -356,12 +356,12 @@ atm_net_connect(const char *addr, int port,
     for (p=servinfo; p!=NULL; p=p->ai_next) {
         if ((res=socket(p->ai_family,p->ai_socktype,p->ai_protocol))==-1)
             continue;
-        if (connect(res,p->ai_addr,p->ai_addrlen)==-1) {
+        if (connect(res,p->ai_addr,p->ai_addrlen)==-1)
             goto error;
-        };
         goto end;
     }
 error:
+    if (res != ATM_NET_ERR_FD) close(res);
     res = ATM_ERROR;
 end:
     //TODO, why we need to free it by hand??

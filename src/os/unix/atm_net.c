@@ -365,6 +365,7 @@ error:
     res = ATM_ERROR;
 end:
     //TODO, why we need to free it by hand??
+    //See man freeaddrinfo example
     freeaddrinfo(servinfo);
     return res;
 }

@@ -334,7 +334,7 @@ atm_net_keepalive(atm_socket_t *s,
 }
 
 
-//TODO, need test 
+//TODO, need test
 int
 atm_net_connect(const char *addr, int port,
         const struct timeval *timeout)

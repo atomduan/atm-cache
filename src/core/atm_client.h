@@ -4,8 +4,15 @@
 #include <atm_core.h>
 
 struct atm_client_s {
-
+    char   *addr;
+    int     port;
+    int     timeout;
+    int     sockfd;
 };
+
+
+atm_client_t *
+atm_client_new();
 
 void
 atm_client_send(atm_client_t *c, char *s);

@@ -3,10 +3,7 @@
 
 #include <atm_core.h>
 
-/*
-#define ATM_BLK_DFT_LEN     65536
-*/
-#define ATM_BLK_DFT_LEN         1
+#define ATM_BLK_DFT_LEN         65536
 #define ATM_BLK_POOL_THRESHOLD  64
 
 extern atm_T_t *ATM_BLK_T;

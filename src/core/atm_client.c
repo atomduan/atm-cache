@@ -30,4 +30,16 @@ void
 atm_client_send(atm_client_t *c, char *s)
 {
     //TODO need implemented
+    int sock = c->sockfd;
+    int rem = strlen(s);
+    int count = 0;
+    while (rem > 0) {
+        count = write(sock, s, rem);
+        if (count > 0) {
+            rem -= count;
+        } else {
+            atm_log_rout(ATM_LOG_ERROR, "write error on send");
+            break;
+        }
+    }
 }

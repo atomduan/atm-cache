@@ -36,6 +36,7 @@ atm_client_send(atm_client_t *c, char *s)
     while (rem > 0) {
         count = write(sock, s, rem);
         if (count > 0) {
+            s += count;
             rem -= count;
         } else {
             atm_log_rout(ATM_LOG_ERROR, "write error on send");

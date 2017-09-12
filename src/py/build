@@ -1,0 +1,87 @@
+#!/bin/bash -
+
+curr=$(cd `dirname $(which $0)`; pwd)
+
+cd $curr
+
+name="$1"
+name=${name:-module.c}
+name=$(echo $name | sed 's/\.c//g')
+name=$(echo $name | sed 's/\.//g')
+
+rm Makefile
+
+cat <<END > Makefile
+CC = gcc
+CFLAGS = -c -pipe  -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
+
+LINK = \$(CC)
+
+BUILD_DEPS = module_utils.h
+
+BUILD_INCS = -I ./ \\
+	-I ../../src/os/unix/linux \\
+	-I ../../build \\
+	-I ../../deps/jemalloc/include/jemalloc
+
+
+END
+
+if [ ${name} != "module_utils" ]; then
+cat <<END >> Makefile
+${name}:	${name}.o \\
+	module_utils.o
+
+	\$(LINK) -o ${name}.bin ${name}.o \\
+	module_utils.o \\
+	-ldl -lpthread -Wl,-E
+
+
+${name}.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o ${name}.o ${name}.c
+
+
+END
+fi
+
+
+cat <<END >> Makefile
+module_utils.o:	\$(BUILD_DEPS)
+	\$(CC) \$(CFLAGS) \$(BUILD_INCS) -o module_utils.o module_utils.c
+
+
+END
+
+
+cat <<END >> Makefile
+.PHONY:clean
+clean:
+	rm -r *.o *.bin *.so
+END
+
+make clean
+
+if ! [ -d "../../build" ]; then
+    (cd ../../; ./configure)
+fi
+
+make
+
+if [ -x ${name}.bin ]; then
+
+cat << EOF
+
+
+---------------MISC RUN-----------------
+
+
+EOF
+    ./${name}.bin
+cat << EOF
+
+
+---------------MISC FIN-----------------
+
+
+EOF
+fi

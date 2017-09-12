@@ -13,7 +13,7 @@ rm Makefile
 
 cat <<END > Makefile
 CC = gcc
-CFLAGS = -c -pipe  -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
+CFLAGS = -c -pipe -fPIC -shared -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)
 
@@ -32,9 +32,12 @@ cat <<END >> Makefile
 ${name}:	${name}.o \\
 	module_utils.o
 
-	\$(LINK) -o ${name}.bin ${name}.o \\
+	\$(LINK) -o ${name}.so ${name}.o \\
 	module_utils.o \\
-	-ldl -lpthread -Wl,-E
+	-ldl \\
+	-lpthread \\
+	-lpython2.7 \\
+	-Wl,-E
 
 
 ${name}.o:	\$(BUILD_DEPS)
@@ -56,10 +59,10 @@ END
 cat <<END >> Makefile
 .PHONY:clean
 clean:
-	rm -r *.o *.bin *.so
+	rm -r *.o *.so
 END
 
-make clean
+make clean 2>/dev/null
 
 if ! [ -d "../../build" ]; then
     (cd ../../; ./configure)

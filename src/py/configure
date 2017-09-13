@@ -61,7 +61,11 @@ from distutils.core import setup, Extension
 
 module1 = Extension(
     '${name}', 
-    include_dirs = ['/usr/local/include','./','../../src/os/unix/linux','../../build','../../deps/jemalloc/include/jemalloc'],
+    include_dirs = ['/usr/local/include',\\
+        './',\\
+        '../../src/os/unix/linux',\\
+        '../../build',\\
+        '../../deps/jemalloc/include/jemalloc'],
     libraries = ['pthread','python2.7','dl'],
     sources = ['${name}.c'])
 

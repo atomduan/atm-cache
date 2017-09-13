@@ -56,35 +56,27 @@ module_utils.o:	\$(BUILD_DEPS)
 END
 
 
+cat <<END > setup.py
+from distutils.core import setup, Extension
+
+module1 = Extension(
+    '${name}', 
+    include_dirs = ['/usr/local/include','./','../../src/os/unix/linux','../../build','../../deps/jemalloc/include/jemalloc'],
+    libraries = ['pthread','python2.7','dl'],
+    sources = ['${name}.c'])
+
+setup (name = 'PackageName',
+    version = '1.0',
+    description = 'This is a demo package',
+    ext_modules = [module1])
+END
+
 cat <<END >> Makefile
 .PHONY:clean
 clean:
 	rm -r *.o *.so
 END
 
-make clean 2>/dev/null
-
 if ! [ -d "../../build" ]; then
     (cd ../../; ./configure)
-fi
-
-make
-
-if [ -x ${name}.bin ]; then
-
-cat << EOF
-
-
----------------MISC RUN-----------------
-
-
-EOF
-    ./${name}.bin
-cat << EOF
-
-
----------------MISC FIN-----------------
-
-
-EOF
 fi

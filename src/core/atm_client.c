@@ -29,7 +29,6 @@ atm_client_new(char *addr, int port, int timeout)
 void
 atm_client_send(atm_client_t *c, char *s)
 {
-    //TODO need implemented
     int sock = c->sockfd;
     int rem = strlen(s);
     char *buff = s;
@@ -44,4 +43,29 @@ atm_client_send(atm_client_t *c, char *s)
             break;
         }
     }
+}
+
+int
+atm_client_recv(atm_client_t *c, char *buff, int size)
+{
+    int ret = 0;
+    int rem = size;
+    int total = 0;
+    while (ATM_TRUE) {
+        ret = read(c->sockfd, buff, rem);
+        if (ret > 0) {
+            rem -= ret;
+            total += ret;
+        } else {
+            if (ret < 0) {
+                atm_log_rout(ATM_LOG_ERROR, "read error on recv");
+                return ret;
+            } else {
+                /* can not read any more */
+                break;
+            }
+        }
+        if (rem == 0) break;
+    }
+    return total;
 }

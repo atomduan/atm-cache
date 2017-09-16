@@ -17,5 +17,8 @@ atm_client_new();
 void
 atm_client_send(atm_client_t *c, char *s);
 
+int
+atm_client_recv(atm_client_t *c, char *buff, int size);
+
 #endif /* _ATM_CLIENT_H_INCLUDED_ */
 

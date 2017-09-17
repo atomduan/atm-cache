@@ -12,7 +12,7 @@ struct atm_client_s {
 
 
 atm_client_t *
-atm_client_new();
+atm_client_new(char *addr, int port, int timeout);
 
 void
 atm_client_send(atm_client_t *c, char *s);

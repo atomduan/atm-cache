@@ -33,6 +33,7 @@ atm_client_send(atm_client_t *c, char *s)
     int rem = strlen(s);
     char *buff = s;
     int count = 0;
+    atm_log_rout(ATM_LOG_DEBUG, "atm_client_send enter");
     while (rem > 0) {
         count = write(sock, buff, rem);
         if (count > 0) {
@@ -43,6 +44,7 @@ atm_client_send(atm_client_t *c, char *s)
             break;
         }
     }
+    atm_log_rout(ATM_LOG_DEBUG, "atm_client_send leave");
 }
 
 int
@@ -51,9 +53,13 @@ atm_client_recv(atm_client_t *c, char *buff, int size)
     int ret = 0;
     int rem = size;
     int total = 0;
+    char *temp = buff;
+
+    atm_log_rout(ATM_LOG_DEBUG, "atm_client_recv enter");
     while (ATM_TRUE) {
-        ret = read(c->sockfd, buff, rem);
+        ret = read(c->sockfd, temp, rem);
         if (ret > 0) {
+            temp += ret;
             rem -= ret;
             total += ret;
         } else {
@@ -67,5 +73,6 @@ atm_client_recv(atm_client_t *c, char *buff, int size)
         }
         if (rem == 0) break;
     }
+    atm_log_rout(ATM_LOG_DEBUG, "atm_client_recv leave");
     return total;
 }

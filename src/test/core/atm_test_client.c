@@ -18,9 +18,24 @@ atm_test_client_suit()
     return ATM_TEST_PASS;
 }
 
+
 atm_uint_t
 atm_test_client_smoke()
 {
     atm_log("atm_test_client_smoke process......");
+    char *addr = "www.bing.com";
+    int port = 80;
+    int timeout = 3;
+
+    int buff_size = 1024;
+    char buff[buff_size];
+    memset(buff, 0, buff_size);
+
+    atm_client_t *c;
+
+    c = atm_client_new(addr, port, timeout);
+    atm_client_send(c, "test");
+    atm_client_recv(c, buff, buff_size);
+    printf("recv buff is %s\n", buff);
     return ATM_TEST_PASS;
 }

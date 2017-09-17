@@ -64,8 +64,7 @@ main(int argc, char **argv)
 
     if (atm_test_in_test_mod(argc, argv)) {
 #ifdef ATM_UNIT_TEST
-        printf("Enter in test mode ......! \n"
-               "please check info in logs......\n");
+        printf("Enter in test mode ......! \n");
         atm_test_suit(argc, argv);
 #else
         printf("ATM_UNIT_TEST macro has not been set "

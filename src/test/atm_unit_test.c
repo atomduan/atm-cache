@@ -31,7 +31,7 @@ atm_test_chd_exit_eval(int stat)
 static atm_int_t
 atm_test_suit_proc(int argc, char **argv)
 {
-    atm_log("enter ");
+    atm_log("enter test suits");
     atm_test_siphash_suit();
     atm_test_dict_suit();
     atm_test_event_suit();
@@ -39,6 +39,7 @@ atm_test_suit_proc(int argc, char **argv)
     atm_test_time_suit();
     atm_test_arr_suit();
     atm_test_file_suit();
+    atm_test_client_suit();
     return ATM_OK;
 }
 

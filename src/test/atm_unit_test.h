@@ -26,8 +26,11 @@
 #define ATM_TEST_ARR_ON         0
 #include <atm_test_arr.h>
 
-#define ATM_TEST_FILE_ON        1
+#define ATM_TEST_FILE_ON        0
 #include <atm_test_file.h>
+
+#define ATM_TEST_CLIENT_ON      1
+#include <atm_test_client.h>
 
 
 /*

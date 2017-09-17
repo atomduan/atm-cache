@@ -32,7 +32,7 @@ cat <<END >> Makefile
 ${name}:	${name}.o \\
 	module_utils.o
 
-	\$(LINK) -o ${name}.so ${name}.o \\
+	\$(LINK) -fPIC -shared -o ${name}.so ${name}.o \\
 	module_utils.o \\
 	-ldl \\
 	-lpthread \\
@@ -60,7 +60,7 @@ cat <<END > setup.py
 from distutils.core import setup, Extension
 
 module1 = Extension(
-    '${name}', 
+    '${name}',
     include_dirs = ['/usr/local/include',\\
         './',\\
         '../../src/os/unix/linux',\\
@@ -78,7 +78,7 @@ END
 cat <<END >> Makefile
 .PHONY:clean
 clean:
-	rm -r *.o *.so
+	rm -r *.o *.so setup.py
 END
 
 if ! [ -d "../../build" ]; then

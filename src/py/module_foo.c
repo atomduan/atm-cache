@@ -3,7 +3,7 @@
 
 
 PyObject *
-native_foo(PyObject *self, PyObject *args) 
+native_foo(PyObject *self, PyObject *args)
 {
     const char *echo;
     if (!PyArg_ParseTuple(args, "s", &echo))

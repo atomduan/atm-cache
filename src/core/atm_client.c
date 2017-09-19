@@ -47,6 +47,7 @@ atm_client_send(atm_client_t *c, char *s)
     atm_log_rout(ATM_LOG_DEBUG, "atm_client_send leave");
 }
 
+
 int
 atm_client_recv(atm_client_t *c, char *buff, int size)
 {

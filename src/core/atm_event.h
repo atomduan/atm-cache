@@ -8,12 +8,8 @@
 #define ATM_EVENT_NONE          0
 #define ATM_EVENT_ALL          -1
 
-/*
 #define ATM_EVENT_SIZE          1024
 #define ATM_EVENT_LIST_SIZE     1024
-*/
-#define ATM_EVENT_SIZE          1
-#define ATM_EVENT_LIST_SIZE     1
 
 #define ATM_EVENT_READ          EPOLLIN
 #define ATM_EVENT_WRITE         EPOLLOUT

@@ -23,8 +23,8 @@ atm_uint_t
 atm_test_client_smoke()
 {
     atm_log("atm_test_client_smoke process......");
-    char *addr = "www.bing.com";
-    int port = 80;
+    char *addr = "127.0.0.1";
+    int port = 8088;
     int timeout = 3;
 
     int buff_size = 1024;

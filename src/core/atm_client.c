@@ -3,6 +3,14 @@
 /*
  * Public
  * */
+
+void
+atm_client_init()
+{
+    //prepare for epoll mechanism
+}
+
+
 atm_client_t *
 atm_client_new(char *addr, int port, int timeout)
 {

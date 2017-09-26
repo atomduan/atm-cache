@@ -11,6 +11,9 @@ struct atm_client_s {
 };
 
 
+void
+atm_client_init();
+
 atm_client_t *
 atm_client_new(char *addr, int port, int timeout);
 

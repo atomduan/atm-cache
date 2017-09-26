@@ -1,7 +1,20 @@
 #include <atm_core.h>
 
 
+static void
+atm_test_client_init();
+
+
 /* -------------IMPL-------------- */
+
+
+static void
+atm_test_client_init()
+{
+    atm_client_init();
+}
+
+
 atm_uint_t
 atm_test_client_suit()
 {
@@ -12,6 +25,7 @@ atm_test_client_suit()
         atm_log("BEGIN atm_test_client_suit");
     }
 
+    atm_test_client_init();
     if (!atm_test_client_smoke()) {
         return ATM_TEST_FAIL;
     }

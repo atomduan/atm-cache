@@ -15,7 +15,7 @@ atm_event_process_events();
 
 
 /* epoll define */
-static int                   ep = -1;
+static int                   ep = ATM_ERR_FD;
 static struct epoll_event   *event_list = NULL;
 static atm_uint_t            nevents = 0;
 
@@ -119,18 +119,20 @@ atm_event_process_events()
 void
 atm_event_init()
 {
-    /* set up event engine. */
-    ep = epoll_create(ATM_EVENT_SIZE);
-    /* discard old data */
-    if (event_list) atm_free(event_list);
-    nevents = ATM_EVENT_LIST_SIZE;
-    event_list = atm_alloc(
-        sizeof(struct epoll_event) * nevents);
+    if (ep == ATM_ERR_FD) {
+        /* set up event engine. */
+        ep = epoll_create(ATM_EVENT_SIZE);
+        /* discard old data */
+        if (event_list) atm_free(event_list);
+        nevents = ATM_EVENT_LIST_SIZE;
+        event_list = atm_alloc(
+            sizeof(struct epoll_event) * nevents);
 
-    /* dispatch pipe init*/
-    notify_pipe = atm_pipe_new();
-    /* trust pipe event manage to epoll */
-    atm_pipe_event_init(notify_pipe);
+        /* dispatch pipe init*/
+        notify_pipe = atm_pipe_new();
+        /* trust pipe event manage to epoll */
+        atm_pipe_event_init(notify_pipe);
+    }
 }
 
 

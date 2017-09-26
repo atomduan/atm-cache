@@ -24,6 +24,8 @@
 #define ATM_CMP_EQ      0
 #define ATM_CMP_GT      1
 
+#define ATM_ERR_FD     -1
+
 
 /*
  * -------------- Types Definition --------------

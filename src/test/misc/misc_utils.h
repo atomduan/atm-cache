@@ -4,6 +4,9 @@
 #define RES_MICR_SEC    1000000
 #define RES_MILI_SEC    1000
 
+#define TEST_FOO        100
+#define TEST_BAR        TEST_FOO
+
 
 typedef struct timespec    atm_timespec_t;
 

@@ -7,7 +7,9 @@
 void
 atm_client_init()
 {
-    //prepare for epoll mechanism
+    //TODO prepare for epoll mechanism
+    //TODO init here is too scatted, error prone
+    atm_event_init();
 }
 
 

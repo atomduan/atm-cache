@@ -20,6 +20,7 @@
 
 struct atm_event_s {
     int         fd;
+    /* this is equivalent to epoll event's mask */
     uint32_t    events;
 
     /* atm_conn_t, atm_listen_t, etc */

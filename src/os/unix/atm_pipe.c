@@ -182,7 +182,8 @@ atm_pipe_notify(atm_pipe_t *pipe, void *load,
     p = pipe;
     msg = atm_pipe_msg_new(load,call_back);
 
-    atm_log("pipe_notify msg[%p],[%p][%p]",msg,msg->load,msg->call_back);
+    atm_log("pipe_notify msg[%p],[%p][%p]",
+            msg,msg->load,msg->call_back);
     pthread_mutex_lock(&p->mqlock);
     atm_queue_push(p->mqueue, msg);
     pthread_mutex_unlock(&p->mqlock);

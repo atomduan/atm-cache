@@ -1,25 +1,25 @@
 #include <atm_linux_config.h>
 #include <module_utils.h>
 
-void *
-native_bar(int argc, char **argv, char **res)
+/**
+ * *tmp++ = (i!=ssize-1) ? '1' : '\0';
+ */
+
+char *
+native_bar(int argc, char **argv)
 {
-    int i = 0;
-    int j = 0;
-    char **p = argv;
-    char *tmp;
+    int ssize=128, i;
+    char **p = argv, *res, *tmp;
 
-    for (; *p!=NULL; j++) {
-        printf("hello native...%d, %s\n", j, *p++);
-    }
+    printf("hello native...\n");
+    for (i=0; *p!=NULL; ++i)
+        printf("\targ%d: %s\n", i, *p++);
 
-    *res = malloc(10);
+    res = malloc(ssize+1);
+    for (i=0, tmp=res; i<ssize; ++i) *tmp++ = '1';
 
-    tmp = *res;
-    for (i=0; i<10; i++) {
-        *tmp++ = (i!=9) ? '1' : '\0';
-    }
+    res[ssize] = '\0';
 
-    printf("res is %s\n", *res);
+    printf("module return res is :%s, %zu\n", res, strlen(res));
     return res;
 }

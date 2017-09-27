@@ -1,14 +1,18 @@
 #!/usr/bin/env python
+
+import sys
 from ctypes import *
-args=[]
-args.append(c_char_p("abc"));
-args.append(c_char_p("xyz"));
 
-res = ""
-cresp = (c_char_p * len(res))(*res)
+def native_call(lpath, arglist):
+    args=[]
+    for arg in arglist:
+        args.append(c_char_p(arg));
+    lib = CDLL(lpath);
+    cargs = (c_char_p * len(args))(*args)
+    buf = lib.native_bar(len(args), cargs);
+    return cast(buf,c_char_p).value
 
-lib = CDLL("./module_bar.so");
-cargs = (c_char_p * len(args))(*args)
-lib.native_bar(len(args), cargs, cresp);
-
-print cast(cresp,POINTER(POINTER(c_char_p)))
+if __name__ == '__main__':
+    args = ['abc', 'xyz']
+    res = native_call("./module_bar.so",args);
+    print "python get res is : " + res + ", " + str(len(res))

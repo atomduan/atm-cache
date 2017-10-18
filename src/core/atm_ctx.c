@@ -24,7 +24,8 @@ atm_ctx_init()
     /*
      * register system level call back functions
      */
-    atm_arr_add(atm_ctx->bg_routine, atm_task_moniter);
+    atm_arr_add(atm_ctx->bg_routine,
+            atm_task_moniter_routine);
     loop_count = 0;
 }
 

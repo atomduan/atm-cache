@@ -36,7 +36,7 @@ void
 atm_task_dispatch(atm_task_t *task);
 
 void
-atm_task_moniter();
+atm_task_moniter_routine();
 
 
 #endif /* _ATM_TASK_H_INCLUDED_ */

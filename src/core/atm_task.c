@@ -351,7 +351,7 @@ atm_task_dispatch(atm_task_t *task)
  * should be the type of atm_ctx_callback
  */
 void
-atm_task_moniter()
+atm_task_moniter_routine()
 {
     atm_int_t load = atm_task_load();
     if (load > ATM_TASK_HIGH_LOAD_THRESHOLD) {

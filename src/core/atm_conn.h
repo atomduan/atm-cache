@@ -3,10 +3,7 @@
 
 #include <atm_core.h>
 
-/*
 #define ATM_CONN_PERCALL_ACCEPTS    1024
-*/
-#define ATM_CONN_PERCALL_ACCEPTS    1
 
 
 struct atm_conn_s {

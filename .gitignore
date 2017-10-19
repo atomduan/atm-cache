@@ -9,3 +9,4 @@ Makefile
 *.swp
 .gdb_history
 setup.py
+tags

@@ -8,3 +8,7 @@ fi
 if [ -d "./build" ] || [ -f "./Makefile" ]; then
     make clean
 fi
+
+if [ -f "./tags" ]; then
+    rm ./tags
+fi

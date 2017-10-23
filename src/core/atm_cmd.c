@@ -71,10 +71,10 @@ atm_cmd_func_get(atm_sess_t *se)
         msg = atm_str_cats_dup(atm_obj_str(v),"\n");
         atm_conn_write_str(c,msg);
         atm_str_free(msg);
+        atm_obj_free(k);
     } else {
         atm_sess_reply(c,"Invalid argc");
     }
-    atm_obj_free(k);
     return ATM_OK;
 }
 

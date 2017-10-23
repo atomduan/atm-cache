@@ -134,4 +134,5 @@ esac
 CFLAGS="$CFLAGS -Werror"
 
 # debug
+CFLAGS="$CFLAGS -fstack-protector -fstack-protector-all"
 CFLAGS="$CFLAGS -g"

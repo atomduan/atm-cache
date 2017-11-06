@@ -22,6 +22,7 @@ int main()
         initList(&list[i], 1, i);
         printf("current:0x%p, pre:0x%p, next:0x%p\n", &list[i], list[i].pre, list[i].next);
         printf("current:0x%p, pre:0x%p, next:0x%p, data=%d\n", &list[i], list[i].pre, list[i].next, list[i].data);
+        printf("data=%d, current:%p, pre:%p, next:%p\n", list[i].data, &list[i], list[i].pre, list[i].next);
     }
     return 0;
 }

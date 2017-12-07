@@ -25,7 +25,7 @@ atm_util_hexdump(void *ptr, size_t len)
 
 int main(int argc, char **argv)
 {
-    int i = 123;
+    int i = 1;
     char *s;
 
     s = atm_util_hexdump(&i, 8);

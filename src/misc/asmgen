@@ -24,9 +24,9 @@ LINK = \$(CC)
 BUILD_DEPS = misc_utils.h
 
 BUILD_INCS = -I ./ \\
-	-I ../../../src/os/unix/linux \\
-	-I ../../../build \\
-	-I ../../../deps/jemalloc/include/jemalloc
+	-I ../../src/os/unix/linux \\
+	-I ../../build \\
+	-I ../../deps/jemalloc/include/jemalloc
 
 END
 
@@ -44,8 +44,8 @@ END
 
 make clean
 
-if ! [ -d "../../../build" ]; then
-    (cd ../../../; ./configure)
+if ! [ -d "../../build" ]; then
+    (cd ../../; ./configure)
 fi
 
 make

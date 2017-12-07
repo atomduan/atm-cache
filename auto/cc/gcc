@@ -117,10 +117,11 @@ case "$ATM_GCC_VER" in
         CFLAGS="$CFLAGS -Wno-unused"
     ;;
     *)
-        # we have a lot of the unused function arguments
         CFLAGS="$CFLAGS -Wno-unused-parameter"
         # 4.2.1 shows the warning in wrong places
-        #CFLAGS="$CFLAGS -Wunreachable-code"
+        CFLAGS="$CFLAGS -Wunreachable-code"
+        # some switch need fallthrough
+        CFLAGS="$CFLAGS -Wno-implicit-fallthrough"
 
         # deprecated system OpenSSL library on OS X
         if [ "$ATM_SYSTEM" = "Darwin" ]; then

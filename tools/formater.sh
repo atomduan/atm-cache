@@ -6,3 +6,7 @@ cd $curr_path/..
 if [ -d src ]; then
     find src -type f | xargs -I{} sed -i 's/[ ]\{1,\}$//g' {}
 fi
+
+if [ -d auto ]; then
+    find auto -type f | xargs -I{} sed -i 's/[ ]\{1,\}$//g' {}
+fi

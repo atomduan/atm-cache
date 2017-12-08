@@ -1,7 +1,11 @@
 #!/bin/sh
-ATM_BINARY_NAME="atmc"
-ATM_BINARY_SUFFIX=""
+#main to build server, client to build client
+#this cooresponding to src's atm_server or atm_client
+#ATM_MAIN_TYPE="server"
+ATM_MAIN_TYPE="client"
 
+ATM_BINARY_NAME="atmc-${ATM_MAIN_TYPE}"
+ATM_BINARY_SUFFIX=""
 ATM_DEBUG=YES
 
 #If unit test enabled, we can use "make test" to do unit test

@@ -87,3 +87,9 @@ atm_client_recv(atm_client_t *c, char *buff, int size)
     atm_log_rout(ATM_LOG_DEBUG, "atm_client_recv leave");
     return total;
 }
+
+int
+main(int argc, char **argv)
+{
+    return 0;
+}

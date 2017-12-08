@@ -15,5 +15,6 @@ int main(int argc, char **argv)
     printf("p addr is %p\n", p);
     atm_sys_profile();
     printf("TEST_BAR macro is %d\n", TEST_BAR);
+    printf("RES_NANO_SEC is %d\n", RES_NANO_SEC);
     return 0;
 }

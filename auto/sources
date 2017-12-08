@@ -31,10 +31,10 @@ BUILD_DEPS="src/core/atm_core.h \
             src/core/atm_time.h \
             src/core/atm_util.h"
 
-BUILD_SRCS="src/core/atm_arr.c \
+BUILD_SRCS="src/core/atm_${ATM_MAIN_TYPE}.c \
+            src/core/atm_arr.c \
             src/core/atm_blk.c \
             src/core/atm_buf.c \
-            src/core/atm_client.c \
             src/core/atm_cmd.c \
             src/core/atm_config.c \
             src/core/atm_conn.c \
@@ -43,7 +43,6 @@ BUILD_SRCS="src/core/atm_arr.c \
             src/core/atm_event.c \
             src/core/atm_list.c \
             src/core/atm_log.c \
-            src/core/atm_main.c \
             src/core/atm_obj.c \
             src/core/atm_queue.c \
             src/core/atm_sess.c \

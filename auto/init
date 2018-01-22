@@ -91,3 +91,6 @@ have=ATM_CONF_PATH value="\"$ATM_CONF_PATH\"" . auto/define
 have=ATM_PID_PATH value="\"$ATM_PID_PATH\"" . auto/define
 have=ATM_LOCK_PATH value="\"$ATM_LOCK_PATH\"" . auto/define
 have=ATM_ERROR_LOG_PATH value="\"$ATM_ERROR_LOG_PATH\"" . auto/define
+if [ -n "xclient" = "x${ATM_MAIN_TYPE}" ]; then
+    have=ATM_CLIENT_MOD . auto/have
+fi

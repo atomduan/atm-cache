@@ -29,8 +29,13 @@
 #define ATM_TEST_FILE_ON        0
 #include <atm_test_file.h>
 
-#define ATM_TEST_CLIENT_ON      1
-#include <atm_test_client.h>
+#if (ATM_CLIENT_MOD)
+    #define ATM_TEST_CLIENT_ON      1
+    #include <atm_test_client.h>
+#else
+    #define ATM_TEST_SERVER_ON      1
+    #include <atm_test_server.h>
+#endif
 
 
 /*

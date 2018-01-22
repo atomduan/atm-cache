@@ -39,7 +39,11 @@ atm_test_suit_proc(int argc, char **argv)
     atm_test_time_suit();
     atm_test_arr_suit();
     atm_test_file_suit();
+#if (ATM_CLIENT_MOD)
     atm_test_client_suit();
+#else
+    atm_test_server_suit();
+#endif
     return ATM_OK;
 }
 

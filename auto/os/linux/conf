@@ -175,6 +175,17 @@ atm_feature_test="struct crypt_data  cd;
                   crypt_r(\"key\", \"salt\", &cd);"
 . auto/feature
 
+# pcap()
+
+atm_feature="pcap()"
+atm_feature_name="ATM_HAVE_PCAP"
+atm_feature_run=no
+atm_feature_incs="#include <pcap.h>"
+atm_feature_path=
+atm_feature_libs=
+atm_feature_test="pcap_t *pd = NULL;"
+. auto/feature
+
 
 atm_include="sys/vfs.h";     . auto/include
 

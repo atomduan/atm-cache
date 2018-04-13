@@ -2,6 +2,12 @@
 #include <misc_utils.h>
 #include <pcap.h>
 
+static void
+err(int error_code, char *error_msg)
+{
+    printf("[ERROR] error_code->%d, error_msg->%s", error_code, error_msg);
+}
+
 int main(int argc, char **argv)
 {
     pcap_t *pd = NULL;

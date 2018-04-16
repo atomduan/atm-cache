@@ -141,6 +141,9 @@ typedef void
 #include <atm_task.h>
 #include <atm_time.h>
 
+#include <atm_lex.h>
+#include <atm_yacc.h>
+
 #ifdef ATM_UNIT_TEST
 #include <atm_unit_test.h>
 #endif

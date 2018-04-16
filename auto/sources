@@ -94,6 +94,19 @@ BUILD_SRCS="$BUILD_SRCS \
             src/test/os/atm_test_file.c"
 fi
 
+#------------------------------------------------------
+#CONFIG parser TYPE DIFFERENCE SOURCE,
+BUILD_INCS="$BUILD_INCS \
+            src/parser"
+
+BUILD_DEPS="$BUILD_DEPS \
+            src/parser/atm_lex.h \
+            src/parser/atm_yacc.h"
+
+BUILD_SRCS="$BUILD_SRCS \
+            src/parser/atm_lex.c \
+            src/parser/atm_yacc.c"
+
 
 #------------------------------------------------------
 #CONFIG OS TYPE DIFFERENCE SOURCE,

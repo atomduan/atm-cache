@@ -3,4 +3,8 @@
 
 #include <atm_core.h>
 
+/*
+ * really can not do anything
+ */
+
 #endif /* _ATM_LEX_H_INCLUDED_ */

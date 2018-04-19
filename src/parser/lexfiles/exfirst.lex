@@ -9,3 +9,16 @@
 [/+/-/*///%]          printf("Op      : %s/n",yytext);
 .                     printf("Unknown : %c/n",yytext[0]);
 %%
+
+int main(int argc, char **argv) 
+{
+    yyin = fopen(argv[1], "r");
+    if (!yyin) {
+        return 0;
+    }
+    yylex();
+    printf("parse finish......");
+    fclose(yyin);
+    return 1;
+}
+

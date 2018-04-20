@@ -18,3 +18,8 @@ void main(int ac, char **av)
         yylex();
     } while(!feof(yyin));
 } /* main */
+
+int yywrap()
+{
+    return 1;
+}

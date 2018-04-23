@@ -14,12 +14,14 @@ void main(int ac, char **av)
         exit(1);
     }
     do {
-        printf("every loop...\n");
+        printf("beging every loop...\n");
         yylex();
+        printf("end every loop...\n");
     } while(!feof(yyin));
 } /* main */
 
 int yywrap()
 {
+    printf("running in yywrap...");
     return 1;
 }

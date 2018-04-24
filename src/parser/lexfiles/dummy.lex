@@ -16,6 +16,7 @@ void main(int ac, char **av)
     do {
         printf("every loop...\n");
         yylex();
+        printf("end loop...\n");
     } while(!feof(yyin));
 } /* main */
 

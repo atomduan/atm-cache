@@ -305,7 +305,7 @@ atm_str_trim(atm_str_t str, const char *cset)
     ep = end = s+atm_str_len(s)-1;
     while (sp<=end && strchr(cset,*sp)) sp++;
     while (ep>sp && strchr(cset,*ep)) ep--;
-    len = (sp>ep) ? 0 : ((ep-sp)+1);/*TODO, pointer - pointer is what??*/
+    len = (sp>ep) ? 0 : ((ep-sp)+1);/*TODO, pointer - pointer is what??, is pointer step*/
     if (s!=sp) memmove(s,sp,len);
     s[len] = '\0';
     atm_str_setlen(s,len);

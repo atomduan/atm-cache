@@ -2,6 +2,7 @@
 #include <misc_utils.h>
 #include <pcap.h>
 
+
 static void
 err(int error_code, char *error_msg)
 {
@@ -12,6 +13,7 @@ int main(int argc, char **argv)
 {
     pcap_t *pd = NULL;
     printf("not implemented yet......pd point%p", pd);
+    /* HOW? */
     return 0;
 }
 

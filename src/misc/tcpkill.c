@@ -5,6 +5,7 @@
 static void
 err(int error_code, char *error_msg)
 {
+    //check more
     printf("[ERROR] error_code->%d, error_msg->%s", error_code, error_msg);
 }
 

@@ -21,16 +21,13 @@
 #include <malloc.h>
 
 int main(int argc, char **argv) {
-    char * p;
-    char * s = "123456";
-    char * a = NULL;
-    char * b = NULL;
-    printf("s len is :%d\n", strlen(s));
-    printf("s addr is :%p\n", s);
-    printf("s addr is :%p\n", p);
-    if (a == b) {
-        printf("NULL can compare");
+    int sum = 0;
+    int i = 0;
+    for (i=0; i<2018; i++) {
+        if (i%2!=0 && i%3!=0 && i%5!=0) {
+            sum += i;
+        }
     }
-    printf("EAGAIN is %d\n", strerror(EAGAIN));
-    
+    printf("sum is %d\n", sum);
+    return 0;
 }

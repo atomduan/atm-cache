@@ -30,7 +30,7 @@ static void *task_two(void *);
 
 static pthread_mutex_t lock;
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
     pthread_t tid_one;
     pthread_t tid_two;
 
@@ -40,6 +40,7 @@ void main(int argc, char **argv) {
 
     pthread_join(tid_one, NULL);
     pthread_join(tid_two, NULL);
+    return 0;
 }
 
 static void *task_one(void *argv) {

@@ -14,7 +14,7 @@ void initList(struct TS * ts, int a, int b)
     ts->data = 1024 + a + b;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     struct TS * list = malloc(sizeof(struct TS) * 10);
     int i=0;

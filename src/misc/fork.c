@@ -41,7 +41,7 @@ static void child_process() {
     exit(0);
 }
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
     pid_t pid;
     int i = 0;
 
@@ -64,4 +64,5 @@ void main(int argc, char **argv) {
         sleep(1);
     }
     printf("main loop exit....\n");
+    return 0;
 }

@@ -10,5 +10,5 @@ int main(int argc, char **argv)
     __asm__ (
 	"    mov    %ebx, %esi;  "
             );
-    return c;
+    return 0;
 }

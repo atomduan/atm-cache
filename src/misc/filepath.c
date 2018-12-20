@@ -19,4 +19,5 @@ int main(int argc, char **argv)
         buf[ret] = '\0';
     }
     printf("%s\n", buf);
+    return 0;
 }

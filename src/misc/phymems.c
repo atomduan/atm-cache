@@ -73,4 +73,5 @@ int main(int argc, char **argv)
     printf("The physical mem is %lu Kb\n",k);
     printf("The physical mem is %lu Mb\n",m);
     printf("The physical mem is %lu Gb\n",g);
+    return 0;
 }

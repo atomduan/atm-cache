@@ -32,5 +32,5 @@ int main(int argc, char **argv) {
         printf("NULL can compare");
     }
     printf("EAGAIN is %d\n", strerror(EAGAIN));
-    
+    return 0;    
 }

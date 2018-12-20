@@ -12,4 +12,5 @@ int main(int argc, char **argv) {
 
     printf("s array addr %p\n", &s);
     printf("s array addr of first element %p\n", &s[0]);
+    return 0;
 }

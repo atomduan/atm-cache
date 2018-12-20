@@ -22,18 +22,12 @@ int main(int argc, char **argv)
     //pthread_rwlock_unlock(&rwlk);
     //printf("leave first wrlock");
 
-
-
-
     /* the under will run normally
      * */
     ret = pthread_rwlock_wrlock(&rwlk);
     printf("enter in first wrlock, ret is %d\n", ret);
     ret = pthread_rwlock_unlock(&rwlk);
     printf("leave first wrlock, ret is %d\n", ret);
-
-
-
 
     /* the under will core dump on second unlock
      * */
@@ -52,9 +46,6 @@ int main(int argc, char **argv)
     //ret = pthread_rwlock_unlock(&rwlk);
     //printf("leave first wrlock, ret is %d\n", ret);
 
-
-
-
     /* a dead lock will happed on second lock */
     //ret = pthread_mutex_lock(&mutex);
     //printf("enter in first mutex, ret is %d\n", ret);
@@ -63,17 +54,11 @@ int main(int argc, char **argv)
     //ret = pthread_mutex_unlock(&mutex);
     //printf("leave first mutex, ret is %d\n", ret);
 
-
-
-
     /* run normally */
     ret = pthread_mutex_lock(&mutex);
     printf("enter in first mutex, ret is %d\n", ret);
     ret = pthread_mutex_unlock(&mutex);
     printf("leave first mutex, ret is %d\n", ret);
-
-
-
 
     pthread_mutex_destroy(&mutex);
     pthread_rwlock_destroy(&rwlk);

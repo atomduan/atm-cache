@@ -12,7 +12,7 @@ name=$(echo $name | sed 's/\.//g')
 rm Makefile
 
 cat <<END > Makefile
-CC = gcc
+CC = clang
 CFLAGS = -c -pipe  -O0 -W -Wall -Wpointer-arith -Wno-unused-parameter -Werror -g
 
 LINK = \$(CC)

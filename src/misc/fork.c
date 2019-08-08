@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include "test.h"
 
 static void sig_cld_handler(int sig) {
     pid_t pid;
@@ -42,7 +41,7 @@ static void child_process() {
 }
 
 int main(int argc, char **argv) {
-    pid_t pid;
+    pid_t pid = 0;
     int i = 0;
 
     if (signal(SIGCLD, sig_cld_handler) == SIG_ERR) {

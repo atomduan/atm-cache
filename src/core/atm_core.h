@@ -57,7 +57,7 @@ typedef uint8_t             atm_byte_t;/* same to u_char */
 /*
  * Char and string relevant
  */
-typedef char               *atm_str_t;
+typedef char                *atm_str_t;
 
 /*
  * Non Primitive Data types define
